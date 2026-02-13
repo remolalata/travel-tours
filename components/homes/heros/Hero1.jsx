@@ -174,24 +174,6 @@ export default function Hero1() {
                 </div>
               </div>
 
-              <p className="text-12 text-white mt-10">
-                Photo by{" "}
-                <a
-                  href="https://unsplash.com/@maxgrig?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Maksim Grigorev
-                </a>{" "}
-                on{" "}
-                <a
-                  href="https://unsplash.com/photos/a-colorful-surfboard-sitting-on-a-beach-next-to-a-life-guard-tower-u0wbwPCGlQo?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Unsplash
-                </a>
-              </p>
             </div>
           </div>
         </div>
