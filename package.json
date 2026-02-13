@@ -16,12 +16,13 @@
     "@react-google-maps/api": "^2.20.6",
     "aos": "^2.3.4",
     "bootstrap": "^5.3.6",
-    "next": "^15.3.8",
+    "next": "^16.1.6",
     "prop-types": "15.8.1",
-    "react": "^19.1.2",
-    "react-dom": "^19.1.2",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "react-multi-date-picker": "^4.5.2",
     "recharts": "^2.15.3",
     "swiper": "^11.2.7"
-  }
+  },
+  "packageManager": "npm@11.6.2"
 }

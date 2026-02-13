@@ -7,13 +7,9 @@ import Activities from "../components/Activities";
 import MobileMenu from "../components/MobileMenu";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 export default function Header1() {
-  const router = useRouter();
-  const pageNavigate = (pageName) => {
-    router.push(pageName);
-  };
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
   const [addClass, setAddClass] = useState(false);
 
@@ -32,6 +28,20 @@ export default function Header1() {
     // Cleanup the event listener when the component unmounts
     return () => {
       window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 767) {
+        setMobileSearchOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -61,8 +71,10 @@ export default function Header1() {
 
           <div className="headerMobile__right">
             <button
-              onClick={() => pageNavigate("/tour-list-1")}
+              onClick={() => setMobileSearchOpen((prev) => !prev)}
               className="d-flex"
+              aria-label="Toggle search"
+              aria-expanded={mobileSearchOpen}
             >
               <i className="icon-search text-18"></i>
             </button>
@@ -73,6 +85,12 @@ export default function Header1() {
             <Activities />
 
           </div>
+        </div>
+
+        <div
+          className={`headerMobileSearch ${mobileSearchOpen ? "is-active" : ""}`}
+        >
+          <HeaderSerch />
         </div>
       </header>
       <MobileMenu
