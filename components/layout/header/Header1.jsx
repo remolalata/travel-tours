@@ -41,14 +41,7 @@ export default function Header1() {
         className={`header -type-1 js-header ${addClass ? "-is-sticky" : ""}`}
       >
         <div className="header__container container">
-          <div className="headerMobile__left">
-            <button
-              onClick={() => setMobileMenuOpen(true)}
-              className="header__menuBtn js-menu-button"
-            >
-              <i className="icon-main-menu"></i>
-            </button>
-          </div>
+          <div className="headerMobile__left"></div>
 
           <div className="header__logo">
             <Link href="/" className="header__logo">
@@ -79,12 +72,6 @@ export default function Header1() {
             <Destinations />
             <Activities />
 
-            <button
-              onClick={() => setMobileMenuOpen(true)}
-              className="header__menuBtn ml-30 js-menu-button"
-            >
-              <i className="icon-main-menu"></i>
-            </button>
           </div>
         </div>
       </header>
