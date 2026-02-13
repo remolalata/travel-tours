@@ -1,4 +1,3 @@
-import { articles } from "@/data/articles";
 import { blogs } from "@/data/blogs";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,18 +16,6 @@ export default function ArticlesThree() {
             >
               Travel Articles
             </h2>
-          </div>
-
-          <div className="col-auto">
-            <Link
-              href={"/blog-list-1"}
-              data-aos="fade-right"
-              data-aos-delay=""
-              className="buttonArrow d-flex items-center  "
-            >
-              <span>See all</span>
-              <i className="icon-arrow-top-right text-16 ml-10"></i>
-            </Link>
           </div>
         </div>
 
