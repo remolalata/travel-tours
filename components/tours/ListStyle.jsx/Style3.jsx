@@ -1,3 +1,4 @@
+import { formatNumber } from "@/components/common/formatNumber";
 import Stars from "@/components/common/Stars";
 import { tourData } from "@/data/tours";
 import Image from "next/image";
@@ -67,7 +68,7 @@ export default function Style3() {
 
                     <div className="text-right text-white">
                       <div className="text-13 lh-14">From</div>
-                      <div className="text-18 fw-500">${elm.price}</div>
+                      <div className="text-18 fw-500">${formatNumber(elm.price)}</div>
                     </div>
                   </div>
                 </div>

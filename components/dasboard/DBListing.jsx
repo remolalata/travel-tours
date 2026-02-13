@@ -1,5 +1,7 @@
 "use client";
 
+import { formatNumber } from "@/components/common/formatNumber";
+
 import Pagination from "../common/Pagination";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
@@ -71,10 +73,10 @@ export default function DBListing() {
 
                             <div className="col-auto">
                               <div className="text-right md:text-left">
-                                <div className="lh-14">${elm.price}</div>
+                                <div className="lh-14">${formatNumber(elm.price)}</div>
                                 From{" "}
                                 <span className="text-20 fw-500">
-                                  ${elm.price + 1000}
+                                  ${formatNumber(elm.price + 1000)}
                                 </span>
                               </div>
                             </div>

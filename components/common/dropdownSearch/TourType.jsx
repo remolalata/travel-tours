@@ -1,12 +1,14 @@
 "use client";
 import React from "react";
 const options = [
+  "Island Hopping",
+  "Beach Getaway",
   "City Tour",
-  "Hiking",
-  "Food Tour",
-  "Cultural Tours",
-  "Museums Tours",
-  "Beach Tours",
+  "Cultural & Heritage",
+  "Family Package",
+  "Honeymoon Package",
+  "International Tour",
+  "Adventure Tour",
 ];
 export default function TourType({ active, setTourType }) {
   return (

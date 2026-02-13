@@ -1,5 +1,7 @@
 "use client";
 
+import { formatNumber } from "@/components/common/formatNumber";
+
 import React, { useState, useRef, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { speedFeatures } from "@/data/tourFilteringOptions";
@@ -159,7 +161,7 @@ export default function TourList2() {
 
                         <div>
                           From{" "}
-                          <span className="text-16 fw-500">${elm.price}</span>
+                          <span className="text-16 fw-500">${formatNumber(elm.price)}</span>
                         </div>
                       </div>
                     </div>

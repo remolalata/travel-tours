@@ -1,4 +1,6 @@
 "use client";
+
+import { formatNumber } from "@/components/common/formatNumber";
 import { tourDataThree } from "@/data/tours";
 import {
   GoogleMap,
@@ -295,7 +297,7 @@ export default function Map() {
                     <div>
                       From{" "}
                       <span className="text-16 fw-500">
-                        ${getLocation.price}
+                        ${formatNumber(getLocation.price)}
                       </span>
                     </div>
                   </div>

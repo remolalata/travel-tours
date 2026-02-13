@@ -66,12 +66,15 @@ export default function TestimonialOne() {
                     <SwiperSlide key={i}>
                       <div className="testimonials -type-1 pt-10 text-center">
                         <div className="testimonials__image size-100 rounded-full">
-                          <Image
-                            width={98}
-                            height={98}
-                            src={elm.imageSrc}
-                            alt="image"
-                          />
+                          <div className="size-100 rounded-full overflow-hidden">
+                            <Image
+                              width={98}
+                              height={98}
+                              src={elm.imageSrc}
+                              alt="image"
+                              className="rounded-full object-cover"
+                            />
+                          </div>
 
                           <div className="testimonials__icon">
                             <svg

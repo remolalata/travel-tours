@@ -1,5 +1,7 @@
 "use client";
 
+import { formatNumber } from "@/components/common/formatNumber";
+
 import { useState, useEffect, useRef } from "react";
 import Calender from "../common/dropdownSearch/Calender";
 import RangeSlider from "../common/RangeSlider";
@@ -50,7 +52,7 @@ export default function TourList7() {
           <div className="row">
             <div className="col-auto">
               <h2 className="text-30 md:text-24">
-                Explore all things to do in Phuket
+                Explore all things to do in Boracay
               </h2>
             </div>
           </div>
@@ -234,12 +236,12 @@ export default function TourList7() {
                         </div>
 
                         <div className="tourCard__price">
-                          <div>${elm.fromPrice}</div>
+                          <div>${formatNumber(elm.fromPrice)}</div>
 
                           <div className="d-flex items-center">
                             From{" "}
                             <span className="text-20 fw-500 ml-5">
-                              ${elm.price}
+                              ${formatNumber(elm.price)}
                             </span>
                           </div>
                         </div>

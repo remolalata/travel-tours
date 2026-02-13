@@ -9,7 +9,7 @@ export default function Banner() {
         <Image width={1530} height={600} src="/img/cta/2/bg.png" alt="image" />
 
         <div className="cta__image">
-          <Image width={750} height={600} src="/img/cta/2/1.png" alt="image" />
+          <Image width={750} height={600} src="/img/cta/banner.webp" alt="image" />
           <Image
             width="40"
             height="600"
@@ -32,7 +32,7 @@ export default function Banner() {
               <h2
                 data-aos="fade-up"
                 data-aos-delay=""
-                className="text-40 md:text-30  lh-13"
+                className="text-40 md:text-30 lh-13"
               >
                 Grab up to <span className="text-accent-1">35% off</span>
                 <br className="lg:d-none" />
@@ -49,7 +49,7 @@ export default function Banner() {
                 <button
                   data-aos="fade-right"
                   data-aos-delay=""
-                  className="button -md -dark-1 bg-accent-1 text-white"
+                  className="text-white bg-accent-1 button -md -dark-1"
                 >
                   <Link href="/tour-list-1">
                     Book Now

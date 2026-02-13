@@ -17,6 +17,13 @@ export default function TourTypeOne() {
               Popular things to do
             </h2>
           </div>
+
+          <div className="col-auto">
+            <Link href="/tour-list-1" className="buttonArrow d-flex items-center ">
+              <span>See all</span>
+              <i className="icon-arrow-top-right text-16 ml-10"></i>
+            </Link>
+          </div>
         </div>
 
         <div

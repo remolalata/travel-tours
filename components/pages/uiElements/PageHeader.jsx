@@ -8,11 +8,11 @@ export default function PageHeader() {
           <span className="breadcrumbs__item">
             <a href="#">Home</a>
           </span>
-          <span>{">"}</span>
+          <span>{" > "}</span>
           <span className="breadcrumbs__item">
             <a href="#">Tours</a>
           </span>
-          <span>{">"}</span>
+          <span>{" > "}</span>
           <span className="breadcrumbs__item">
             <a href="#">Phuket</a>
           </span>

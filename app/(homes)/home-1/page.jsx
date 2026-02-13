@@ -1,4 +1,3 @@
-import ArticlesThree from "@/components/homes/articles/ArticlesThree";
 import Banner from "@/components/homes/banners/Banner";
 import BannerOne from "@/components/homes/banners/BannerOne";
 import DestinationsOne from "@/components/homes/destinations/DestinationsOne";
@@ -24,7 +23,6 @@ export default function Home() {
       <TourSlderOne />
       <TestimonialOne />
       <BannerOne />
-      <ArticlesThree />
       <FooterOne />
     </main>
   );

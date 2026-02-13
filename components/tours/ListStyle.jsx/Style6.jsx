@@ -1,3 +1,4 @@
+import { formatNumber } from "@/components/common/formatNumber";
 import Stars from "@/components/common/Stars";
 import { tourDataTwo } from "@/data/tours";
 import Image from "next/image";
@@ -84,12 +85,12 @@ export default function Style6() {
                     </div>
 
                     <div className="tourCard__price">
-                      <div>${elm.fromPrice}</div>
+                      <div>${formatNumber(elm.fromPrice)}</div>
 
                       <div className="d-flex items-center">
                         From{" "}
                         <span className="text-20 fw-500 ml-5">
-                          ${elm.price}
+                          ${formatNumber(elm.price)}
                         </span>
                       </div>
                     </div>

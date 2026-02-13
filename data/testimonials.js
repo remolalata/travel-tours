@@ -1,50 +1,51 @@
 export const testimonialsOne = [
   {
     id: 1,
-    imageSrc: "/img/testimonials/1/2.png",
-    title: "Excellent Service!",
+    imageSrc: "/img/testimonials/evil dog.jpeg",
+    title: "Super Sulit Trip!",
     content:
-      "I had an amazing experience with this company. The service was top-notch, and the staff was incredibly friendly. I highly recommend them!",
-    authorName: "John Smith",
+      "Grabe, sobrang smooth ng booking process from start to finish. Very accommodating yung team and complete na lahat ng details before kami umalis. Sulit na sulit and definitely uulit kami!",
+    authorName: "Mark Anthony Reyes",
     authorRole: "Traveler",
   },
   {
     id: 2,
-    imageSrc: "/img/testimonials/1/2.png",
-    title: "Great Adventures!",
+    imageSrc: "/img/testimonials/evil dog.jpeg",
+    title: "Best Family Getaway!",
     content:
-      "The tours in this website are great. I had been really enjoying with my family! The team is very professional and takes care of the customers. Will surely recommend it to my friends.",
-    authorName: "Alice Johnson",
+      "Nag-enjoy kami ng family ko from flight hanggang hotel transfer. Walang hassle and very organized yung itinerary. Thank you, Gr8 Escapes—core memory namin itong trip na ’to!",
+    authorName: "Janelle Mae Santos",
     authorRole: "Explorer",
   },
   {
     id: 3,
-    imageSrc: "/img/testimonials/1/2.png",
-    title: "Awesome Experience!",
+    imageSrc: "/img/testimonials/evil dog.jpeg",
+    title: "Legit Hassle-Free!",
     content:
-      "The best travel company I've ever used. Their tours are fantastic, and the guides are very knowledgeable. I can't wait to go on another adventure with them.",
-    authorName: "David Williams",
+      "As in stress-free! Ang bilis mag-reply ng team and they made sure na okay kami the whole trip. Ang gaganda ng tour spots and sulit yung package price. Highly recommended!",
+    authorName: "Paolo Miguel Dela Cruz",
     authorRole: "Adventurer",
   },
   {
     id: 4,
-    imageSrc: "/img/testimonials/1/2.png",
-    title: "Awesome Experience!",
+    imageSrc: "/img/testimonials/evil dog.jpeg",
+    title: "Worth Every Peso!",
     content:
-      "The best travel company I've ever used. Their tours are fantastic, and the guides are very knowledgeable. I can't wait to go on another adventure with them.",
-    authorName: "David Williams",
-    authorRole: "Adventurer",
+      "First time namin mag-book ng ganitong package and sobrang na-impress kami. Maalaga yung coordinators and malinaw lahat ng inclusions. Walang hidden charges, pure good vibes lang!",
+    authorName: "Rica Anne Villanueva",
+    authorRole: "Traveler",
   },
   {
     id: 5,
-    imageSrc: "/img/testimonials/1/2.png",
-    title: "Awesome Experience!",
+    imageSrc: "/img/testimonials/evil dog.jpeg",
+    title: "Unforgettable Experience!",
     content:
-      "The best travel company I've ever used. Their tours are fantastic, and the guides are very knowledgeable. I can't wait to go on another adventure with them.",
-    authorName: "David Williams",
+      "Solid yung experience namin sa Bangkok tour—ang saya and well-planned talaga. From airport pickup to tours, everything was on point. Sa next vacation, dito ulit kami magbo-book!",
+    authorName: "Kevin Louie Garcia",
     authorRole: "Adventurer",
   },
 ];
+
 
 export const testimonialsTwo = [
   {

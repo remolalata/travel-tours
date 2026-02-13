@@ -1,27 +1,27 @@
 const locations = [
   {
     id: 1,
-    title: "North America",
-    address: "1 Dundas St W Suite 2500 Toronto ON M5G 1Z3, Canada",
-    contact: "1-800-453-6744 canada@tourz.com",
+    title: "Office Address",
+    address: "Pangasinan, Manaoag, Philippines, 2430",
+    contact: "Gr8 Escapes Travel & Tours",
   },
   {
     id: 2,
-    title: "Australia",
-    address: "123 Smith St, Melbourne, VIC 3000, Australia",
-    contact: "61-800-123-456 australia@tourz.com",
+    title: "Phone",
+    address: "Call us directly",
+    contact: "+63 970 551 7169",
   },
   {
     id: 3,
-    title: "Europe",
-    address: "45 Rue du Faubourg Saint-Antoine, 75011 Paris, France",
-    contact: "33-800-987-654 europe@tourz.com",
+    title: "WhatsApp",
+    address: "Chat with us on WhatsApp",
+    contact: "+63 970 551 7169",
   },
   {
     id: 4,
-    title: "Asia",
-    address: "Tokyo, Japan",
-    contact: "81-800-567-890 asia@tourz.com",
+    title: "Viber",
+    address: "Message us on Viber",
+    contact: "+63 970 551 7169",
   },
 ];
 

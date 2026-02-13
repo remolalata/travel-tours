@@ -1,5 +1,7 @@
 "use client";
 
+import { formatNumber } from "@/components/common/formatNumber";
+
 import { tourDataThree } from "@/data/tours";
 import React, { useState, useRef, useEffect } from "react";
 import Stars from "../common/Stars";
@@ -388,7 +390,7 @@ export default function TourList5() {
                     </div>
 
                     <div>
-                      From <span className="text-16 fw-500">${elm.price}</span>
+                      From <span className="text-16 fw-500">${formatNumber(elm.price)}</span>
                     </div>
                   </div>
                 </div>

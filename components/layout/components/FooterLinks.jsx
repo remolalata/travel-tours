@@ -3,8 +3,8 @@ const sections = [
     title: "Company",
     links: [
       { id: 1, text: "About Us", href: "#" },
-      { id: 2, text: "Tourz Reviews", href: "#" },
-      { id: 3, text: "Contact Us", href: "#" },
+      { id: 2, text: "Reviews", href: "#" },
+      { id: 3, text: "Contact Us", href: "/contact" },
       { id: 4, text: "Travel Guides", href: "#" },
       { id: 5, text: "Data Policy", href: "#" },
       { id: 6, text: "Cookie Policy", href: "#" },

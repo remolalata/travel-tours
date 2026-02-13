@@ -5,8 +5,8 @@ import DatePicker, { DateObject } from "react-multi-date-picker";
 
 export default function Calender() {
   const [dates, setDates] = useState([
-    new DateObject().setDay(5),
-    new DateObject().setDay(14).add(1, "month"),
+    new DateObject(),
+    new DateObject().add(1, "day"),
   ]);
   return (
     <DatePicker

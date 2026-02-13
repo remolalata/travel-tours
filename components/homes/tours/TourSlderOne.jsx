@@ -1,5 +1,7 @@
 "use client";
 
+import { formatNumber } from "@/components/common/formatNumber";
+
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
@@ -28,6 +30,13 @@ export default function TourSlderOne() {
             >
               Top Trending
             </h2>
+          </div>
+
+          <div className="col-auto">
+            <Link href="/tour-list-1" className="buttonArrow d-flex items-center">
+              <span>See all</span>
+              <i className="icon-arrow-top-right text-16 ml-10"></i>
+            </Link>
           </div>
         </div>
 
@@ -117,7 +126,7 @@ export default function TourSlderOne() {
                             <div>
                               From{" "}
                               <span className="text-16 fw-500">
-                                ${elm.price}
+                                ${formatNumber(elm.price)}
                               </span>
                             </div>
                           </div>

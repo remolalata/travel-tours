@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Calender from "../common/dropdownSearch/Calender";
 import Image from "next/image";
 import { times } from "@/data/tourSingleContent";
+import { formatNumber } from "@/components/common/formatNumber";
 
 export default function TourSingleSidebar() {
   const prices = {
@@ -37,7 +38,7 @@ export default function TourSingleSidebar() {
     <div className="tourSingleSidebar">
       <div className="d-flex items-center">
         <div>From</div>
-        <div className="text-20 fw-500 ml-10">$1,200</div>
+        <div className="text-20 fw-500 ml-10">₱{formatNumber(1200)}</div>
       </div>
 
       <div className="searchForm -type-1 -sidebar mt-20">
@@ -119,7 +120,11 @@ export default function TourSingleSidebar() {
           <div className="text-14">
             Adult (18+ years){" "}
             <span className="fw-500">
-              ${(prices.adultPrice * adultNumber).toFixed(2)}
+              ₱
+              {formatNumber(prices.adultPrice * adultNumber, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
             </span>
           </div>
 
@@ -150,7 +155,11 @@ export default function TourSingleSidebar() {
           <div className="text-14">
             Youth (13-17 years){" "}
             <span className="fw-500">
-              ${(prices.youthPrice * youthNumber).toFixed(2)}
+              ₱
+              {formatNumber(prices.youthPrice * youthNumber, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
             </span>
           </div>
 
@@ -181,7 +190,11 @@ export default function TourSingleSidebar() {
           <div className="text-14">
             Children (0-12 years){" "}
             <span className="fw-500">
-              ${(prices.childrenPrice * childrenNumber).toFixed(2)}
+              ₱
+              {formatNumber(prices.childrenPrice * childrenNumber, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
             </span>
           </div>
 
@@ -233,7 +246,7 @@ export default function TourSingleSidebar() {
           <div className="ml-10">Add Service per booking</div>
         </div>
 
-        <div className="text-14">$40</div>
+        <div className="text-14">₱{formatNumber(40)}</div>
       </div>
 
       <div className="d-flex justify-between mt-20">
@@ -259,13 +272,27 @@ export default function TourSingleSidebar() {
           <div className="ml-10">
             Add Service per person
             <div className="lh-16">
-              Adult: <span className="fw-500">$17.00</span> - Youth:{" "}
-              <span className="fw-500">$14.00</span>
+              Adult:{" "}
+              <span className="fw-500">
+                ₱
+                {formatNumber(17, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </span>{" "}
+              - Youth:{" "}
+              <span className="fw-500">
+                ₱
+                {formatNumber(14, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </span>
             </div>
           </div>
         </div>
 
-        <div className="text-14">$40</div>
+        <div className="text-14">₱{formatNumber(40)}</div>
       </div>
 
       <div className="line mt-20 mb-20"></div>
@@ -273,13 +300,14 @@ export default function TourSingleSidebar() {
       <div className="d-flex items-center justify-between">
         <div className="text-18 fw-500">Total:</div>
         <div className="text-18 fw-500">
-          $
-          {(
+          ₱
+          {formatNumber(
             prices.adultPrice * adultNumber +
-            prices.youthPrice * youthNumber +
-            prices.childrenPrice * childrenNumber +
-            extraCharge * 1
-          ).toFixed(2)}
+              prices.youthPrice * youthNumber +
+              prices.childrenPrice * childrenNumber +
+              extraCharge * 1,
+            { minimumFractionDigits: 2, maximumFractionDigits: 2 },
+          )}
         </div>
       </div>
 

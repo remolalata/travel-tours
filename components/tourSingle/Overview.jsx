@@ -5,27 +5,31 @@ export default function Overview() {
     <>
       <h2 className="text-30">Tour Overview</h2>
       <p className="mt-20">
-        The Phi Phi archipelago is a must-visit while in Phuket, and this
-        speedboat trip whisks you around the islands in one day. Swim over the
-        coral reefs of Pileh Lagoon, have lunch at Phi Phi Leh, snorkel at
-        Bamboo Island, and visit Monkey Beach and Maya Bay, immortalized in "The
-        Beach." Boat transfers, snacks, buffet lunch, snorkeling equipment, and
-        Phuket hotel pickup and drop-off all included.
+        Experience the best of Boracay in one hassle-free getaway. This package
+        lets you enjoy the island’s world-famous white sand beaches, crystal-clear
+        waters, and relaxing tropical vibe. Spend your days island hopping,
+        swimming, and exploring top beach spots, then unwind with breathtaking
+        sunset views along White Beach. With transfers, accommodations, and key
+        tour inclusions arranged for you, all you need to do is relax and enjoy.
       </p>
 
-      <h3 className="text-20 fw-500 mt-20">Tour Highlights</h3>
-      <ul className="ulList mt-20">
+      <h3 className="mt-20 text-20 fw-500">Tour Highlights</h3>
+      <ul className="mt-20 ulList">
         <li>
-          Experience the thrill of a speedboat to the stunning Phi Phi Islands
+          Relax on Boracay’s iconic White Beach with powdery sand and turquoise water
         </li>
-        <li>Be amazed by the variety of marine life in the archepelago</li>
+        <li>Enjoy a fun island-hopping experience with scenic beach stops</li>
         <li>
-          Enjoy relaxing in paradise with white sand beaches and azure turquoise
-          water
+          Swim, snorkel, and discover the beauty of Boracay’s coastal spots
         </li>
-        <li>Feel the comfort of a tour limited to 35 passengers</li>
-        <li>Catch a glimpse of the wild monkeys around Monkey Beach</li>
+        <li>
+          Catch stunning sunset views and enjoy the island’s laid-back atmosphere
+        </li>
+        <li>
+          Travel stress-free with arranged transfers and curated tour activities
+        </li>
       </ul>
     </>
   );
 }
+

@@ -4,6 +4,7 @@ import { destinations } from "@/data/destinations";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import Image from "next/image";
+import Link from "next/link";
 
 function DestinationSlider({ destinations, paginationClass }) {
   return (
@@ -79,6 +80,13 @@ export default function DestinationsOne() {
             <h2 data-aos="fade-up" className="text-30 md:text-24">
               Trending Locations
             </h2>
+          </div>
+
+          <div className="col-auto">
+            <Link href="/tour-list-1" className="buttonArrow d-flex items-center">
+              <span>See all</span>
+              <i className="icon-arrow-top-right text-16 ml-10"></i>
+            </Link>
           </div>
         </div>
 

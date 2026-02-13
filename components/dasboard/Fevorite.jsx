@@ -1,5 +1,7 @@
 "use client";
 
+import { formatNumber } from "@/components/common/formatNumber";
+
 import Pagination from "../common/Pagination";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
@@ -79,7 +81,7 @@ export default function Favorites() {
 
                           <div>
                             From{" "}
-                            <span className="text-16 fw-500">${elm.price}</span>
+                            <span className="text-16 fw-500">${formatNumber(elm.price)}</span>
                           </div>
                         </div>
                       </div>

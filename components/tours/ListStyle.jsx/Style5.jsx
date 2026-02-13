@@ -1,3 +1,4 @@
+import { formatNumber } from "@/components/common/formatNumber";
 import Stars from "@/components/common/Stars";
 import { tourData } from "@/data/tours";
 import Image from "next/image";
@@ -66,7 +67,7 @@ export default function Style5() {
                     </div>
 
                     <div>
-                      From <span className="text-16 fw-500">${elm.price}</span>
+                      From <span className="text-16 fw-500">${formatNumber(elm.price)}</span>
                     </div>
                   </div>
                 </div>

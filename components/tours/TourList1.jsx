@@ -6,6 +6,7 @@ import { speedFeatures } from "@/data/tourFilteringOptions";
 import { tourDataTwo } from "@/data/tours";
 import Stars from "../common/Stars";
 import Pagination from "../common/Pagination";
+import { formatNumber } from "../common/formatNumber";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -186,12 +187,12 @@ export default function TourList1() {
                         </div>
 
                         <div className="tourCard__price">
-                          <div>${elm.fromPrice}</div>
+                          <div>₱{formatNumber(elm.fromPrice)}</div>
 
                           <div className="d-flex items-center">
                             From{" "}
                             <span className="text-20 fw-500 ml-5">
-                              ${elm.price}
+                              ₱{formatNumber(elm.price)}
                             </span>
                           </div>
                         </div>

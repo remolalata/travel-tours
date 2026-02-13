@@ -8,8 +8,9 @@ import { allTour } from "@/data/tours";
 import React from "react";
 
 export const metadata = {
-  title: "Tour-single-1 || ViaTour - Travel & Tour React NextJS Template",
-  description: "ViaTour - Travel & Tour React NextJS Template",
+  title: "Boracay Tour Package | Gr8 Escapes Travel & Tours",
+  description:
+    "Discover Boracay with Gr8 Escapes Travel & Tours. Enjoy curated Boracay tour packages, island activities, and hassle-free booking.",
 };
 
 export default async function page(props) {

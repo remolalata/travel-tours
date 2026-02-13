@@ -1,5 +1,7 @@
 "use client";
 
+import { formatNumber } from "@/components/common/formatNumber";
+
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import { tourData } from "@/data/tours";
@@ -103,7 +105,7 @@ export default function TourSlider() {
 
                           <div>
                             From{" "}
-                            <span className="text-16 fw-500">${elm.price}</span>
+                            <span className="text-16 fw-500">${formatNumber(elm.price)}</span>
                           </div>
                         </div>
                       </div>
