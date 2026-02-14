@@ -10,7 +10,8 @@ function DestinationSlider({ destinations, paginationClass }) {
   return (
     <div
       data-aos='fade-up'
-      className='pt-40 sm:pt-20 overflow-hidden js-section-slider aos-init aos-animate'
+      data-aos-delay='100'
+      className='pt-40 sm:pt-20 overflow-hidden js-section-slider'
     >
       <div className='swiper-wrapper'>
         <Swiper
@@ -38,7 +39,12 @@ function DestinationSlider({ destinations, paginationClass }) {
         >
           {destinations.map((elm, i) => (
             <SwiperSlide key={i}>
-              <a href='#' className='text-center featureImage -type-1 -hover-image-scale'>
+              <a
+                href='#'
+                data-aos='fade-up'
+                data-aos-delay={Math.min(i * 50, 300)}
+                className='text-center featureImage -type-1 -hover-image-scale'
+              >
                 <div className='mx-auto rounded-full featureImage__image -hover-image-scale__image'>
                   <Image
                     width={260}
@@ -76,7 +82,12 @@ export default function DestinationsOne() {
           </div>
 
           <div className='col-auto'>
-            <Link href='/tours' className='buttonArrow d-flex items-center'>
+            <Link
+              href='/tours'
+              data-aos='fade-up'
+              data-aos-delay='100'
+              className='buttonArrow d-flex items-center'
+            >
               <span>See all</span>
               <i className='icon-arrow-top-right text-16 ml-10'></i>
             </Link>

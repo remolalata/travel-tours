@@ -15,7 +15,12 @@ export default function TourTypeOne() {
           </div>
 
           <div className='col-auto'>
-            <Link href='/tours' className='buttonArrow d-flex items-center '>
+            <Link
+              href='/tours'
+              data-aos='fade-up'
+              data-aos-delay='100'
+              className='buttonArrow d-flex items-center '
+            >
               <span>See all</span>
               <i className='icon-arrow-top-right text-16 ml-10'></i>
             </Link>

@@ -36,7 +36,7 @@ export default function BannerOne() {
                 Get a magic link sent to your email
               </div>
 
-              <div className='mt-10'>
+              <div data-aos='fade-right' data-aos-delay='' className='mt-10'>
                 <div className='x-gap-10 y-gap-10 singleInput -type-2 row'>
                   <div className='col-md-auto col-12'>
                     <input type='email' placeholder='Email' className='' />
