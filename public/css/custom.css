@@ -505,6 +505,100 @@
 .calenderTourSongle .rmdp-shadow {
   margin-top: 20px;
 }
+
+body.promoModal-open {
+  overflow: hidden;
+}
+
+.promoModal {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background-color: rgba(23, 23, 23, 0.5);
+}
+
+.promoModal__dialog {
+  position: relative;
+  width: min(560px, 100%);
+  border-radius: 16px;
+  padding: 34px 30px 30px;
+  background-color: #fff;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2);
+}
+
+.promoModal__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(23, 23, 23, 0.08);
+  color: var(--color-dark-1);
+}
+
+.promoModal__close span {
+  display: block;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.promoModal__eyebrow {
+  margin: 0;
+  color: var(--color-accent-1);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.promoModal__title {
+  margin: 10px 0 0;
+  font-size: 32px;
+  line-height: 1.2;
+}
+
+.promoModal__text {
+  margin-top: 14px;
+  margin-bottom: 0;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--color-dark-1);
+}
+
+.promoModal__actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+.promoModal__actions > * {
+  flex: 1;
+}
+
+@media (max-width: 767px) {
+  .promoModal {
+    padding: 16px;
+  }
+
+  .promoModal__dialog {
+    padding: 28px 18px 18px;
+  }
+
+  .promoModal__title {
+    font-size: 26px;
+  }
+
+  .promoModal__actions {
+    flex-direction: column;
+  }
+}
+
 @media (max-width: 1024px) {
   .dashboard__sidebar {
     max-width: 0px;
