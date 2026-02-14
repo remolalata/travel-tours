@@ -29,6 +29,9 @@ export default function ScrollToTop() {
   };
   return (
     <button
+      type='button'
+      aria-label='Go to top'
+      title='Go to top'
       onClick={() => scrollTop()}
       className={`toTopButton js-top-button ${notHidden ? '' : 'is-hidden'} `}
     >

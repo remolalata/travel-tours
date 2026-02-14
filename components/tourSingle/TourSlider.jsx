@@ -72,7 +72,11 @@ export default function TourSlider() {
                           />
                         </div>
 
-                        <button className='tourCard__favorite'>
+                        <button
+                          className='tourCard__favorite'
+                          aria-label='Add to favorites'
+                          title='Add to favorites'
+                        >
                           <i className='icon-heart'></i>
                         </button>
                       </div>
