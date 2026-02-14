@@ -235,7 +235,7 @@
 
 @media (max-width: 767px) {
   .hero.-type-1 {
-    padding-top: 140px;
+    padding-top: 70px;
   }
 }
 
@@ -474,7 +474,7 @@
 
 @media (max-width: 575px) {
   .hero.-type-1 {
-    padding-top: 110px;
+    padding-top: 70px;
   }
 }
 @media (max-width: 600px) {

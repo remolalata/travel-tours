@@ -127,7 +127,7 @@ export default function TrendingToursCarousel() {
             </div>
           </div>
 
-          <div className='navAbsolute'>
+          <div data-aos='fade-up' data-aos-delay='100' className='navAbsolute'>
             <button className='navAbsolute__button bg-white js-slider1-prev prev1'>
               <i className='icon-arrow-left text-14'></i>
             </button>

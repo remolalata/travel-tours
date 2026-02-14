@@ -115,7 +115,7 @@ export default function TourSlider() {
             </div>
           </div>
 
-          <div className='navAbsolute'>
+          <div data-aos='fade-up' data-aos-delay='100' className='navAbsolute'>
             <button className='navAbsolute__button bg-white js-slider10-prev'>
               <i className='icon-arrow-left text-14'></i>
             </button>
