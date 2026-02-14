@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import React from "react";
+import Image from 'next/image';
+import React from 'react';
 
 export default function ImageLightBox({
   images,
@@ -11,12 +11,9 @@ export default function ImageLightBox({
   setCurrentSlideIndex,
 }) {
   return (
-    <div
-      id="myModal"
-      className={`modal ${activeLightBox ? "activeImageLightBox" : ""}`}
-    >
+    <div id='myModal' className={`modal ${activeLightBox ? 'activeImageLightBox' : ''}`}>
       <div
-        className="close cursor"
+        className='close cursor'
         style={{ zIndex: 1000 }}
         onClick={() => {
           setActiveLightBox(false);
@@ -24,18 +21,18 @@ export default function ImageLightBox({
       >
         <span>&times;</span>
       </div>
-      <div className="modal-content">
+      <div className='modal-content'>
         {images.map((elm, i) => (
           <div
             key={i}
-            className={`mySlides ${currentSlideIndex == i ? "fadein" : ""} `}
+            className={`mySlides ${currentSlideIndex == i ? 'fadein' : ''} `}
             style={
               currentSlideIndex == i
-                ? { display: "block", height: "100%" }
-                : { display: "none", height: "100%" }
+                ? { display: 'block', height: '100%' }
+                : { display: 'none', height: '100%' }
             }
           >
-            <div className="numbertext">
+            <div className='numbertext'>
               {i + 1} / {images.length}
             </div>
             <Image
@@ -43,33 +40,25 @@ export default function ImageLightBox({
               height={510}
               src={elm.image}
               style={{
-                height: "100%",
-                width: "100%",
-                objectFit: "contain",
-                margin: "auto auto",
+                height: '100%',
+                width: '100%',
+                objectFit: 'contain',
+                margin: 'auto auto',
               }}
-              alt="image"
+              alt='image'
             />
           </div>
         ))}
 
         <a
-          className="prev"
-          onClick={() =>
-            setCurrentSlideIndex((pre) =>
-              pre == 0 ? images.length - 1 : pre - 1,
-            )
-          }
+          className='prev'
+          onClick={() => setCurrentSlideIndex((pre) => (pre == 0 ? images.length - 1 : pre - 1))}
         >
           &#10094;
         </a>
         <a
-          className="next"
-          onClick={() =>
-            setCurrentSlideIndex((pre) =>
-              pre == images.length - 1 ? 0 : pre + 1,
-            )
-          }
+          className='next'
+          onClick={() => setCurrentSlideIndex((pre) => (pre == images.length - 1 ? 0 : pre + 1))}
         >
           &#10095;
         </a>

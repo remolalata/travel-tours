@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import React, { useEffect } from "react";
-import Aos from "aos";
+import React, { useEffect } from 'react';
+import Aos from 'aos';
 
 export default function Wrapper({ children }) {
   useEffect(() => {

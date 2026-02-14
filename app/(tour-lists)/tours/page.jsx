@@ -1,12 +1,11 @@
 import FooterOne from '@/components/layout/footers/FooterOne';
 import Header1 from '@/components/layout/header/Header1';
-import ContactForm from '@/components/pages/contact/ContactForm';
-import Locations from '@/components/pages/contact/Locations';
-import Map from '@/components/pages/contact/Map';
+import PageHeader from '@/components/tours/PageHeader';
+import TourList1 from '@/components/tours/TourList1';
 import React from 'react';
 
 export const metadata = {
-  title: 'Contact || ViaTour - Travel & Tour React NextJS Template',
+  title: 'Tours | Gr8 Escapes Travel & Tours',
   description: 'ViaTour - Travel & Tour React NextJS Template',
 };
 
@@ -15,10 +14,8 @@ export default function page() {
     <>
       <main>
         <Header1 />
-        <Map />
-        <Locations />
-        <ContactForm />
-
+        <PageHeader />
+        <TourList1 />
         <FooterOne />
       </main>
     </>
