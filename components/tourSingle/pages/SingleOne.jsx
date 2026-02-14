@@ -13,7 +13,7 @@ import DateCalender from "../DateCalender";
 import RoadMap2 from "../Roadmap2";
 import CommentBox from "../CommentBox";
 
-export default function SingleOne({ tour }) {
+export default function SingleOne({ tour, tourContent }) {
   return (
     <>
       <section className="">
@@ -37,13 +37,13 @@ export default function SingleOne({ tour }) {
 
               <h2 className="text-30">What's included</h2>
 
-              <Included />
+              <Included tourContent={tourContent} />
 
               <div className="line mt-60 mb-60"></div>
 
               <h2 className="text-30">Itinerary</h2>
 
-              <RoadMap2 />
+              <RoadMap2 tourContent={tourContent} />
 
               <h2 className="text-30 mt-60 mb-30">Tour Map</h2>
               <div className="mapTourSingle">
@@ -60,7 +60,7 @@ export default function SingleOne({ tour }) {
               <h2 className="text-30">FAQ</h2>
 
               <div className="accordion -simple row y-gap-20 mt-30 js-accordion">
-                <Faq />
+                <Faq tourContent={tourContent} />
               </div>
 
               <div className="line mt-60 mb-60"></div>
@@ -68,10 +68,10 @@ export default function SingleOne({ tour }) {
               <h2 className="text-30">Customer Reviews</h2>
 
               <div className="mt-30">
-                <Rating />
+                <Rating tourContent={tourContent} />
               </div>
 
-              <Reviews />
+              <Reviews tourContent={tourContent} />
 
               <button className="button -md -outline-accent-1 text-accent-1 mt-30">
                 See more reviews
@@ -82,7 +82,7 @@ export default function SingleOne({ tour }) {
 
             <div className="col-lg-4">
               <div className="d-flex justify-end js-pin-content">
-                <TourSingleSidebar />
+                <TourSingleSidebar tourContent={tourContent} />
               </div>
             </div>
           </div>

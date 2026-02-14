@@ -1,12 +1,13 @@
-import { reviews } from "@/data/tourSingleContent";
+import { defaultTourContent } from "@/data/tourSingleContent";
 import React from "react";
 import Stars from "../common/Stars";
 import Image from "next/image";
 
-export default function Reviews() {
+export default function Reviews({ tourContent }) {
+  const reviewItems = tourContent?.reviewItems || defaultTourContent.reviewItems;
   return (
     <>
-      {reviews.map((elm, i) => (
+      {reviewItems.map((elm, i) => (
         <div key={i} className="pt-30">
           <div className="row justify-between">
             <div className="col-auto">

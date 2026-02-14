@@ -1,13 +1,15 @@
 "use client";
 
-import { roadmapData2 } from "@/data/tourSingleContent";
+import { defaultTourContent } from "@/data/tourSingleContent";
 import React, { useState } from "react";
 
-export default function RoadMap2() {
+export default function RoadMap2({ tourContent }) {
+  const itinerarySteps =
+    tourContent?.itinerarySteps || defaultTourContent.itinerarySteps;
   const [activeRoadmap, setActiveRoadmap] = useState(2);
   return (
     <div className="roadmap roadMap2">
-      {roadmapData2.map((elm, i) => (
+      {itinerarySteps.map((elm, i) => (
         <div key={i} className="roadmap__item">
           {elm.icon ? (
             <div

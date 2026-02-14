@@ -1,11 +1,12 @@
-import { overallRatingData } from "@/data/tourSingleContent";
+import { defaultTourContent } from "@/data/tourSingleContent";
 import React from "react";
 
-export default function Rating() {
+export default function Rating({ tourContent }) {
+  const ratingItems = tourContent?.ratingItems || defaultTourContent.ratingItems;
   return (
     <div className="overallRating">
       <div className="overallRating__list">
-        {overallRatingData.map((elm, i) => (
+        {ratingItems.map((elm, i) => (
           <div key={i} className="overallRating__item">
             <div className="overallRating__content">
               <div className="overallRating__icon">

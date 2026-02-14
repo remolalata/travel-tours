@@ -33,7 +33,7 @@ export default function TourSlderOne() {
           </div>
 
           <div className="col-auto">
-            <Link href="/tour-list-1" className="buttonArrow d-flex items-center">
+            <Link href="/tours" className="buttonArrow d-flex items-center">
               <span>See all</span>
               <i className="icon-arrow-top-right text-16 ml-10"></i>
             </Link>
@@ -78,7 +78,7 @@ export default function TourSlderOne() {
                   {tourData.map((elm, i) => (
                     <SwiperSlide key={i}>
                       <Link
-                        href={`/tour-single-1/${elm.id}`}
+                        href={`/tour/${elm.id}`}
                         className="tourCard -type-1 py-10 px-10 border-1 rounded-12 bg-white -hover-shadow"
                       >
                         <div className="tourCard__header">

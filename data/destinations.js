@@ -1,4 +1,4 @@
-export const destinations = [
+export const homepageTrendingDestinations = [
   {
     id: 1,
     name: "Boracay",
@@ -72,7 +72,7 @@ export const destinations = [
     tourCount: 105,
   },
 ];
-export const destinationOffers = [
+export const promotionalDestinationOffers = [
   {
     id: 1,
     imageSrc: "/img/destinationCards/1/1.png",
@@ -99,7 +99,7 @@ export const destinationOffers = [
   },
   // Add more card objects as needed
 ];
-export const destinationsTwo = [
+export const compactDestinationCards = [
   {
     id: 1,
     imgSrc: "/img/destinationCards/1/1.png",
@@ -138,7 +138,7 @@ export const destinationsTwo = [
   },
 ];
 
-export const destinationsThree = [
+export const topAttractionCards = [
   {
     id: 1,
     imgSrc: "/img/destinationCards/2/1.png",
@@ -195,7 +195,7 @@ export const destinationsThree = [
   },
 ];
 
-export const destinationsFour = [
+export const destinationTypeCards = [
   {
     id: 1,
     title: "City Tours",
@@ -234,7 +234,7 @@ export const destinationsFour = [
   },
 ];
 
-export const destinationsFive = [
+export const popularDestinationTypeCards = [
   {
     id: 1,
     title: "Cruises",
@@ -273,7 +273,7 @@ export const destinationsFive = [
   },
 ];
 
-export const destinationsSix = [
+export const popularThingsToDoCards = [
   {
     id: 1,
     title: "Cruises",
@@ -306,7 +306,7 @@ export const destinationsSix = [
   },
 ];
 
-export const destinationsSeven = [
+export const trendingDestinationTypeCards = [
   {
     id: 1,
     title: "Cruises",
@@ -339,7 +339,7 @@ export const destinationsSeven = [
   },
 ];
 
-export const destinationsEight = [
+export const trendingCityCards = [
   {
     id: 1,
     name: "Bali",
@@ -366,7 +366,7 @@ export const destinationsEight = [
   },
 ];
 
-export const destinationsNine = [
+export const tourCategoryIconCards = [
   {
     id: 1,
     title: "City Tours",
@@ -405,7 +405,7 @@ export const destinationsNine = [
   },
 ];
 
-export const destinationCards = [
+export const destinationShowcaseCards = [
   {
     id: 1,
     title: "Bali",
@@ -438,7 +438,7 @@ export const destinationCards = [
   },
 ];
 
-export const destinationCards2 = [
+export const destinationFeatureGridCards = [
   {
     id: 1,
     title: "Paris",
@@ -528,7 +528,7 @@ export const featureCards = [
   },
 ];
 
-export const destinationsTen = [
+export const miniDestinationCards = [
   { id: 1, tourCount: 100, name: "Bali", image: "/img/features/4/1.jpg" },
   { id: 2, tourCount: 100, name: "Roma", image: "/img/features/4/2.jpg" },
   { id: 3, tourCount: 100, name: "Phuket", image: "/img/features/4/3.jpg" },
@@ -581,7 +581,7 @@ export const regions = [
   },
 ];
 
-export const destinations11 = [
+export const destinationMasonryCards = [
   {
     id: 1,
     name: "Paris",
@@ -641,7 +641,7 @@ export const tagData = [
   { icon: "icon-menu-1", title: "Food Tours" },
 ];
 
-export const destinations12 = [
+export const tourTypeImageIcons = [
   { id: 1, name: "City Tours", imgSrc: "/img/misc/1/1.png" },
   { id: 2, name: "Cultural Tours", imgSrc: "/img/misc/1/2.png" },
   { id: 3, name: "Day Cruises", imgSrc: "/img/misc/1/3.png" },
@@ -650,7 +650,7 @@ export const destinations12 = [
   { id: 6, name: "Food Tours", imgSrc: "/img/misc/1/6.png" },
 ];
 
-export const destinations13 = [
+export const destinationCatalogCards = [
   { id: 1, name: "Paris", imgSrc: "/img/destinationCards/1/1.png", tours: 100 },
   {
     id: 2,

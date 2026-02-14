@@ -1,6 +1,6 @@
 "use client";
 
-import { destinations } from "@/data/destinations";
+import { homepageTrendingDestinations } from "@/data/destinations";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import Image from "next/image";
@@ -83,7 +83,7 @@ export default function DestinationsOne() {
           </div>
 
           <div className="col-auto">
-            <Link href="/tour-list-1" className="buttonArrow d-flex items-center">
+            <Link href="/tours" className="buttonArrow d-flex items-center">
               <span>See all</span>
               <i className="icon-arrow-top-right text-16 ml-10"></i>
             </Link>
@@ -91,7 +91,7 @@ export default function DestinationsOne() {
         </div>
 
         <DestinationSlider
-          destinations={destinations}
+          destinations={homepageTrendingDestinations}
           paginationClass="pbutton-trending-locations"
         />
       </div>

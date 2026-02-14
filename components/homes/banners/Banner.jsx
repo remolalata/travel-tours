@@ -51,7 +51,7 @@ export default function Banner() {
                   data-aos-delay=""
                   className="text-white bg-accent-1 button -md -dark-1"
                 >
-                  <Link href="/tour-list-1">
+                  <Link href="/tours">
                     Book Now
                     <i className="icon-arrow-top-right ml-10 text-16"></i>
                   </Link>

@@ -1,4 +1,6 @@
-export const included = [
+import { allTour } from "./tours.js";
+
+const includedItemsBase = [
   { id: 1, text: "Roundtrip airfare, baggage allowance, and terminal fees" },
   { id: 2, text: "Local taxes and environmental fees" },
   { id: 3, text: "Hotel pick-up and drop-off via air-conditioned van" },
@@ -7,28 +9,36 @@ export const included = [
   { id: 6, text: "DOT-accredited tour guide" },
 ];
 
-export const excluded = [
+const excludedItemsBase = [
   { id: 7, text: "Personal expenses and souvenirs" },
   { id: 8, text: "Tips and gratuities" },
   { id: 9, text: "Alcoholic beverages" },
 ];
 
-export const roadmapData = [
-  { id: 1, icon: "icon-pin", title: "Day 1: Airport Pick-Up and Hotel Check-In" },
+const itinerarySummaryStepsBase = [
+  {
+    id: 1,
+    icon: "icon-pin",
+    title: "Day 1: Airport Pick-Up and Hotel Check-In",
+  },
   {
     id: 2,
     title: "Day 2: City Highlights and Cultural Tour",
     content:
-      "Pagdating sa destination, we’ll handle your transfers para hassle-free. On Day 2, enjoy a guided city and culture experience with photo stops, local food options, and free time for shopping.",
+      "Pagdating sa destination, we'll handle your transfers para hassle-free. On Day 2, enjoy a guided city and culture experience with photo stops, local food options, and free time for shopping.",
   },
   { id: 3, title: "Day 3: Island Hopping and Beach Time" },
   { id: 4, title: "Day 4: Nature Adventure and Local Experience" },
   { id: 5, title: "Day 5: Leisure Morning and Optional Activities" },
   { id: 6, title: "Day 6: Free Day and Sunset Experience" },
-  { id: 7, icon: "icon-flag", title: "Day 7: Check-Out and Airport Transfer" },
+  {
+    id: 7,
+    icon: "icon-flag",
+    title: "Day 7: Check-Out and Airport Transfer",
+  },
 ];
 
-export const roadmapData2 = [
+const itineraryStepsBase = [
   {
     id: 1,
     icon: "icon-pin",
@@ -40,7 +50,7 @@ export const roadmapData2 = [
     id: 2,
     title: "Day 2: City Highlights and Cultural Tour",
     content:
-      "Start your day with breakfast, then join a guided city tour covering key landmarks, heritage spots, and local favorites. May free time din for café hopping or pasalubong shopping.",
+      "Start your day with breakfast, then join a guided city tour covering key landmarks, heritage spots, and local favorites. May free time din for cafe hopping or pasalubong shopping.",
   },
   {
     id: 3,
@@ -58,7 +68,7 @@ export const roadmapData2 = [
     id: 5,
     title: "Day 5: Leisure Morning and Optional Activities",
     content:
-      "This is your flexible day—sleep in, enjoy hotel amenities, or add optional tours like spa, food crawl, or water activities. Great time to personalize your getaway.",
+      "This is your flexible day-sleep in, enjoy hotel amenities, or add optional tours like spa, food crawl, or water activities. Great time to personalize your getaway.",
   },
   {
     id: 6,
@@ -75,7 +85,7 @@ export const roadmapData2 = [
   },
 ];
 
-export const faqData = [
+const faqItemsBase = [
   {
     question: "Can I get a refund?",
     answer:
@@ -98,7 +108,7 @@ export const faqData = [
   },
 ];
 
-export const overallRatingData = [
+const ratingItemsBase = [
   {
     id: 1,
     category: "Overall Rating",
@@ -150,7 +160,7 @@ export const overallRatingData = [
   },
 ];
 
-export const reviews = [
+const reviewItemsBase = [
   {
     id: 1,
     avatar: "/img/reviews/avatars/1.png",
@@ -158,7 +168,7 @@ export const reviews = [
     date: "January 2026",
     stars: 5,
     reviewText: "Super smooth and sulit!",
-    desc: `First time namin mag-book as a family and sobrang dali ng process. Complete details, on-time transfers, and very friendly guides. Hassle-free talaga from start to finish.`,
+    desc: "First time namin mag-book as a family and sobrang dali ng process. Complete details, on-time transfers, and very friendly guides. Hassle-free talaga from start to finish.",
     images: [
       "/img/reviews/1/1.png",
       "/img/reviews/1/2.png",
@@ -172,7 +182,7 @@ export const reviews = [
     date: "February 2026",
     stars: 5,
     reviewText: "Worth every peso!",
-    desc: `Booked the Bangkok package and it exceeded expectations. Hotel location was great, tours were organized, and support team was responsive kahit may late-night question kami.`,
+    desc: "Booked the Bangkok package and it exceeded expectations. Hotel location was great, tours were organized, and support team was responsive kahit may late-night question kami.",
     images: [
       "/img/reviews/1/1.png",
       "/img/reviews/1/2.png",
@@ -186,17 +196,16 @@ export const reviews = [
     date: "March 2026",
     stars: 5,
     reviewText: "Babalik kami for sure!",
-    desc: `Sobrang na-enjoy namin yung island hopping and city tour. Clear itinerary, bait ng staff, and walang stress sa logistics. Perfect for couples and barkada trips.`,
+    desc: "Sobrang na-enjoy namin yung island hopping and city tour. Clear itinerary, bait ng staff, and walang stress sa logistics. Perfect for couples and barkada trips.",
     images: [
       "/img/reviews/1/1.png",
       "/img/reviews/1/2.png",
       "/img/reviews/1/3.png",
     ],
   },
-  // More review objects can be added to this array
 ];
 
-export const times = [
+const timeSlotsBase = [
   "08:00",
   "09:30",
   "11:00",
@@ -205,3 +214,39 @@ export const times = [
   "16:00",
   "18:00",
 ];
+
+const cloneItems = (items) =>
+  items.map((item) => ({
+    ...item,
+    ...(Array.isArray(item.images) ? { images: [...item.images] } : {}),
+  }));
+
+export const createTourContentTemplate = () => ({
+  includedItems: cloneItems(includedItemsBase),
+  excludedItems: cloneItems(excludedItemsBase),
+  itinerarySummarySteps: cloneItems(itinerarySummaryStepsBase),
+  itinerarySteps: cloneItems(itineraryStepsBase),
+  faqItems: cloneItems(faqItemsBase),
+  ratingItems: cloneItems(ratingItemsBase),
+  reviewItems: cloneItems(reviewItemsBase),
+  timeSlots: [...timeSlotsBase],
+});
+
+export const defaultTourContent = createTourContentTemplate();
+
+export const tourContentById = Object.fromEntries(
+  allTour.map((tour) => [String(tour.id), createTourContentTemplate()]),
+);
+
+export const getTourContentById = (tourId) =>
+  tourContentById[String(tourId)] || defaultTourContent;
+
+// Backward-compatible exports for components that still use legacy keys.
+export const included = defaultTourContent.includedItems;
+export const excluded = defaultTourContent.excludedItems;
+export const roadmapData = defaultTourContent.itinerarySummarySteps;
+export const roadmapData2 = defaultTourContent.itinerarySteps;
+export const faqData = defaultTourContent.faqItems;
+export const overallRatingData = defaultTourContent.ratingItems;
+export const reviews = defaultTourContent.reviewItems;
+export const times = defaultTourContent.timeSlots;

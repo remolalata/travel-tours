@@ -3,10 +3,11 @@
 import React, { useEffect, useState } from "react";
 import Calender from "../common/dropdownSearch/Calender";
 import Image from "next/image";
-import { times } from "@/data/tourSingleContent";
+import { defaultTourContent } from "@/data/tourSingleContent";
 import { formatNumber } from "@/components/common/formatNumber";
 
-export default function TourSingleSidebar() {
+export default function TourSingleSidebar({ tourContent }) {
+  const timeSlots = tourContent?.timeSlots || defaultTourContent.timeSlots;
   const prices = {
     adultPrice: 94,
     youthPrice: 84,
@@ -92,7 +93,7 @@ export default function TourSingleSidebar() {
             >
               <div className="searchFormItemDropdown__container">
                 <div className="searchFormItemDropdown__list sroll-bar-1">
-                  {times.map((elm, i) => (
+                  {timeSlots.map((elm, i) => (
                     <div
                       key={i}
                       onClick={() => {

@@ -1,4 +1,4 @@
-import { destinationsSix } from "@/data/destinations";
+import { popularThingsToDoCards } from "@/data/destinations";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -19,7 +19,7 @@ export default function TourTypeOne() {
           </div>
 
           <div className="col-auto">
-            <Link href="/tour-list-1" className="buttonArrow d-flex items-center ">
+            <Link href="/tours" className="buttonArrow d-flex items-center ">
               <span>See all</span>
               <i className="icon-arrow-top-right text-16 ml-10"></i>
             </Link>
@@ -31,9 +31,9 @@ export default function TourTypeOne() {
           data-aos-delay=""
           className="grid -type-1 pt-40 sm:pt-20"
         >
-          {destinationsSix.map((elm, i) => (
+          {popularThingsToDoCards.map((elm, i) => (
             <Link
-              href={"/tour-list-1"}
+              href={"/tours"}
               key={i}
               className="featureCard -type-1 -hover-1 overflow-hidden rounded-12 px-30 py-30"
             >
