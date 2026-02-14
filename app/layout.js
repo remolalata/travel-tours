@@ -1,4 +1,5 @@
 import ScrollToTop from '@/components/common/ScrollToTop';
+import MessengerButton from '@/components/common/MessengerButton';
 import '../public/css/style.css';
 
 import { DM_Sans } from 'next/font/google';
@@ -21,6 +22,7 @@ export default function RootLayout({ children }) {
       <head></head>
       <body className={dmsans.className}>
         <Wrapper>{children}</Wrapper>
+        <MessengerButton />
         <ScrollToTop />
         <ScrollTopBehaviour />
       </body>
