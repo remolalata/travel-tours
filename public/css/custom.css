@@ -239,33 +239,163 @@
   }
 }
 
-.messengerButton {
+.contactButtonGroup {
   position: fixed;
   right: 30px;
   bottom: 30px;
-  z-index: 99;
+  z-index: 101;
   width: 60px;
   height: 60px;
+  --contact-radius: 88px;
+}
+
+.contactButtonList {
+  position: absolute;
+  inset: 0;
+}
+
+.contactButtonAction,
+.contactButtonMain {
+  width: 60px;
+  height: 60px;
+  border: 0;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   color: #fff;
+}
+
+.contactButtonAction {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  transform: translateY(14px) scale(0.75);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 0.35s cubic-bezier(0.17, 0.84, 0.44, 1),
+    opacity 0.25s ease;
+  transition-delay: var(--contact-delay, 0ms);
+}
+
+.contactButtonGroup.is-open .contactButtonAction {
+  transform: translate(
+      calc(var(--contact-x, 0) * var(--contact-radius)),
+      calc(var(--contact-y, 0) * var(--contact-radius))
+    )
+    scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.contactButtonMain {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  color: #fff;
   background: linear-gradient(135deg, #00b2ff 0%, #006aff 100%);
   box-shadow: 0 12px 28px rgba(0, 106, 255, 0.35);
   transition:
     transform 0.2s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 }
 
-.messengerButton:hover {
+.contactButtonMain::before {
+  content: '';
+  position: absolute;
+  inset: -12px;
+  border-radius: inherit;
+  border: 1px solid rgba(0, 178, 255, 0.45);
+  animation: contactPulse 2.6s ease-out infinite;
+}
+
+.contactButtonMain:hover {
   transform: translateY(-2px);
   box-shadow: 0 14px 30px rgba(0, 106, 255, 0.45);
 }
 
-.messengerButton svg {
+.contactButtonMain:focus-visible,
+.contactButtonAction:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.contactButtonGroup.is-open .contactButtonMain {
+  background: linear-gradient(135deg, #006aff 0%, #0048c8 100%);
+}
+
+.contactButtonMain svg,
+.contactButtonAction svg {
   width: 28px;
   height: 28px;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.contactButtonMain:hover svg,
+.contactButtonMain:focus-visible svg {
+  color: #eaf4ff;
+  transform: scale(1.04);
+}
+
+.contactButtonAction:hover svg,
+.contactButtonAction:focus-visible svg {
+  transform: scale(1.05);
+}
+
+.contactButtonAction--messenger:hover svg,
+.contactButtonAction--messenger:focus-visible svg {
+  color: #eaf4ff;
+}
+
+.contactButtonAction--whatsapp:hover svg,
+.contactButtonAction--whatsapp:focus-visible svg {
+  color: #ecfff2;
+}
+
+.contactButtonAction--viber:hover svg,
+.contactButtonAction--viber:focus-visible svg {
+  color: #f5ecff;
+}
+
+.contactButtonAction--messenger {
+  background: linear-gradient(135deg, #00b2ff 0%, #006aff 100%);
+  box-shadow: 0 10px 22px rgba(0, 106, 255, 0.33);
+}
+
+.contactButtonAction--whatsapp {
+  background: linear-gradient(135deg, #25d366 0%, #12b24f 100%);
+  box-shadow: 0 10px 22px rgba(18, 178, 79, 0.33);
+}
+
+.contactButtonAction--viber {
+  background: linear-gradient(135deg, #8f5db7 0%, #6b3f99 100%);
+  box-shadow: 0 10px 22px rgba(107, 63, 153, 0.33);
+}
+
+.contact-group-open .toTopButton {
+  bottom: 190px;
+}
+
+@media (max-width: 1024px) and (min-width: 768px) {
+  .contact-group-open .toTopButton {
+    bottom: 190px;
+  }
+}
+
+@keyframes contactPulse {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.85;
+  }
+
+  100% {
+    transform: scale(1.25);
+    opacity: 0;
+  }
 }
 
 .menu {
@@ -295,9 +425,16 @@
 }
 
 @media (max-width: 767px) {
-  .messengerButton {
+  .contactButtonGroup {
     right: 20px;
     bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+    width: 54px;
+    height: 54px;
+    --contact-radius: 74px;
+  }
+
+  .contactButtonAction,
+  .contactButtonMain {
     width: 54px;
     height: 54px;
   }
@@ -307,13 +444,31 @@
     bottom: calc(86px + env(safe-area-inset-bottom, 0px));
   }
 
-  .messengerButton svg {
+  .contact-group-open .toTopButton {
+    bottom: calc(160px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .contactButtonMain svg,
+  .contactButtonAction svg {
     width: 24px;
     height: 24px;
   }
 
   .halfMap.-type-1 .halfMap__content {
     width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contactButtonAction,
+  .contactButtonMain,
+  .contactButtonMain::before {
+    transition: none;
+    animation: none;
+  }
+
+  .contactButtonAction {
+    transform: none;
   }
 }
 
