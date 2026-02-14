@@ -5,17 +5,12 @@ import { formatNumber } from '@/components/common/formatNumber';
 import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
-import { useEffect, useState } from 'react';
 import Stars from '@/components/common/Stars';
 import { tourData } from '@/data/tours';
 import Image from 'next/image';
 import Link from 'next/link';
 
 export default function TourSlderOne() {
-  const [showSwiper, setShowSwiper] = useState(false);
-  useEffect(() => {
-    setShowSwiper(true);
-  }, []);
   return (
     <section className='layout-pt-xl layout-pb-xl relative'>
       <div className='sectionBg -w-1530 rounded-12 bg-light-1'></div>
@@ -39,8 +34,7 @@ export default function TourSlderOne() {
         <div className='relative pt-40 sm:pt-20'>
           <div className='overflow-hidden pb-30 js-section-slider'>
             <div data-aos='fade-up' data-aos-delay='' className='swiper-wrapper'>
-              {showSwiper && (
-                <Swiper
+              <Swiper
                   spaceBetween={30}
                   className='w-100'
                   pagination={{
@@ -125,7 +119,6 @@ export default function TourSlderOne() {
                     </SwiperSlide>
                   ))}
                 </Swiper>
-              )}
             </div>
           </div>
 

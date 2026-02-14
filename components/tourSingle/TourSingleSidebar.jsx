@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Calender from '../common/dropdownSearch/Calender';
 import Image from 'next/image';
 import { defaultTourContent } from '@/data/tourSingleContent';
@@ -21,16 +21,9 @@ export default function TourSingleSidebar({ tourContent }) {
   const [childrenNumber, setChildrenNumber] = useState(4);
   const [isExtraService, setisExtraService] = useState(false);
   const [isServicePerPerson, setIsServicePerPerson] = useState(false);
-  const [extraCharge, setExtraCharge] = useState(0);
-  useEffect(() => {
-    setExtraCharge(0);
-    if (isExtraService) {
-      setExtraCharge((pre) => pre + prices.extraService);
-    }
-    if (isServicePerPerson) {
-      setExtraCharge((pre) => pre + prices.servicePerPerson);
-    }
-  }, [isExtraService, isServicePerPerson, setExtraCharge]);
+  const extraCharge =
+    (isExtraService ? prices.extraService : 0) +
+    (isServicePerPerson ? prices.servicePerPerson : 0);
 
   const [selectedTime, setSelectedTime] = useState('');
   const [activeTimeDD, setActiveTimeDD] = useState(false);

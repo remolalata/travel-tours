@@ -25,9 +25,9 @@ export default function NotFound() {
                   <h1>
                     40<span className='text-accent-1'>4</span>
                   </h1>
-                  <h2 className='text-30 md:text-24 fw-700'>Oops! It looks like you're lost.</h2>
+                  <h2 className='text-30 md:text-24 fw-700'>Oops! It looks like you&apos;re lost.</h2>
                   <p>
-                    The page you're looking for isn't available. Try to search again or use the go
+                    The page you&apos;re looking for isn&apos;t available. Try to search again or use the go
                     to.
                   </p>
 

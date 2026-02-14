@@ -23,9 +23,9 @@ export default function BannerOne() {
               </h2>
 
               <p data-aos='fade-up' data-aos-delay='' className='mt-10 text-white'>
-                Booking's better on the app. Use promo code
+                Booking&apos;s better on the app. Use promo code
                 <br className='lg:d-none' />
-                "Gr8Escapes" to save!
+                &quot;Gr8Escapes&quot; to save!
               </p>
 
               <div

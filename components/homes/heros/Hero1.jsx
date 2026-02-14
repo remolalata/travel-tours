@@ -10,12 +10,7 @@ export default function Hero1() {
   const router = useRouter();
   const [currentActiveDD, setCurrentActiveDD] = useState('');
   const [location, setLocation] = useState('');
-  const [calender, setCalender] = useState('');
   const [tourType, setTourType] = useState('');
-  useEffect(() => {
-    setCurrentActiveDD('');
-  }, [location, calender, tourType, setCurrentActiveDD]);
-
   const dropDownContainer = useRef();
   useEffect(() => {
     const handleClick = (event) => {
@@ -89,7 +84,7 @@ export default function Hero1() {
                         </div>
                       </div>
 
-                      <Location setLocation={setLocation} active={currentActiveDD === 'location'} />
+                      <Location setLocation={(value) => { setLocation(value); setCurrentActiveDD(''); }} active={currentActiveDD === 'location'} />
                     </div>
 
                     <div className='searchFormItem js-select-control js-form-dd js-calendar'>
@@ -132,7 +127,7 @@ export default function Hero1() {
                         </div>
                       </div>
 
-                      <TourType setTourType={setTourType} active={currentActiveDD === 'tourType'} />
+                      <TourType setTourType={(value) => { setTourType(value); setCurrentActiveDD(''); }} active={currentActiveDD === 'tourType'} />
                     </div>
                   </div>
 

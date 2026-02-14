@@ -35,7 +35,7 @@ export default function SingleOne({ tour, tourContent }) {
 
               <div className='line mt-60 mb-60'></div>
 
-              <h2 className='text-30'>What's included</h2>
+              <h2 className='text-30'>What&apos;s included</h2>
 
               <Included tourContent={tourContent} />
 

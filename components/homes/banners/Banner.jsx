@@ -28,7 +28,7 @@ export default function Banner() {
               </h2>
 
               <p data-aos='fade-up' data-aos-delay='' className='mt-10'>
-                Limited time offer, don't miss the opportunity
+                Limited time offer, don&apos;t miss the opportunity
               </p>
 
               <div className='mt-30 md:mt-20'>
