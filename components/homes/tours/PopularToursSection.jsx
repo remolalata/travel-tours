@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
-export default function Tour1() {
+export default function PopularToursSection() {
   return (
     <section className='layout-pt-xl layout-pb-xl'>
       <div className='container'>

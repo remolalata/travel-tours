@@ -3,7 +3,7 @@
 import { defaultTourContent } from '@/data/tourSingleContent';
 import React, { useState } from 'react';
 
-export default function RoadMap2({ tourContent }) {
+export default function ItineraryRoadmap({ tourContent }) {
   const itinerarySteps = tourContent?.itinerarySteps || defaultTourContent.itinerarySteps;
   const [activeRoadmap, setActiveRoadmap] = useState(2);
   return (

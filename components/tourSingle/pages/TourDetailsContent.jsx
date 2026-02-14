@@ -8,18 +8,18 @@ import Faq from '../Faq';
 import Rating from '../Rating';
 import Reviews from '../Reviews';
 import TourSingleSidebar from '../TourSingleSidebar';
-import Gallery1 from '../Galleries/Gallery1';
+import TourPhotoGallery from '../Galleries/TourPhotoGallery';
 import DateCalender from '../DateCalender';
-import RoadMap2 from '../Roadmap2';
+import ItineraryRoadmap from '../ItineraryRoadmap';
 import CommentBox from '../CommentBox';
 
-export default function SingleOne({ tour, tourContent }) {
+export default function TourDetailsContent({ tour, tourContent }) {
   return (
     <>
       <section className=''>
         <div className='container'>
           <MainInformation tour={tour} />
-          <Gallery1 />
+          <TourPhotoGallery />
         </div>
       </section>
 
@@ -43,7 +43,7 @@ export default function SingleOne({ tour, tourContent }) {
 
               <h2 className='text-30'>Itinerary</h2>
 
-              <RoadMap2 tourContent={tourContent} />
+              <ItineraryRoadmap tourContent={tourContent} />
 
               <h2 className='text-30 mt-60 mb-30'>Tour Map</h2>
               <div className='mapTourSingle'>

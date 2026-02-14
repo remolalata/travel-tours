@@ -7,7 +7,7 @@ import Activities from '../components/Activities';
 import MobileMenu from '../components/MobileMenu';
 import Image from 'next/image';
 import Link from 'next/link';
-export default function Header1() {
+export default function SiteHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 

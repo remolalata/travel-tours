@@ -21,7 +21,7 @@ const images = [
     image: `/img/tourSingle/1/4.png`,
   },
 ];
-export default function Gallery1() {
+export default function TourPhotoGallery() {
   const [activeLightBox, setActiveLightBox] = useState(false);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(1);
   return (

@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import React from 'react';
 
-export default function FeaturesOne() {
+export default function WhyChooseUsFeatures() {
   const gr8Features = [
     {
       id: 1,

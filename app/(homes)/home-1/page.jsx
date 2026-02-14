@@ -1,29 +1,29 @@
-import Banner from '@/components/homes/banners/Banner';
-import BannerOne from '@/components/homes/banners/BannerOne';
-import DestinationsOne from '@/components/homes/destinations/DestinationsOne';
-import FeaturesOne from '@/components/homes/features/FeaturesOne';
-import Hero1 from '@/components/homes/heros/Hero1';
-import TestimonialOne from '@/components/homes/testimonials/TestimonialOne';
+import FeaturedDealsBanner from '@/components/homes/banners/FeaturedDealsBanner';
+import AppPromoBanner from '@/components/homes/banners/AppPromoBanner';
+import TrendingDestinations from '@/components/homes/destinations/TrendingDestinations';
+import WhyChooseUsFeatures from '@/components/homes/features/WhyChooseUsFeatures';
+import HomeSearchHero from '@/components/homes/heros/HomeSearchHero';
+import CustomerTestimonials from '@/components/homes/testimonials/CustomerTestimonials';
 import TourTypeOne from '@/components/homes/tourTypes/TourTypeOne';
-import Tour1 from '@/components/homes/tours/Tour1';
-import TourSlderOne from '@/components/homes/tours/TourSlderOne';
-import FooterOne from '@/components/layout/footers/FooterOne';
-import Header1 from '@/components/layout/header/Header1';
+import PopularToursSection from '@/components/homes/tours/PopularToursSection';
+import TrendingToursCarousel from '@/components/homes/tours/TrendingToursCarousel';
+import SiteFooter from '@/components/layout/footers/SiteFooter';
+import SiteHeader from '@/components/layout/header/SiteHeader';
 
 export default function Home() {
   return (
     <main>
-      <Header1 />
-      <Hero1 />
-      <FeaturesOne />
-      <DestinationsOne />
-      <Tour1 />
-      <Banner />
+      <SiteHeader />
+      <HomeSearchHero />
+      <WhyChooseUsFeatures />
+      <TrendingDestinations />
+      <PopularToursSection />
+      <FeaturedDealsBanner />
       <TourTypeOne />
-      <TourSlderOne />
-      <TestimonialOne />
-      <BannerOne />
-      <FooterOne />
+      <TrendingToursCarousel />
+      <CustomerTestimonials />
+      <AppPromoBanner />
+      <SiteFooter />
     </main>
   );
 }

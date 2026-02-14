@@ -3,7 +3,7 @@ import FooterLinks from '../components/FooterLinks';
 import Socials from '../components/Socials';
 import Image from 'next/image';
 
-export default function FooterOne() {
+export default function SiteFooter() {
   return (
     <footer className='footer -type-1'>
       <div className='footer__main'>

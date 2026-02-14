@@ -70,7 +70,7 @@ function DestinationSlider({ destinations, paginationClass }) {
   );
 }
 
-export default function DestinationsOne() {
+export default function TrendingDestinations() {
   return (
     <section className='layout-pt-xl'>
       <div className='container'>

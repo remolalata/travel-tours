@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
-export default function Banner() {
+export default function FeaturedDealsBanner() {
   return (
     <section className='cta -type-2'>
       <div className='cta__bg'>

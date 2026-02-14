@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import React from 'react';
 
-export default function BannerOne() {
+export default function AppPromoBanner() {
   return (
     <section className='cta -type-1'>
       <div className='cta__bg'>

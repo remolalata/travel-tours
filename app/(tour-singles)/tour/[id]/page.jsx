@@ -1,8 +1,8 @@
-import FooterOne from '@/components/layout/footers/FooterOne';
-import Header1 from '@/components/layout/header/Header1';
+import SiteFooter from '@/components/layout/footers/SiteFooter';
+import SiteHeader from '@/components/layout/header/SiteHeader';
 import PageHeader from '@/components/tourSingle/PageHeader';
 import TourSlider from '@/components/tourSingle/TourSlider';
-import SingleOne from '@/components/tourSingle/pages/SingleOne';
+import TourDetailsContent from '@/components/tourSingle/pages/TourDetailsContent';
 import { getTourContentById } from '@/data/tourSingleContent';
 import { allTour } from '@/data/tours';
 
@@ -23,12 +23,12 @@ export default async function page(props) {
   return (
     <>
       <main>
-        <Header1 />
+        <SiteHeader />
         <PageHeader />
 
-        <SingleOne tour={tour} tourContent={tourContent} />
+        <TourDetailsContent tour={tour} tourContent={tourContent} />
         <TourSlider />
-        <FooterOne />
+        <SiteFooter />
       </main>
     </>
   );

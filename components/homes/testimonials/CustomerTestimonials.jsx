@@ -5,7 +5,7 @@ import { Navigation, Pagination } from 'swiper/modules';
 import { useEffect, useState } from 'react';
 import { testimonialsOne } from '@/data/testimonials';
 import Image from 'next/image';
-export default function TestimonialOne() {
+export default function CustomerTestimonials() {
   return (
     <section className='relative layout-pt-xl layout-pb-xl'>
       <div className='sectionBg md:d-none'>

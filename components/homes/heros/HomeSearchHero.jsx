@@ -6,7 +6,7 @@ import TourType from '@/components/common/dropdownSearch/TourType';
 import Image from 'next/image';
 import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-export default function Hero1() {
+export default function HomeSearchHero() {
   const router = useRouter();
   const [currentActiveDD, setCurrentActiveDD] = useState('');
   const [location, setLocation] = useState('');
