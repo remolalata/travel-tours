@@ -1,11 +1,27 @@
 'use client';
 
 import { defaultTourContent } from '@/data/tourSingleContent';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 export default function Faq({ tourContent }) {
   const faqItems = tourContent?.faqItems || defaultTourContent.faqItems;
   const [currentActiveFaq, setCurrentActiveFaq] = useState(0);
+  const [contentHeights, setContentHeights] = useState([]);
+  const contentRefs = useRef([]);
+
+  useEffect(() => {
+    const updateHeights = () => {
+      setContentHeights(contentRefs.current.map((node) => node?.scrollHeight || 0));
+    };
+
+    updateHeights();
+    window.addEventListener('resize', updateHeights);
+
+    return () => {
+      window.removeEventListener('resize', updateHeights);
+    };
+  }, [faqItems]);
+
   return (
     <>
       {faqItems.map((elm, i) => (
@@ -29,9 +45,9 @@ export default function Faq({ tourContent }) {
 
             <div
               className='accordion__content'
-              style={currentActiveFaq == i ? { maxHeight: '150px' } : {}}
+              style={currentActiveFaq == i ? { maxHeight: `${contentHeights[i] || 0}px` } : {}}
             >
-              <div className='pt-20'>
+              <div className='pt-20' ref={(node) => (contentRefs.current[i] = node)}>
                 <p>{elm.answer}</p>
               </div>
             </div>

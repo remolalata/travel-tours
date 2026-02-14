@@ -39,19 +39,16 @@ function ViberIcon() {
 }
 
 function MainTriggerIcon({ isOpen }) {
+  if (!isOpen) {
+    return <i className='icon-headphone text-24' aria-hidden='true'></i>;
+  }
+
   return (
     <svg viewBox='0 0 24 24' width='24' height='24' aria-hidden='true' focusable='false'>
-      {isOpen ? (
-        <path
-          fill='currentColor'
-          d='M18.3 5.71 12 12l6.3 6.29-1.42 1.42L10.59 13.4 4.29 19.7 2.88 18.3l6.29-6.3L2.88 5.71 4.3 4.29l6.29 6.3 6.29-6.3 1.42 1.42Z'
-        />
-      ) : (
-        <path
-          fill='currentColor'
-          d='M12 3C7.59 3 4 6.03 4 9.75c0 2.13 1.16 4.1 3.14 5.39V19l3.04-1.68c.6.12 1.2.18 1.82.18 4.41 0 8-3.03 8-6.75S16.41 3 12 3Zm0 12.5c-.66 0-1.31-.08-1.94-.24l-.41-.1-1.51.84v-1.65l-.32-.23C6.23 12.97 5.5 11.4 5.5 9.75 5.5 6.86 8.41 4.5 12 4.5s6.5 2.36 6.5 5.25-2.91 5.25-6.5 5.25Zm-3.5-5h7v1.5h-7v-1.5Zm0-2.5h7v1.5h-7V8Z'
-        />
-      )}
+      <path
+        fill='currentColor'
+        d='M18.3 5.71 12 12l6.3 6.29-1.42 1.42L10.59 13.4 4.29 19.7 2.88 18.3l6.29-6.3L2.88 5.71 4.3 4.29l6.29 6.3 6.29-6.3 1.42 1.42Z'
+      />
     </svg>
   );
 }
