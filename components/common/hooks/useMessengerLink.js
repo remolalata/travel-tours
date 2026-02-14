@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 
-const MESSENGER_BASE_URL = 'https://m.me/';
+const MESSENGER_BASE_URL = 'https://www.facebook.com/messages/t/';
 
 export default function useMessengerLink(pageId) {
   return useMemo(() => {
