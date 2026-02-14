@@ -401,3 +401,26 @@
 .ButtonBooking {
   transition: 0.4s;
 }
+
+@media (max-width: 991px) {
+  .cta.-type-1 .cta__image--promo {
+    width: 82%;
+    max-width: 420px;
+    height: auto !important;
+    margin: 24px auto 0;
+  }
+
+  .cta.-type-1 .cta__image--promo img {
+    width: 100% !important;
+    height: auto !important;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 575px) {
+  .cta.-type-1 .cta__image--promo {
+    width: 76%;
+    max-width: 320px;
+    margin-top: 20px;
+  }
+}

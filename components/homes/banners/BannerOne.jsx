@@ -57,15 +57,15 @@ export default function BannerOne() {
 
           <div className='d-flex justify-content-lg-end align-items-end justify-content-center col-lg-6'>
             <div
-              className='text-center cta__image'
-              style={{ width: '100%', maxWidth: '667px', display: 'flex', alignItems: 'flex-end' }}
+              className='text-center cta__image cta__image--promo'
+              style={{ height: '80%', display: 'flex', alignItems: 'flex-end' }}
             >
               <Image
                 width={667}
                 height={500}
                 src='/img/cta/promo.png'
                 alt='image'
-                style={{ width: '100%', height: 'auto' }}
+                style={{ height: '100%', width: 'auto', maxWidth: '100%' }}
               />
             </div>
           </div>
