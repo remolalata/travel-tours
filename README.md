@@ -1,36 +1,112 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# GR8 Escapes Website
+
+Marketing website for **Gr8 Escapes Travel & Tours** built with **Next.js (App Router)**.
+
+## Stack
+
+- Next.js 16
+- React 19
+- Swiper (carousels)
+- AOS (scroll animations)
+- Bootstrap 5
+- Google Maps (`@react-google-maps/api`)
+
+## Main Pages
+
+- `/` -> Homepage (hero search, featured sections, testimonials, FAQ, promo CTA)
+- `/tours` -> Tour listing page (cards + filters + map)
+- `/tour/[id]` -> Dynamic tour details page
+- `/contact` -> Contact page with map, locations, and form
+
+## Key Features
+
+- Global header/footer layout
+- Floating chat/contact group (Messenger, WhatsApp, Viber)
+- First-time visitor promo modal (shows once, after 5 seconds)
+- Scroll-to-top control
+- Shared FAQ component used on homepage and tour detail pages
+- Basic accessibility improvements for icon-only buttons
+
+## First-Time Promo Logic
+
+- Hook: `components/common/hooks/useFirstVisitPromo.js`
+- Modal: `components/common/FirstVisitPromoModal.jsx`
+- Storage key: `gr8escapes:first-visit-promo-seen`
+- Behavior: opens after 5 seconds for first-time visitors only
+
+To test it again in browser devtools:
+
+```js
+localStorage.removeItem('gr8escapes:first-visit-promo-seen');
+```
+
+## Environment Variables
+
+Create `.env` from `.env.example`:
+
+```bash
+cp .env.example .env
+```
+
+Required public variables (used by floating chat buttons):
+
+- `NEXT_PUBLIC_FB_PAGE_ID`
+- `NEXT_PUBLIC_WHATSAPP_NUMBER`
+- `NEXT_PUBLIC_VIBER_NUMBER`
 
 ## Getting Started
 
-First, run the development server:
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Run development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Open:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+`http://localhost:3000`
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Scripts
 
-## Learn More
+- `npm run dev` - Start local development server
+- `npm run build` - Build production bundle
+- `npm run start` - Run production server
+- `npm run lint` - Run ESLint
+- `npm run lint:fix` - Auto-fix lint issues
+- `npm run format` - Format code with Prettier
+- `npm run format:check` - Check formatting
 
-To learn more about Next.js, take a look at the following resources:
+## Content/Data Sources
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Primary static content lives in:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- `data/tours.js`
+- `data/tourSingleContent.js`
+- `data/destinations.js`
+- `data/testimonials.js`
+- `data/tourFilteringOptions.js`
 
-## Deploy on Vercel
+Homepage composition:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `app/(homes)/home-1/page.jsx`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Tour detail composition:
+
+- `components/tourSingle/pages/TourDetailsContent.jsx`
+
+## Deployment
+
+Standard Next.js deployment flow:
+
+```bash
+npm run build
+npm run start
+```
+
+Can be deployed to Vercel or any Node-compatible hosting platform.
