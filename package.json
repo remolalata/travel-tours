@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -23,6 +25,9 @@
     "react-multi-date-picker": "^4.5.2",
     "recharts": "^2.15.3",
     "swiper": "^11.2.7"
+  },
+  "devDependencies": {
+    "prettier": "^3.6.2"
   },
   "packageManager": "npm@11.6.2"
 }

@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import HeaderSerch from "../components/HeaderSerch";
-import Destinations from "../components/Destinations";
-import Activities from "../components/Activities";
-import MobileMenu from "../components/MobileMenu";
-import Image from "next/image";
-import Link from "next/link";
+import { useEffect, useState } from 'react';
+import HeaderSerch from '../components/HeaderSerch';
+import Destinations from '../components/Destinations';
+import Activities from '../components/Activities';
+import MobileMenu from '../components/MobileMenu';
+import Image from 'next/image';
+import Link from 'next/link';
 export default function Header1() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
@@ -23,11 +23,11 @@ export default function Header1() {
   };
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
 
     // Cleanup the event listener when the component unmounts
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
@@ -38,65 +38,51 @@ export default function Header1() {
       }
     };
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
 
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
   return (
     <>
-      <header
-        className={`header -type-1 js-header ${addClass ? "-is-sticky" : ""}`}
-      >
-        <div className="header__container container">
-          <div className="headerMobile__left"></div>
+      <header className={`header -type-1 js-header ${addClass ? '-is-sticky' : ''}`}>
+        <div className='header__container container'>
+          <div className='headerMobile__left'></div>
 
-          <div className="header__logo">
-            <Link href="/" className="header__logo">
-              <Image
-                width="167"
-                height="32"
-                src="/img/logo.svg"
-                alt="logo icon"
-                priority
-              />
+          <div className='header__logo'>
+            <Link href='/' className='header__logo'>
+              <Image width='167' height='32' src='/img/logo.svg' alt='logo icon' priority />
             </Link>
 
-            <div className="xl:d-none ml-30">
+            <div className='xl:d-none ml-30'>
               <HeaderSerch />
             </div>
           </div>
 
-          <div className="headerMobile__right">
+          <div className='headerMobile__right'>
             <button
               onClick={() => setMobileSearchOpen((prev) => !prev)}
-              className="d-flex"
-              aria-label="Toggle search"
+              className='d-flex'
+              aria-label='Toggle search'
               aria-expanded={mobileSearchOpen}
             >
-              <i className="icon-search text-18"></i>
+              <i className='icon-search text-18'></i>
             </button>
           </div>
 
-          <div className="header__right">
+          <div className='header__right'>
             <Destinations />
             <Activities />
-
           </div>
         </div>
 
-        <div
-          className={`headerMobileSearch ${mobileSearchOpen ? "is-active" : ""}`}
-        >
+        <div className={`headerMobileSearch ${mobileSearchOpen ? 'is-active' : ''}`}>
           <HeaderSerch />
         </div>
       </header>
-      <MobileMenu
-        setMobileMenuOpen={setMobileMenuOpen}
-        mobileMenuOpen={mobileMenuOpen}
-      />
+      <MobileMenu setMobileMenuOpen={setMobileMenuOpen} mobileMenuOpen={mobileMenuOpen} />
     </>
   );
 }

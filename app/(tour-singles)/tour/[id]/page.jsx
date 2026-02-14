@@ -1,17 +1,17 @@
-import FooterOne from "@/components/layout/footers/FooterOne";
-import Header1 from "@/components/layout/header/Header1";
-import PageHeader from "@/components/tourSingle/PageHeader";
-import TourSlider from "@/components/tourSingle/TourSlider";
-import SingleOne from "@/components/tourSingle/pages/SingleOne";
-import { getTourContentById } from "@/data/tourSingleContent";
-import { allTour } from "@/data/tours";
+import FooterOne from '@/components/layout/footers/FooterOne';
+import Header1 from '@/components/layout/header/Header1';
+import PageHeader from '@/components/tourSingle/PageHeader';
+import TourSlider from '@/components/tourSingle/TourSlider';
+import SingleOne from '@/components/tourSingle/pages/SingleOne';
+import { getTourContentById } from '@/data/tourSingleContent';
+import { allTour } from '@/data/tours';
 
-import React from "react";
+import React from 'react';
 
 export const metadata = {
-  title: "Boracay Tour Package | Gr8 Escapes Travel & Tours",
+  title: 'Boracay Tour Package | Gr8 Escapes Travel & Tours',
   description:
-    "Discover Boracay with Gr8 Escapes Travel & Tours. Enjoy curated Boracay tour packages, island activities, and hassle-free booking.",
+    'Discover Boracay with Gr8 Escapes Travel & Tours. Enjoy curated Boracay tour packages, island activities, and hassle-free booking.',
 };
 
 export default async function page(props) {
