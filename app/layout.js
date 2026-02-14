@@ -11,6 +11,12 @@ const dmsans = DM_Sans({
   subsets: ['latin'],
   display: 'swap',
 });
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+};
 // const inter = Inter({ subsets: ["latin"] });
 if (typeof window !== 'undefined') {
   import('bootstrap');

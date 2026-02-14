@@ -1,6 +1,6 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 import useMessengerLink from './hooks/useMessengerLink';
 
 function MessengerIcon() {
@@ -15,17 +15,53 @@ function MessengerIcon() {
 }
 
 function MessengerButton({ pageId = process.env.NEXT_PUBLIC_FB_PAGE_ID }) {
-  const messengerLink = useMessengerLink(pageId);
+  const messengerLinks = useMessengerLink(pageId);
+  const appUrl = messengerLinks?.appUrl || '';
+  const webUrl = messengerLinks?.webUrl || '';
 
-  if (!messengerLink) {
+  const handleClick = useCallback(
+    (event) => {
+      if (!appUrl || !webUrl) {
+        return;
+      }
+
+      const userAgent = navigator.userAgent || '';
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(userAgent);
+      const isInAppBrowser = /FBAN|FBAV|Instagram/i.test(userAgent);
+
+      if (!isMobile || isInAppBrowser) {
+        return;
+      }
+
+      event.preventDefault();
+
+      let appOpened = false;
+      const onVisibilityChange = () => {
+        if (document.hidden) {
+          appOpened = true;
+        }
+      };
+
+      document.addEventListener('visibilitychange', onVisibilityChange, { once: true });
+      window.location.href = appUrl;
+
+      window.setTimeout(() => {
+        if (!appOpened) {
+          window.location.href = webUrl;
+        }
+      }, 1200);
+    },
+    [appUrl, webUrl]
+  );
+
+  if (!messengerLinks) {
     return null;
   }
 
   return (
     <a
-      href={messengerLink}
-      target='_blank'
-      rel='noopener noreferrer'
+      href={webUrl}
+      onClick={handleClick}
       aria-label='Chat with us on Facebook Messenger'
       className='messengerButton'
     >

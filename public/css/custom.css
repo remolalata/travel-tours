@@ -6,10 +6,28 @@
   transition: 0.3s !important;
   opacity: 1 !important;
 }
+
+:root {
+  --app-vh: 100vh;
+}
+
+@supports (height: 100svh) {
+  :root {
+    --app-vh: 100svh;
+  }
+}
+
+@supports (height: 100dvh) {
+  :root {
+    --app-vh: 100dvh;
+  }
+}
 .swiperPagination1 .swiper-pagination-bullet-active {
   width: 18px !important;
 }
 .custom-input input {
+  width: auto !important;
+  height: auto !important;
   width: fit-content !important;
   height: fit-content !important;
   padding-left: 0px !important;
@@ -250,10 +268,36 @@
   height: 28px;
 }
 
+.menu {
+  height: var(--app-vh);
+}
+
+.menu__container {
+  min-height: var(--app-vh);
+  padding-top: calc(40px + env(safe-area-inset-top, 0px));
+  padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px));
+}
+
+.halfMap.-type-1 {
+  height: var(--app-vh);
+}
+
+.glightbox-container .ginner-container {
+  height: var(--app-vh);
+}
+
+.gslide-image img {
+  max-height: var(--app-vh);
+}
+
+.goverlay {
+  height: calc(var(--app-vh) + 1px);
+}
+
 @media (max-width: 767px) {
   .messengerButton {
     right: 20px;
-    bottom: 86px;
+    bottom: calc(86px + env(safe-area-inset-bottom, 0px));
     width: 54px;
     height: 54px;
   }
@@ -261,6 +305,10 @@
   .messengerButton svg {
     width: 24px;
     height: 24px;
+  }
+
+  .halfMap.-type-1 .halfMap__content {
+    width: 100%;
   }
 }
 

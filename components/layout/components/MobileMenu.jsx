@@ -38,7 +38,11 @@ export default function MobileMenu({ mobileMenuOpen, setMobileMenuOpen }) {
         <div className='menu__content'>
           <ul
             className='menuNav js-navList -is-active'
-            style={{ maxHeight: 'calc(100vh - 262px)', overflowY: 'auto' }}
+            style={{
+              maxHeight: 'calc(var(--app-vh, 100vh) - 262px - env(safe-area-inset-bottom, 0px))',
+              overflowY: 'auto',
+              WebkitOverflowScrolling: 'touch',
+            }}
           >
             {menuData.map((elm, i) => (
               <li key={i} className='menuNav__item -has-submenu js-has-submenu'>
