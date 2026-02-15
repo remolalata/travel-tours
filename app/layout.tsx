@@ -1,7 +1,7 @@
 import ScrollToTop from '@/components/common/ScrollToTop';
 import MessengerButton from '@/components/common/MessengerButton';
 import FirstVisitPromoModal from '@/components/common/FirstVisitPromoModal';
-import '../public/css/style.css';
+import '@/public/css/style.css';
 
 import localFont from 'next/font/local';
 import type { ReactNode } from 'react';

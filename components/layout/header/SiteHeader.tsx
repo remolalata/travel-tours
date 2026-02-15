@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import HeaderSerch from '../components/HeaderSerch';
-import Destinations from '../components/Destinations';
-import Activities from '../components/Activities';
+import HeaderSerch from '@/components/layout/components/HeaderSerch';
+import Destinations from '@/components/layout/components/Destinations';
+import Activities from '@/components/layout/components/Activities';
 import Image from 'next/image';
 import Link from 'next/link';
 export default function SiteHeader() {

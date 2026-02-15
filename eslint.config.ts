@@ -3,12 +3,33 @@ import nextVitals from 'eslint-config-next/core-web-vitals';
 const config = [
   ...nextVitals,
   {
+    files: ['**/*.{js,jsx,ts,tsx,mjs,cjs}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['../*', '../../*', '../../../*', '../../../../*', '../../../../../*'],
+              message: 'Use the `@/` alias for cross-directory imports instead of parent-relative paths.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: ['components/**/*.{ts,tsx}'],
     rules: {
       'no-restricted-imports': [
         'error',
         {
           patterns: [
+            {
+              group: ['../*', '../../*', '../../../*', '../../../../*', '../../../../../*'],
+              message:
+                'Use the `@/` alias for cross-directory imports instead of parent-relative paths.',
+            },
             {
               group: ['@/features/*'],
               message:

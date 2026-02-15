@@ -8,7 +8,7 @@ import Faq from './Faq';
 import Rating from './Rating';
 import Reviews from './Reviews';
 import TourSingleSidebar from './TourSingleSidebar';
-import TourPhotoGallery from '../Galleries/TourPhotoGallery';
+import TourPhotoGallery from '@/features/tour-single/components/Galleries/TourPhotoGallery';
 import ItineraryRoadmap from './ItineraryRoadmap';
 import CommentBox from './CommentBox';
 import type { Tour } from '@/data/tours';

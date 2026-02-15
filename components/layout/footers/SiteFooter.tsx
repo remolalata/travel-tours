@@ -1,6 +1,6 @@
 import React, { useId } from 'react';
-import FooterLinks from '../components/FooterLinks';
-import Socials from '../components/Socials';
+import FooterLinks from '@/components/layout/components/FooterLinks';
+import Socials from '@/components/layout/components/Socials';
 import Image from 'next/image';
 
 export default function SiteFooter() {
