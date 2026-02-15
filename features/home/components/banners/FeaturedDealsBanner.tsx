@@ -34,12 +34,10 @@ export default function FeaturedDealsBanner() {
 
               <div className='mt-30 md:mt-20'>
                 <FadeIn>
-                  <button className='text-white bg-accent-1 button -md -dark-1'>
-                    <Link href='/tours'>
-                      Book Now
-                      <i className='icon-arrow-top-right ml-10 text-16'></i>
-                    </Link>
-                  </button>
+                  <Link href='/get-quote' className='text-white bg-accent-1 button -md -dark-1'>
+                    Get a Quote
+                    <i className='icon-arrow-top-right ml-10 text-16'></i>
+                  </Link>
                 </FadeIn>
               </div>
             </div>

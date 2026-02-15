@@ -1,8 +1,8 @@
 import SiteFooter from '@/components/layout/footers/SiteFooter';
 import SiteHeader from '@/components/layout/header/SiteHeader';
-import PageHeader from '@/features/tour-single/components/PageHeader';
-import TourSlider from '@/features/tour-single/components/TourSlider';
-import TourDetailsContent from '@/features/tour-single/components/pages/TourDetailsContent';
+import PageHeader from '@/features/tour-single/components/sections/PageHeader';
+import TourSlider from '@/features/tour-single/components/sections/TourSlider';
+import TourDetailsContent from '@/features/tour-single/components/sections/TourDetailsContent';
 import { getTourContentById } from '@/data/tourSingleContent';
 import { allTour } from '@/data/tours';
 

@@ -1,8 +1,8 @@
 import SiteFooter from '@/components/layout/footers/SiteFooter';
 import SiteHeader from '@/components/layout/header/SiteHeader';
-import ContactForm from '@/features/contact/components/ContactForm';
-import Locations from '@/features/contact/components/Locations';
-import Map from '@/features/contact/components/Map';
+import ContactForm from '@/features/contact/components/sections/ContactForm';
+import Locations from '@/features/contact/components/sections/Locations';
+import Map from '@/features/contact/components/sections/Map';
 import React from 'react';
 
 export const metadata = {

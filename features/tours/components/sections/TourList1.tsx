@@ -191,12 +191,13 @@ export default function TourList1() {
                         </div>
                       </div>
 
-                      <button className='button -outline-accent-1 text-accent-1'>
-                        <Link href={`/tour/${elm.id}`}>
-                          View Details
-                          <i className='icon-arrow-top-right ml-10'></i>
-                        </Link>
-                      </button>
+                      <Link
+                        href={`/tour/${elm.id}`}
+                        className='button -outline-accent-1 text-accent-1'
+                      >
+                        View Details
+                        <i className='icon-arrow-top-right ml-10'></i>
+                      </Link>
                     </div>
                   </div>
                 </div>

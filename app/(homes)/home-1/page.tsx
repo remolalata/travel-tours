@@ -3,14 +3,14 @@ import FeaturedDealsBanner from '@/features/home/components/banners/FeaturedDeal
 import AppPromoBanner from '@/features/home/components/banners/AppPromoBanner';
 import TrendingDestinations from '@/features/home/components/destinations/TrendingDestinations';
 import WhyChooseUsFeatures from '@/features/home/components/features/WhyChooseUsFeatures';
-import HomeSearchHero from '@/features/home/components/heros/HomeSearchHero';
+import HomeSearchHero from '@/features/home/components/heroes/HomeSearchHero';
 import CustomerTestimonials from '@/features/home/components/testimonials/CustomerTestimonials';
 import TourTypeOne from '@/features/home/components/tourTypes/TourTypeOne';
 import PopularToursSection from '@/features/home/components/tours/PopularToursSection';
 import TrendingToursCarousel from '@/features/home/components/tours/TrendingToursCarousel';
 import SiteFooter from '@/components/layout/footers/SiteFooter';
 import SiteHeader from '@/components/layout/header/SiteHeader';
-import Faq from '@/features/tour-single/components/Faq';
+import Faq from '@/features/tour-single/components/sections/Faq';
 import { defaultTourContent } from '@/data/tourSingleContent';
 
 export default function Home() {

@@ -1,28 +1,24 @@
 'use client';
 
-import { useState } from 'react';
-import DatePicker, { DateObject } from 'react-multi-date-picker';
+import DateRangePickerInput from '@/components/common/date/DateRangePickerInput';
+import type { Dayjs } from 'dayjs';
 
 interface CalenderProps {
   active?: boolean;
   inputId?: string;
+  onValueChange?: (displayValue: string, selectedDates: [Dayjs, Dayjs]) => void;
 }
 
-export default function Calender({ active: _active, inputId }: CalenderProps) {
-  const [dates, setDates] = useState([new DateObject(), new DateObject().add(1, 'day')]);
+export default function Calender({ active: _active, inputId, onValueChange }: CalenderProps) {
   return (
-    <DatePicker
-      id={inputId}
-      inputClass='custom_input-picker'
+    <DateRangePickerInput
+      inputId={inputId}
+      inputClassName='custom_input-picker'
       containerClassName='custom_container-picker'
-      value={dates}
-      onChange={setDates}
-      numberOfMonths={2}
-      offsetY={10}
-      range
-      // className="yellow"
-      rangeHover
       format='MMMM DD'
+      offsetY={10}
+      emitInitialValue
+      onValueChange={onValueChange}
     />
   );
 }

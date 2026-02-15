@@ -842,6 +842,10 @@ button:focus {
   text-decoration: underline;
 }
 
+.buttonArrow:hover {
+  color: var(--color-accent-1);
+}
+
 .contactForm select,
 .contactForm input:not([type='range']),
 .contactForm textarea {

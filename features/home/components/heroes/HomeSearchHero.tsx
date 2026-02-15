@@ -5,8 +5,8 @@ import Location from '@/components/common/dropdownSearch/Location';
 import TourType from '@/components/common/dropdownSearch/TourType';
 import { motion, useReducedMotion } from 'framer-motion';
 import Image from 'next/image';
-import React, { useEffect, useState, useRef, useId } from 'react';
 import { useRouter } from 'next/navigation';
+import React, { useEffect, useState, useRef, useId } from 'react';
 
 export default function HomeSearchHero() {
   const router = useRouter();
@@ -146,7 +146,10 @@ export default function HomeSearchHero() {
                           </label>
                           <div>
                             <span className='js-first-date'>
-                              <Calender active={currentActiveDD === 'calender'} inputId={whenInputId} />
+                              <Calender
+                                active={currentActiveDD === 'calender'}
+                                inputId={whenInputId}
+                              />
                             </span>
                             <span className='js-last-date'></span>
                           </div>
@@ -183,11 +186,23 @@ export default function HomeSearchHero() {
 
                   <div className='searchForm__button'>
                     <button
-                      onClick={() => router.push('/tours')}
+                      type='button'
+                      onClick={() => {
+                        setCurrentActiveDD('');
+
+                        const quoteSearchParams = new URLSearchParams();
+                        if (location) quoteSearchParams.set('where', location);
+                        if (tourType) quoteSearchParams.set('tourType', tourType);
+
+                        const searchParamsString = quoteSearchParams.toString();
+                        router.push(
+                          searchParamsString ? `/get-quote?${searchParamsString}` : '/get-quote',
+                        );
+                      }}
                       className='button -dark-1 bg-accent-1 text-white'
                     >
                       <i className='icon-search text-16 mr-10'></i>
-                      Search
+                      Get a Quote
                     </button>
                   </div>
                 </div>

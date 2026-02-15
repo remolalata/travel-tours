@@ -1,17 +1,16 @@
 import React from 'react';
-import MainInformation from '../MainInformation';
-import OthersInformation from '../OthersInformation';
-import Overview from '../Overview';
-import Included from '../Included';
-import Map from '@/features/tours/components/Map';
-import Faq from '../Faq';
-import Rating from '../Rating';
-import Reviews from '../Reviews';
-import TourSingleSidebar from '../TourSingleSidebar';
+import MainInformation from './MainInformation';
+import OthersInformation from './OthersInformation';
+import Overview from './Overview';
+import Included from './Included';
+import Map from '@/features/tours/components/sections/Map';
+import Faq from './Faq';
+import Rating from './Rating';
+import Reviews from './Reviews';
+import TourSingleSidebar from './TourSingleSidebar';
 import TourPhotoGallery from '../Galleries/TourPhotoGallery';
-import DateCalender from '../DateCalender';
-import ItineraryRoadmap from '../ItineraryRoadmap';
-import CommentBox from '../CommentBox';
+import ItineraryRoadmap from './ItineraryRoadmap';
+import CommentBox from './CommentBox';
 import type { Tour } from '@/data/tours';
 import type { TourContent } from '@/data/tourSingleContent';
 
@@ -59,11 +58,6 @@ export default function TourDetailsContent({ tour, tourContent }: TourDetailsCon
 
               <div className='line mt-60 mb-60'></div>
 
-              <h2 className='text-30'>Availability Calendar</h2>
-              <DateCalender />
-
-              <div className='line mt-60 mb-60'></div>
-
               <h2 className='text-30'>FAQ</h2>
 
               <div className='accordion -simple row y-gap-20 mt-30 js-accordion'>
@@ -89,7 +83,7 @@ export default function TourDetailsContent({ tour, tourContent }: TourDetailsCon
 
             <div className='col-lg-4'>
               <div className='d-flex justify-end js-pin-content'>
-                <TourSingleSidebar tourContent={tourContent} />
+                <TourSingleSidebar tour={tour} tourContent={tourContent} />
               </div>
             </div>
           </div>

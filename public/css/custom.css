@@ -202,22 +202,6 @@
   color: var(--color-accent-1) !important;
 }
 
-.rmdp-range {
-  background-color: var(--color-accent-1) !important;
-}
-.rmdp-today span {
-  background-color: var(--bs-yellow) !important;
-}
-.rmdp-day:not(.rmdp-disabled, .rmdp-day-hidden) span:hover {
-  background-color: var(--color-accent-1) !important;
-}
-.rmdp-week-day {
-  color: var(--color-accent-1) !important;
-}
-.rmdp-arrow {
-  border-color: var(--color-accent-1) !important;
-}
-
 @media (max-width: 1150px) {
   .custom-dd-container2 {
     flex: 1;
@@ -497,7 +481,7 @@
   background-color: #000;
   color: #fff;
 }
-.calenderTourSongle .rmdp-shadow {
+.calenderTourSongle {
   margin-top: 20px;
 }
 
@@ -627,9 +611,434 @@ body.promoModal-open {
     display: block;
   }
 }
-.rmdp-container {
-  width: 199px !important;
+.custom_container-picker {
+  display: block;
+  width: 100%;
 }
+
+.custom_input-picker {
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.custom_input-picker:focus {
+  outline: none;
+}
+
+.muiDateRangePicker__panel {
+  padding: 0;
+  background: #fff;
+}
+
+.muiDateRangePicker__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 0 12px 10px 0;
+}
+
+.muiDateRangePicker__calendar + .muiDateRangePicker__calendar {
+  padding-left: 12px;
+}
+
+.muiDateRangePicker__calendar .MuiDateCalendar-root {
+  margin: 0;
+}
+
+.muiDateRangePicker__calendar .MuiDayCalendar-weekContainer {
+  margin: 0;
+}
+
+.calenderTourSongle .muiDateRangePicker__panel {
+  padding: 0;
+}
+
+.getQuotePage {
+  /* Site header is fixed (88px desktop / 57px mobile), so offset content explicitly. */
+  padding-top: calc(88px + 22px);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(235, 102, 43, 0.13), transparent 42%),
+    radial-gradient(circle at 100% 100%, rgba(5, 7, 60, 0.08), transparent 40%), #fff;
+}
+
+.getQuotePage__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.getQuotePage__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(5, 7, 60, 0.2);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--color-dark-1);
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 1;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.getQuotePage__back:hover {
+  border-color: var(--color-accent-1);
+  color: var(--color-accent-1);
+  box-shadow: 0 4px 14px rgba(235, 102, 43, 0.18);
+}
+
+.getQuotePage__breadcrumbs {
+  font-size: 13px;
+}
+
+.getQuotePage__breadcrumbs .breadcrumbs__item a {
+  color: rgba(5, 7, 60, 0.75);
+}
+
+.getQuotePage__shell {
+  position: relative;
+}
+
+.getQuotePage__info {
+  position: sticky;
+  top: 100px;
+  border-radius: 20px;
+  padding: 28px 24px;
+  background: linear-gradient(160deg, #05073c 0%, #19205f 100%);
+  color: #fff;
+  box-shadow: 0 22px 42px rgba(15, 19, 76, 0.24);
+}
+
+.getQuotePage__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 6px 10px;
+  margin-bottom: 14px;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: rgba(235, 102, 43, 0.2);
+  color: #ffd7c4;
+}
+
+.getQuotePage__title {
+  margin: 0;
+  font-size: 33px;
+  font-weight: 700;
+  line-height: 1.18;
+  color: #fff;
+}
+
+.getQuotePage__subtitle {
+  margin: 12px 0 0;
+  color: rgba(255, 255, 255, 0.86);
+  line-height: 1.7;
+}
+
+.getQuotePage__benefits {
+  display: grid;
+  gap: 10px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.getQuotePage__benefits li {
+  position: relative;
+  padding-left: 18px;
+  color: rgba(255, 255, 255, 0.92);
+  line-height: 1.55;
+}
+
+.getQuotePage__benefits li::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 99px;
+  background-color: var(--color-accent-1);
+}
+
+.getQuotePage__progress {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.getQuotePage__progressHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 13px;
+}
+
+.getQuotePage__progressHeader strong {
+  color: #fff;
+  font-weight: 700;
+}
+
+.getQuotePage__progressTrack {
+  margin-top: 10px;
+  width: 100%;
+  height: 8px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.18);
+  overflow: hidden;
+}
+
+.getQuotePage__progressTrack > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #ffb178, var(--color-accent-1));
+  transition: width 0.25s ease;
+}
+
+.getQuotePage__formCard {
+  border: 1px solid rgba(235, 102, 43, 0.2);
+  border-radius: 20px;
+  padding: 30px;
+  background: #fff;
+  box-shadow: 0 24px 45px rgba(5, 7, 60, 0.1);
+}
+
+.getQuotePage__sectionHead {
+  margin-bottom: 16px;
+}
+
+.getQuotePage__sectionHead h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-dark-1);
+}
+
+.getQuotePage__sectionHead p {
+  margin: 6px 0 0;
+  color: rgba(5, 7, 60, 0.65);
+  font-size: 14px;
+}
+
+.getQuotePage__divider {
+  margin: 24px 0;
+  border-top: 1px solid rgba(5, 7, 60, 0.1);
+}
+
+.getQuotePage__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.getQuotePage__actions .button {
+  min-width: 170px;
+}
+
+.getQuotePage__floatingHelp {
+  position: fixed;
+  right: 110px;
+  bottom: 18px;
+  z-index: 100;
+}
+
+.getQuotePage__floatingHelpCard {
+  position: relative;
+  width: 328px;
+  border: 1px solid rgba(5, 7, 60, 0.14);
+  border-radius: 14px;
+  padding: 18px 18px 16px;
+  background: #fff;
+  color: var(--color-dark-1);
+  box-shadow: 0 12px 26px rgba(5, 7, 60, 0.16);
+}
+
+.getQuotePage__floatingHelpCard::after {
+  content: '';
+  position: absolute;
+  right: -8px;
+  top: auto;
+  bottom: 38px;
+  width: 12px;
+  height: 12px;
+  border-top: 1px solid rgba(5, 7, 60, 0.14);
+  border-right: 1px solid rgba(5, 7, 60, 0.14);
+  background: #fff;
+  transform: rotate(45deg);
+}
+
+.getQuotePage__floatingHelpClose {
+  position: absolute !important;
+  top: -14px;
+  right: -14px;
+  width: 28px !important;
+  height: 28px !important;
+  padding: 0 !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(5, 7, 60, 0.16) !important;
+  background-color: #fff !important;
+  color: rgba(5, 7, 60, 0.55) !important;
+  z-index: 2;
+}
+
+.getQuotePage__floatingHelpClose span {
+  line-height: 1;
+  font-size: 18px;
+}
+
+.getQuotePage__floatingHelpClose:hover {
+  color: var(--color-accent-1) !important;
+  background-color: rgba(235, 102, 43, 0.14) !important;
+  border-color: rgba(235, 102, 43, 0.45) !important;
+}
+
+.getQuotePage__floatingHelpTitle {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-dark-1);
+}
+
+.getQuotePage__floatingHelpText {
+  margin: 6px 0 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: rgba(5, 7, 60, 0.64);
+}
+
+.quoteDateRangeField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quoteDateRangeField__label {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.quoteDateRangeField .quoteDateRangeField__container {
+  width: 100%;
+}
+
+.quoteDateRangeField__input {
+  width: 100%;
+  min-height: 56px;
+  border: 1px solid rgba(5, 7, 60, 0.22);
+  border-radius: 14px;
+  padding: 16px 14px;
+  font-size: 16px;
+  color: var(--color-dark-1);
+  background-color: #fff;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.quoteDateRangeField__input:focus {
+  border-color: var(--color-accent-1);
+  box-shadow: 0 0 0 3px rgba(235, 102, 43, 0.12);
+  outline: none;
+}
+@media (max-width: 991px) {
+  .getQuotePage {
+    padding-top: calc(57px + 16px);
+  }
+
+  .getQuotePage__top {
+    margin-bottom: 20px;
+  }
+
+  .getQuotePage__info {
+    position: static;
+  }
+
+  .getQuotePage__formCard {
+    padding: 24px;
+  }
+
+  .getQuotePage__title {
+    font-size: 30px;
+  }
+}
+
+@media (max-width: 767px) {
+  .getQuotePage__top {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    gap: 10px;
+  }
+
+  .getQuotePage__back {
+    flex-shrink: 0;
+  }
+
+  .getQuotePage__breadcrumbs {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: right;
+  }
+
+  .getQuotePage__formCard {
+    padding: 20px 16px;
+  }
+
+  .getQuotePage__actions {
+    flex-direction: column-reverse;
+  }
+
+  .getQuotePage__actions .button {
+    width: 100%;
+  }
+
+  .getQuotePage__floatingHelp {
+    left: 16px;
+    right: 16px;
+    bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .getQuotePage__floatingHelpCard {
+    width: 100%;
+    padding: 14px 14px 12px;
+  }
+
+  .getQuotePage__floatingHelpCard::after {
+    right: 20px;
+    bottom: -8px;
+    border-top: 0;
+    border-right: 1px solid rgba(5, 7, 60, 0.14);
+    border-bottom: 1px solid rgba(5, 7, 60, 0.14);
+    transform: rotate(45deg);
+  }
+
+  .getQuotePage__title {
+    font-size: 27px;
+  }
+}
+
 @media (max-width: 1199px) {
   .header.-type-3 .headerMobile__left,
   .header.-type-8 .headerMobile__left,

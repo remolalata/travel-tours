@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 
-const options = [
+export const tourTypeOptions = [
   'Island Hopping',
   'Beach Getaway',
   'City Tour',
@@ -26,7 +26,7 @@ export default function TourType({ active, setTourType }: TourTypeProps) {
     >
       <div className='searchFormItemDropdown__container'>
         <div className='searchFormItemDropdown__list sroll-bar-1'>
-          {options.map((elm) => (
+          {tourTypeOptions.map((elm) => (
             <div
               onClick={() => setTourType((previousValue) => (previousValue === elm ? '' : elm))}
               key={elm}

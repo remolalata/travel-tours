@@ -111,7 +111,11 @@ export default function SiteFooter() {
                   <label className='visually-hidden' htmlFor={footerNewsletterEmailId}>
                     Newsletter email address
                   </label>
-                  <input id={footerNewsletterEmailId} type='Email' placeholder='Your email address' />
+                  <input
+                    id={footerNewsletterEmailId}
+                    type='Email'
+                    placeholder='Your email address'
+                  />
                   <button>Send</button>
                 </div>
               </div>
