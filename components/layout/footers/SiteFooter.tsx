@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useId } from 'react';
 import FooterLinks from '../components/FooterLinks';
 import Socials from '../components/Socials';
 import Image from 'next/image';
 
 export default function SiteFooter() {
+  const footerNewsletterEmailId = useId();
+
   return (
     <footer className='footer -type-1'>
       <div className='footer__main'>
@@ -44,7 +46,7 @@ export default function SiteFooter() {
           <div className='footer__content'>
             <div className='justify-between y-gap-40 row'>
               <div className='col-lg-4 col-md-6'>
-                <h4 className='text-20 fw-500'>Contact</h4>
+                <h3 className='text-20 fw-500'>Contact</h3>
 
                 <div className='y-gap-10 mt-20'>
                   <a className='d-block' href='#'>
@@ -102,11 +104,14 @@ export default function SiteFooter() {
               <FooterLinks />
 
               <div className='col-lg-3 col-md-6'>
-                <h4 className='text-20 fw-500'>Newsletter</h4>
+                <h3 className='text-20 fw-500'>Newsletter</h3>
                 <p className='mt-20'>Subscribe to the free newsletter and stay up to date</p>
 
                 <div className='footer__newsletter'>
-                  <input type='Email' placeholder='Your email address' />
+                  <label className='visually-hidden' htmlFor={footerNewsletterEmailId}>
+                    Newsletter email address
+                  </label>
+                  <input id={footerNewsletterEmailId} type='Email' placeholder='Your email address' />
                   <button>Send</button>
                 </div>
               </div>

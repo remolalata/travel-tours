@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useId, useRef, useState } from 'react';
 
 interface HeaderSearchProps {
   white?: boolean;
@@ -63,6 +63,7 @@ const searchData: SearchItem[] = [
 export default function HeaderSerch({ white = false }: HeaderSearchProps) {
   const [selected, setSelected] = useState<string>('');
   const [ddActive, setDdActive] = useState<boolean>(false);
+  const headerSearchInputId = useId();
   const dropDownContainer = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -91,7 +92,11 @@ export default function HeaderSerch({ white = false }: HeaderSearchProps) {
   return (
     <div ref={dropDownContainer} className='header__search js-liverSearch js-form-dd'>
       <i className='icon-search text-18'></i>
+      <label className='visually-hidden' htmlFor={headerSearchInputId}>
+        Search destinations or activities
+      </label>
       <input
+        id={headerSearchInputId}
         value={selected}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSelected(event.target.value)}
         onClick={() => setDdActive((previousValue) => !previousValue)}
@@ -106,7 +111,7 @@ export default function HeaderSerch({ white = false }: HeaderSearchProps) {
       >
         <div className='headerSearchRecent__container'>
           <div className='headerSearchRecent__title'>
-            <h4 className='text-18 fw-500'>Recent Searches</h4>
+            <p className='text-18 fw-500'>Recent Searches</p>
           </div>
 
           <div className='headerSearchRecent__list js-results'>

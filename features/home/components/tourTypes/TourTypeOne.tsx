@@ -43,7 +43,7 @@ export default function TourTypeOne() {
               </div>
 
               <div className='featureCard__content'>
-                <h4 className='text-white'>{elm.title}</h4>
+                <h3 className='text-white'>{elm.title}</h3>
               </div>
             </Link>
           ))}

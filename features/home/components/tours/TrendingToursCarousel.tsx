@@ -129,11 +129,21 @@ export default function TrendingToursCarousel() {
           </div>
 
           <FadeIn className='navAbsolute' delay={0.1}>
-            <button className='navAbsolute__button bg-white js-slider1-prev prev1'>
+            <button
+              type='button'
+              className='navAbsolute__button bg-white js-slider1-prev prev1'
+              aria-label='Previous top trending tours'
+              title='Previous top trending tours'
+            >
               <i className='icon-arrow-left text-14'></i>
             </button>
 
-            <button className='navAbsolute__button bg-white js-slider1-next next1'>
+            <button
+              type='button'
+              className='navAbsolute__button bg-white js-slider1-next next1'
+              aria-label='Next top trending tours'
+              title='Next top trending tours'
+            >
               <i className='icon-arrow-right text-14'></i>
             </button>
           </FadeIn>

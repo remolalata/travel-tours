@@ -1,8 +1,10 @@
 import FadeIn from '@/components/common/motion/FadeIn';
 import Image from 'next/image';
-import React from 'react';
+import React, { useId } from 'react';
 
 export default function AppPromoBanner() {
+  const appPromoEmailId = useId();
+
   return (
     <section className='cta -type-1'>
       <div className='cta__bg'>
@@ -32,7 +34,10 @@ export default function AppPromoBanner() {
               <FadeIn className='mt-10'>
                 <div className='x-gap-10 y-gap-10 singleInput -type-2 row'>
                   <div className='col-md-auto col-12'>
-                    <input type='email' placeholder='Email' className='' />
+                    <label className='visually-hidden' htmlFor={appPromoEmailId}>
+                      Email address
+                    </label>
+                    <input id={appPromoEmailId} type='email' placeholder='Email' className='' />
                   </div>
                   <div className='col-md-auto col-12'>
                     <button className='bg-white -accent-1 text-accent-2 button -md col-12'>

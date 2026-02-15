@@ -5,7 +5,7 @@ import Location from '@/components/common/dropdownSearch/Location';
 import TourType from '@/components/common/dropdownSearch/TourType';
 import { motion, useReducedMotion } from 'framer-motion';
 import Image from 'next/image';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useId } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function HomeSearchHero() {
@@ -14,6 +14,7 @@ export default function HomeSearchHero() {
   const [currentActiveDD, setCurrentActiveDD] = useState<string>('');
   const [location, setLocation] = useState<string>('');
   const [tourType, setTourType] = useState<string>('');
+  const whenInputId = useId();
   const dropDownContainer = useRef<HTMLDivElement | null>(null);
   const baseDuration = shouldReduceMotion ? 0 : 0.45;
   const viewport = { once: true, amount: 0.35 as const };
@@ -114,7 +115,7 @@ export default function HomeSearchHero() {
                           <i className='text-20 icon-pin'></i>
                         </div>
                         <div className='searchFormItem__content'>
-                          <h5>Where</h5>
+                          <p className='text-15 fw-500'>Where</p>
                           <div className='js-select-control-chosen'>
                             {location ? location : 'Search destinations'}
                           </div>
@@ -140,10 +141,12 @@ export default function HomeSearchHero() {
                           <i className='text-20 icon-calendar'></i>
                         </div>
                         <div className='searchFormItem__content'>
-                          <h5>When</h5>
+                          <label className='text-15 fw-500' htmlFor={whenInputId}>
+                            When
+                          </label>
                           <div>
                             <span className='js-first-date'>
-                              <Calender active={currentActiveDD === 'calender'} />
+                              <Calender active={currentActiveDD === 'calender'} inputId={whenInputId} />
                             </span>
                             <span className='js-last-date'></span>
                           </div>
@@ -164,7 +167,7 @@ export default function HomeSearchHero() {
                           <i className='text-20 icon-flag'></i>
                         </div>
                         <div className='searchFormItem__content'>
-                          <h5>Tour Type</h5>
+                          <p className='text-15 fw-500'>Tour Type</p>
                           <div className='js-select-control-chosen'>
                             {tourType ? tourType : 'All tour'}
                           </div>
