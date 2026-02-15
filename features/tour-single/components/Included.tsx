@@ -1,0 +1,38 @@
+import { defaultTourContent } from '@/data/tourSingleContent';
+import type { IncludedExcludedItem, TourContent } from '@/data/tourSingleContent';
+import React from 'react';
+
+interface IncludedProps {
+  tourContent?: TourContent;
+}
+
+export default function Included({ tourContent }: IncludedProps) {
+  const includedItems = tourContent?.includedItems || defaultTourContent.includedItems;
+  const excludedItems = tourContent?.excludedItems || defaultTourContent.excludedItems;
+
+  return (
+    <div className='row x-gap-130 y-gap-20 pt-20'>
+      <div className='col-lg-6'>
+        <div className='y-gap-15'>
+          {includedItems.map((elm: IncludedExcludedItem, i) => (
+            <div key={i} className='d-flex'>
+              <i className='icon-check flex-center text-10 size-24 rounded-full text-green-2 bg-green-1 mr-15'></i>
+              {elm.text}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className='col-lg-6'>
+        <div className='y-gap-15'>
+          {excludedItems.map((elm: IncludedExcludedItem, i) => (
+            <div key={i} className='d-flex'>
+              <i className='icon-cross flex-center text-10 size-24 rounded-full text-red-3 bg-red-4 mr-15'></i>
+              {elm.text}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
