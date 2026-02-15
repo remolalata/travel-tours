@@ -66,9 +66,6 @@
   opacity: 1;
   visibility: visible;
 }
-.modal .fadein {
-  /* animation: fadeInImage 0.3s linear 0s 1  ; */
-}
 /* Modal Content */
 .modal .modal-content {
   position: relative;
@@ -308,7 +305,6 @@
   inset: -12px;
   border-radius: inherit;
   border: 1px solid rgba(0, 178, 255, 0.45);
-  animation: contactPulse 2.6s ease-out infinite;
 }
 
 .contactButtonMain:hover {
@@ -386,18 +382,6 @@
   }
 }
 
-@keyframes contactPulse {
-  0% {
-    transform: scale(0.9);
-    opacity: 0.85;
-  }
-
-  100% {
-    transform: scale(1.25);
-    opacity: 0;
-  }
-}
-
 .menu {
   height: var(--app-vh);
 }
@@ -464,7 +448,6 @@
   .contactButtonMain,
   .contactButtonMain::before {
     transition: none;
-    animation: none;
   }
 
   .contactButtonAction {
@@ -672,4 +655,11 @@ body.promoModal-open {
     max-width: 320px;
     margin-top: 20px;
   }
+}
+
+/* Keep animation ownership in Framer Motion only. */
+*,
+*::before,
+*::after {
+  animation: none !important;
 }

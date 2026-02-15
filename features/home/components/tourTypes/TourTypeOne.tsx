@@ -1,3 +1,4 @@
+import FadeIn from '@/components/common/motion/FadeIn';
 import { popularThingsToDoCards } from '@/data/destinations';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -9,25 +10,22 @@ export default function TourTypeOne() {
       <div className='container'>
         <div className='row justify-between items-end y-gap-10'>
           <div className='col-auto'>
-            <h2 data-aos='fade-up' data-aos-delay='' className='text-30 md:text-24'>
+            <FadeIn as='h2' className='text-30 md:text-24'>
               Popular things to do
-            </h2>
+            </FadeIn>
           </div>
 
           <div className='col-auto'>
-            <Link
-              href='/tours'
-              data-aos='fade-up'
-              data-aos-delay='100'
-              className='buttonArrow d-flex items-center '
-            >
-              <span>See all</span>
-              <i className='icon-arrow-top-right text-16 ml-10'></i>
-            </Link>
+            <FadeIn delay={0.1}>
+              <Link href='/tours' className='buttonArrow d-flex items-center '>
+                <span>See all</span>
+                <i className='icon-arrow-top-right text-16 ml-10'></i>
+              </Link>
+            </FadeIn>
           </div>
         </div>
 
-        <div data-aos='fade-up' data-aos-delay='' className='grid -type-1 pt-40 sm:pt-20'>
+        <FadeIn className='grid -type-1 pt-40 sm:pt-20'>
           {popularThingsToDoCards.map((elm, i) => (
             <Link
               href={'/tours'}
@@ -49,7 +47,7 @@ export default function TourTypeOne() {
               </div>
             </Link>
           ))}
-        </div>
+        </FadeIn>
       </div>
     </section>
   );

@@ -1,5 +1,6 @@
 'use client';
 
+import FadeIn from '@/components/common/motion/FadeIn';
 import { formatNumber } from '@/helpers/formatNumber';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -119,7 +120,7 @@ export default function TourSlider() {
             </div>
           </div>
 
-          <div data-aos='fade-up' data-aos-delay='100' className='navAbsolute'>
+          <FadeIn className='navAbsolute' delay={0.1}>
             <button className='navAbsolute__button bg-white js-slider10-prev'>
               <i className='icon-arrow-left text-14'></i>
             </button>
@@ -127,7 +128,7 @@ export default function TourSlider() {
             <button className='navAbsolute__button bg-white js-slider10-next'>
               <i className='icon-arrow-right text-14'></i>
             </button>
-          </div>
+          </FadeIn>
         </div>
       </div>
     </section>

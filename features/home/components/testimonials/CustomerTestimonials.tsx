@@ -1,8 +1,8 @@
 'use client';
 
+import FadeIn from '@/components/common/motion/FadeIn';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination } from 'swiper/modules';
-import { useEffect, useState } from 'react';
+import { Pagination } from 'swiper/modules';
 import { testimonialsOne } from '@/data/testimonials';
 import Image from 'next/image';
 export default function CustomerTestimonials() {
@@ -15,16 +15,16 @@ export default function CustomerTestimonials() {
       <div className='container'>
         <div className='row justify-center text-center'>
           <div className='col-auto'>
-            <h2 data-aos='fade-up' data-aos-delay='' className='text-30 md:text-24'>
+            <FadeIn as='h2' className='text-30 md:text-24'>
               Customer Reviews
-            </h2>
+            </FadeIn>
           </div>
         </div>
 
         <div className='row justify-center pt-60 md:pt-20'>
           <div className='col-xl-6 col-md-8 col-sm-10'>
             <div className='overflow-hidden js-section-slider'>
-              <div data-aos='fade-up' data-aos-delay='' className='swiper-wrapper'>
+              <FadeIn className='swiper-wrapper'>
                 <Swiper
                   spaceBetween={30}
                   className='w-100'
@@ -93,7 +93,7 @@ export default function CustomerTestimonials() {
                     </SwiperSlide>
                   ))}
                 </Swiper>
-              </div>
+              </FadeIn>
 
               <div className='pagination -type-1 justify-center pt-60 md:pt-40 js-testimonials-pagination swiperPagination1'>
                 <div className='pagination__button pbutton2'></div>

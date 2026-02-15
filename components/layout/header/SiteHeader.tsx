@@ -4,11 +4,9 @@ import { useEffect, useState } from 'react';
 import HeaderSerch from '../components/HeaderSerch';
 import Destinations from '../components/Destinations';
 import Activities from '../components/Activities';
-import MobileMenu from '../components/MobileMenu';
 import Image from 'next/image';
 import Link from 'next/link';
 export default function SiteHeader() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
   const [addClass, setAddClass] = useState(false);
@@ -82,7 +80,6 @@ export default function SiteHeader() {
           <HeaderSerch />
         </div>
       </header>
-      <MobileMenu setMobileMenuOpen={setMobileMenuOpen} mobileMenuOpen={mobileMenuOpen} />
     </>
   );
 }

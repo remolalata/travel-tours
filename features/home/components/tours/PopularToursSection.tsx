@@ -1,3 +1,6 @@
+'use client';
+
+import FadeIn from '@/components/common/motion/FadeIn';
 import { formatNumber } from '@/helpers/formatNumber';
 import Stars from '@/components/common/Stars';
 import { tourData } from '@/data/tours';
@@ -11,28 +14,25 @@ export default function PopularToursSection() {
       <div className='container'>
         <div className='row justify-between items-end y-gap-10'>
           <div className='col-auto'>
-            <h2 data-aos='fade-right' data-aos-delay='' className='text-30 md:text-24'>
+            <FadeIn as='h2' className='text-30 md:text-24'>
               Find Popular Tours
-            </h2>
+            </FadeIn>
           </div>
 
           <div className='col-auto'>
-            <Link
-              href='/tours'
-              data-aos='fade-up'
-              data-aos-delay='100'
-              className='buttonArrow d-flex items-center'
-            >
-              <span>See all</span>
-              <i className='icon-arrow-top-right text-16 ml-10'></i>
-            </Link>
+            <FadeIn delay={0.1}>
+              <Link href='/tours' className='buttonArrow d-flex items-center'>
+                <span>See all</span>
+                <i className='icon-arrow-top-right text-16 ml-10'></i>
+              </Link>
+            </FadeIn>
           </div>
         </div>
 
-        <div
-          data-aos='fade-up'
-          data-aos-delay=''
+        <FadeIn
           className='row y-gap-30 justify-between pt-40 sm:pt-20 mobile-css-slider -w-300'
+          amount={0.08}
+          margin='0px'
         >
           {tourData.map((elm, i) => (
             <div key={i} className='col-lg-3 col-md-6'>
@@ -94,7 +94,7 @@ export default function PopularToursSection() {
               </Link>
             </div>
           ))}
-        </div>
+        </FadeIn>
       </div>
     </section>
   );

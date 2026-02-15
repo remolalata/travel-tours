@@ -3,16 +3,20 @@
 import Calender from '@/components/common/dropdownSearch/Calender';
 import Location from '@/components/common/dropdownSearch/Location';
 import TourType from '@/components/common/dropdownSearch/TourType';
+import { motion, useReducedMotion } from 'framer-motion';
 import Image from 'next/image';
 import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function HomeSearchHero() {
   const router = useRouter();
+  const shouldReduceMotion = useReducedMotion();
   const [currentActiveDD, setCurrentActiveDD] = useState<string>('');
   const [location, setLocation] = useState<string>('');
   const [tourType, setTourType] = useState<string>('');
   const dropDownContainer = useRef<HTMLDivElement | null>(null);
+  const baseDuration = shouldReduceMotion ? 0 : 0.45;
+  const viewport = { once: true, amount: 0.35 as const };
 
   const handleLocationChange: React.Dispatch<React.SetStateAction<string>> = (value) => {
     setLocation((previousValue) => (typeof value === 'function' ? value(previousValue) : value));
@@ -66,20 +70,34 @@ export default function HomeSearchHero() {
         <div className='row justify-center'>
           <div className='col-xl-8 col-lg-10'>
             <div className='hero__content'>
-              <h1 data-aos={'fade-up'} data-aos-delay='100' className='hero__title'>
+              <motion.h1
+                className='hero__title'
+                initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={viewport}
+                transition={{ duration: baseDuration, delay: shouldReduceMotion ? 0 : 0.1 }}
+              >
                 Your Dream Destination, Made Hassle-Free
-              </h1>
+              </motion.h1>
 
-              <p data-aos={'fade-up'} data-aos-delay='300' className='hero__text'>
+              <motion.p
+                className='hero__text'
+                initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={viewport}
+                transition={{ duration: baseDuration, delay: shouldReduceMotion ? 0 : 0.2 }}
+              >
                 From flights and hotels to tours and transfers, Gr8 Escapes Travel & Tours brings
                 you complete travel packages for unforgettable local and international getaways.
-              </p>
+              </motion.p>
 
-              <div
+              <motion.div
                 ref={dropDownContainer}
-                data-aos={'fade-up'}
-                data-aos-delay='300'
                 className='mt-60 md:mt-35'
+                initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={viewport}
+                transition={{ duration: baseDuration, delay: shouldReduceMotion ? 0 : 0.3 }}
               >
                 <div className='searchForm -type-1'>
                   <div className='searchForm__form'>
@@ -170,7 +188,7 @@ export default function HomeSearchHero() {
                     </button>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
         </div>

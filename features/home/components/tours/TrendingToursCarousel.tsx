@@ -1,5 +1,6 @@
 'use client';
 
+import FadeIn from '@/components/common/motion/FadeIn';
 import { formatNumber } from '@/helpers/formatNumber';
 
 import React from 'react';
@@ -18,27 +19,24 @@ export default function TrendingToursCarousel() {
       <div className='container'>
         <div className='row justify-between items-end y-gap-10'>
           <div className='col-auto'>
-            <h2 data-aos='fade-up' data-aos-delay='' className='text-30 md:text-24'>
+            <FadeIn as='h2' className='text-30 md:text-24'>
               Top Trending
-            </h2>
+            </FadeIn>
           </div>
 
           <div className='col-auto'>
-            <Link
-              href='/tours'
-              data-aos='fade-up'
-              data-aos-delay='100'
-              className='buttonArrow d-flex items-center'
-            >
-              <span>See all</span>
-              <i className='icon-arrow-top-right text-16 ml-10'></i>
-            </Link>
+            <FadeIn delay={0.1}>
+              <Link href='/tours' className='buttonArrow d-flex items-center'>
+                <span>See all</span>
+                <i className='icon-arrow-top-right text-16 ml-10'></i>
+              </Link>
+            </FadeIn>
           </div>
         </div>
 
         <div className='relative pt-40 sm:pt-20'>
           <div className='overflow-hidden pb-30 js-section-slider'>
-            <div data-aos='fade-up' data-aos-delay='' className='swiper-wrapper'>
+            <FadeIn className='swiper-wrapper'>
               <Swiper
                 spaceBetween={30}
                 className='w-100'
@@ -127,10 +125,10 @@ export default function TrendingToursCarousel() {
                   </SwiperSlide>
                 ))}
               </Swiper>
-            </div>
+            </FadeIn>
           </div>
 
-          <div data-aos='fade-up' data-aos-delay='100' className='navAbsolute'>
+          <FadeIn className='navAbsolute' delay={0.1}>
             <button className='navAbsolute__button bg-white js-slider1-prev prev1'>
               <i className='icon-arrow-left text-14'></i>
             </button>
@@ -138,7 +136,7 @@ export default function TrendingToursCarousel() {
             <button className='navAbsolute__button bg-white js-slider1-next next1'>
               <i className='icon-arrow-right text-14'></i>
             </button>
-          </div>
+          </FadeIn>
         </div>
       </div>
     </section>

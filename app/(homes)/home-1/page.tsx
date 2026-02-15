@@ -1,3 +1,4 @@
+import FadeIn from '@/components/common/motion/FadeIn';
 import FeaturedDealsBanner from '@/features/home/components/banners/FeaturedDealsBanner';
 import AppPromoBanner from '@/features/home/components/banners/AppPromoBanner';
 import TrendingDestinations from '@/features/home/components/destinations/TrendingDestinations';
@@ -28,9 +29,9 @@ export default function Home() {
         <div className='container'>
           <div className='row justify-center text-center'>
             <div className='col-xl-8 col-lg-10'>
-              <h2 data-aos='fade-up' className='text-30 md:text-24'>
+              <FadeIn as='h2' className='text-30 md:text-24'>
                 Frequently Asked Questions
-              </h2>
+              </FadeIn>
             </div>
           </div>
 

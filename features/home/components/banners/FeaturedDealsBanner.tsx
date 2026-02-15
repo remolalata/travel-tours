@@ -1,3 +1,4 @@
+import FadeIn from '@/components/common/motion/FadeIn';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
@@ -19,29 +20,27 @@ export default function FeaturedDealsBanner() {
         <div className='row'>
           <div className='col-xxl-4 col-xl-5 col-lg-6 col-md-7'>
             <div className='cta__content'>
-              <h2 data-aos='fade-up' data-aos-delay='' className='text-40 md:text-30 lh-13'>
+              <FadeIn as='h2' className='text-40 md:text-30 lh-13'>
                 Grab up to <span className='text-accent-1'>35% off</span>
                 <br className='lg:d-none' />
                 on your favorite
                 <br className='lg:d-none' />
                 Destination
-              </h2>
+              </FadeIn>
 
-              <p data-aos='fade-up' data-aos-delay='' className='mt-10'>
+              <FadeIn as='p' className='mt-10'>
                 Limited time offer, don&apos;t miss the opportunity
-              </p>
+              </FadeIn>
 
               <div className='mt-30 md:mt-20'>
-                <button
-                  data-aos='fade-right'
-                  data-aos-delay=''
-                  className='text-white bg-accent-1 button -md -dark-1'
-                >
-                  <Link href='/tours'>
-                    Book Now
-                    <i className='icon-arrow-top-right ml-10 text-16'></i>
-                  </Link>
-                </button>
+                <FadeIn>
+                  <button className='text-white bg-accent-1 button -md -dark-1'>
+                    <Link href='/tours'>
+                      Book Now
+                      <i className='icon-arrow-top-right ml-10 text-16'></i>
+                    </Link>
+                  </button>
+                </FadeIn>
               </div>
             </div>
           </div>
