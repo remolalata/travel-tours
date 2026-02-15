@@ -1,6 +1,7 @@
 import SiteFooter from '@/components/layout/footers/SiteFooter';
 import SiteHeader from '@/components/layout/header/SiteHeader';
 import GetQuoteFormSection from '@/features/get-quote/components/sections/GetQuoteFormSection';
+import { Suspense } from 'react';
 
 export const metadata = {
   title: 'Get a Quote | Gr8 Escapes Travel & Tours',
@@ -11,7 +12,9 @@ export default function Page() {
   return (
     <main>
       <SiteHeader />
-      <GetQuoteFormSection />
+      <Suspense fallback={<div className='layout-pt-lg layout-pb-lg container'>Loading form...</div>}>
+        <GetQuoteFormSection />
+      </Suspense>
       <SiteFooter />
     </main>
   );
