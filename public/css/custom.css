@@ -243,7 +243,7 @@
   z-index: 101;
   width: 60px;
   height: 60px;
-  --contact-radius: 88px;
+  --contact-radius: 104px;
 }
 
 .contactButtonList {
@@ -373,12 +373,12 @@
 }
 
 .contact-group-open .toTopButton {
-  bottom: 190px;
+  bottom: 220px;
 }
 
 @media (max-width: 1024px) and (min-width: 768px) {
   .contact-group-open .toTopButton {
-    bottom: 190px;
+    bottom: 220px;
   }
 }
 
@@ -414,7 +414,7 @@
     bottom: calc(20px + env(safe-area-inset-bottom, 0px));
     width: 54px;
     height: 54px;
-    --contact-radius: 74px;
+    --contact-radius: 92px;
   }
 
   .contactButtonAction,
@@ -429,7 +429,7 @@
   }
 
   .contact-group-open .toTopButton {
-    bottom: calc(160px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(194px + env(safe-area-inset-bottom, 0px));
   }
 
   .contactButtonMain svg,
