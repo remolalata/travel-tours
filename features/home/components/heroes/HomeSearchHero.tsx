@@ -1,12 +1,14 @@
 'use client';
 
-import Calender from '@/components/common/dropdownSearch/Calender';
-import Location from '@/components/common/dropdownSearch/Location';
-import TourType from '@/components/common/dropdownSearch/TourType';
 import { motion, useReducedMotion } from 'framer-motion';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState, useRef, useId } from 'react';
+import { useEffect, useId,useRef, useState } from 'react';
+
+import Calender from '@/components/common/dropdownSearch/Calender';
+import Location from '@/components/common/dropdownSearch/Location';
+import TourType from '@/components/common/dropdownSearch/TourType';
+import { homeContent } from '@/content/features/home';
 
 export default function HomeSearchHero() {
   const router = useRouter();
@@ -18,6 +20,7 @@ export default function HomeSearchHero() {
   const dropDownContainer = useRef<HTMLDivElement | null>(null);
   const baseDuration = shouldReduceMotion ? 0 : 0.45;
   const viewport = { once: true, amount: 0.35 as const };
+  const { hero } = homeContent;
 
   const handleLocationChange: React.Dispatch<React.SetStateAction<string>> = (value) => {
     setLocation((previousValue) => (typeof value === 'function' ? value(previousValue) : value));
@@ -68,7 +71,7 @@ export default function HomeSearchHero() {
       </div>
 
       <div className='container'>
-        <div className='row justify-center'>
+        <div className='justify-center row'>
           <div className='col-xl-8 col-lg-10'>
             <div className='hero__content'>
               <motion.h1
@@ -78,7 +81,7 @@ export default function HomeSearchHero() {
                 viewport={viewport}
                 transition={{ duration: baseDuration, delay: shouldReduceMotion ? 0 : 0.1 }}
               >
-                Your Dream Destination, Made Hassle-Free
+                {hero.title}
               </motion.h1>
 
               <motion.p
@@ -88,8 +91,7 @@ export default function HomeSearchHero() {
                 viewport={viewport}
                 transition={{ duration: baseDuration, delay: shouldReduceMotion ? 0 : 0.2 }}
               >
-                From flights and hotels to tours and transfers, Gr8 Escapes Travel & Tours brings
-                you complete travel packages for unforgettable local and international getaways.
+                {hero.description}
               </motion.p>
 
               <motion.div
@@ -102,7 +104,7 @@ export default function HomeSearchHero() {
               >
                 <div className='searchForm -type-1'>
                   <div className='searchForm__form'>
-                    <div className='searchFormItem js-select-control js-form-dd'>
+                    <div className='js-select-control searchFormItem js-form-dd'>
                       <div
                         className='searchFormItem__button'
                         onClick={() =>
@@ -111,13 +113,13 @@ export default function HomeSearchHero() {
                           )
                         }
                       >
-                        <div className='searchFormItem__icon size-50 rounded-12 border-1 flex-center'>
+                        <div className='flex-center border rounded-12 size-50 searchFormItem__icon'>
                           <i className='text-20 icon-pin'></i>
                         </div>
                         <div className='searchFormItem__content'>
-                          <p className='text-15 fw-500'>Where</p>
+                          <p className='text-15 fw-500'>{hero.fields.whereLabel}</p>
                           <div className='js-select-control-chosen'>
-                            {location ? location : 'Search destinations'}
+                            {location ? location : hero.fields.wherePlaceholder}
                           </div>
                         </div>
                       </div>
@@ -128,7 +130,7 @@ export default function HomeSearchHero() {
                       />
                     </div>
 
-                    <div className='searchFormItem js-select-control js-form-dd js-calendar'>
+                    <div className='js-select-control searchFormItem js-form-dd js-calendar'>
                       <div
                         className='searchFormItem__button'
                         onClick={() =>
@@ -137,12 +139,12 @@ export default function HomeSearchHero() {
                           )
                         }
                       >
-                        <div className='searchFormItem__icon size-50 rounded-12 border-1 flex-center'>
+                        <div className='flex-center border rounded-12 size-50 searchFormItem__icon'>
                           <i className='text-20 icon-calendar'></i>
                         </div>
                         <div className='searchFormItem__content'>
                           <label className='text-15 fw-500' htmlFor={whenInputId}>
-                            When
+                            {hero.fields.whenLabel}
                           </label>
                           <div>
                             <span className='js-first-date'>
@@ -157,7 +159,7 @@ export default function HomeSearchHero() {
                       </div>
                     </div>
 
-                    <div className='searchFormItem js-select-control js-form-dd'>
+                    <div className='js-select-control searchFormItem js-form-dd'>
                       <div
                         className='searchFormItem__button'
                         onClick={() =>
@@ -166,13 +168,13 @@ export default function HomeSearchHero() {
                           )
                         }
                       >
-                        <div className='searchFormItem__icon size-50 rounded-12 border-1 flex-center'>
+                        <div className='flex-center border rounded-12 size-50 searchFormItem__icon'>
                           <i className='text-20 icon-flag'></i>
                         </div>
                         <div className='searchFormItem__content'>
-                          <p className='text-15 fw-500'>Tour Type</p>
+                          <p className='text-15 fw-500'>{hero.fields.tourTypeLabel}</p>
                           <div className='js-select-control-chosen'>
-                            {tourType ? tourType : 'All tour'}
+                            {tourType ? tourType : hero.fields.tourTypePlaceholder}
                           </div>
                         </div>
                       </div>
@@ -199,10 +201,10 @@ export default function HomeSearchHero() {
                           searchParamsString ? `/get-quote?${searchParamsString}` : '/get-quote',
                         );
                       }}
-                      className='button -dark-1 bg-accent-1 text-white'
+                      className='text-white bg-accent-1 button -dark-1'
                     >
-                      <i className='icon-search text-16 mr-10'></i>
-                      Get a Quote
+                      <i className='mr-10 text-16 icon-search'></i>
+                      {hero.submitLabel}
                     </button>
                   </div>
                 </div>

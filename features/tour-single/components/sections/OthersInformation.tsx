@@ -1,11 +1,9 @@
-import React from 'react';
-
 export default function OthersInformation() {
   return (
     <>
       <div className='col-lg-3 col-6'>
         <div className='d-flex items-center'>
-          <div className='flex-center size-50 rounded-12 border-1'>
+          <div className='flex-center border rounded-12 size-50'>
             <i className='text-20 icon-clock'></i>
           </div>
 
@@ -18,7 +16,7 @@ export default function OthersInformation() {
 
       <div className='col-lg-3 col-6'>
         <div className='d-flex items-center'>
-          <div className='flex-center size-50 rounded-12 border-1'>
+          <div className='flex-center border rounded-12 size-50'>
             <i className='text-20 icon-teamwork'></i>
           </div>
 
@@ -31,7 +29,7 @@ export default function OthersInformation() {
 
       <div className='col-lg-3 col-6'>
         <div className='d-flex items-center'>
-          <div className='flex-center size-50 rounded-12 border-1'>
+          <div className='flex-center border rounded-12 size-50'>
             <i className='text-20 icon-birthday-cake'></i>
           </div>
 
@@ -44,7 +42,7 @@ export default function OthersInformation() {
 
       <div className='col-lg-3 col-6'>
         <div className='d-flex items-center'>
-          <div className='flex-center size-50 rounded-12 border-1'>
+          <div className='flex-center border rounded-12 size-50'>
             <i className='text-20 icon-translate'></i>
           </div>
 

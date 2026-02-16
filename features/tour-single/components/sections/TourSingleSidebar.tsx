@@ -1,13 +1,14 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
+
 import Calender from '@/components/common/dropdownSearch/Calender';
 import Location from '@/components/common/dropdownSearch/Location';
 import TourType from '@/components/common/dropdownSearch/TourType';
-import { formatNumber } from '@/helpers/formatNumber';
-import type { TourContent } from '@/data/tourSingleContent';
 import type { Tour } from '@/data/tours';
-import { useRouter } from 'next/navigation';
+import type { TourContent } from '@/data/tourSingleContent';
+import { formatNumber } from '@/utils/helpers/formatNumber';
 
 interface TourSingleSidebarProps {
   tour?: Tour;
@@ -66,12 +67,12 @@ export default function TourSingleSidebar({ tour }: TourSingleSidebarProps) {
     <div className='tourSingleSidebar'>
       <div className='d-flex items-center'>
         <div>From</div>
-        <div className='text-20 fw-500 ml-10'>₱{formatNumber(tour?.price ?? 1200)}</div>
+        <div className='ml-10 text-20 fw-500'>₱{formatNumber(tour?.price ?? 1200)}</div>
       </div>
 
-      <div ref={dropDownContainer} className='searchForm -type-1 -sidebar mt-20'>
+      <div ref={dropDownContainer} className='mt-20 searchForm -type-1 -sidebar'>
         <div className='searchForm__form'>
-          <div className='searchFormItem js-select-control js-form-dd'>
+          <div className='js-select-control searchFormItem js-form-dd'>
             <div
               className='searchFormItem__button'
               onClick={() =>
@@ -80,7 +81,7 @@ export default function TourSingleSidebar({ tour }: TourSingleSidebarProps) {
                 )
               }
             >
-              <div className='searchFormItem__icon size-50 rounded-12 bg-light-1 flex-center'>
+              <div className='flex-center bg-light-1 rounded-12 size-50 searchFormItem__icon'>
                 <i className='text-20 icon-pin'></i>
               </div>
               <div className='searchFormItem__content'>
@@ -94,7 +95,7 @@ export default function TourSingleSidebar({ tour }: TourSingleSidebarProps) {
             <Location setLocation={setLocation} active={currentActiveDD === 'location'} />
           </div>
 
-          <div className='searchFormItem js-select-control js-form-dd js-calendar'>
+          <div className='js-select-control searchFormItem js-form-dd js-calendar'>
             <div
               className='searchFormItem__button'
               onClick={() =>
@@ -103,7 +104,7 @@ export default function TourSingleSidebar({ tour }: TourSingleSidebarProps) {
                 )
               }
             >
-              <div className='searchFormItem__icon size-50 rounded-12 bg-light-1 flex-center'>
+              <div className='flex-center bg-light-1 rounded-12 size-50 searchFormItem__icon'>
                 <i className='text-20 icon-calendar'></i>
               </div>
               <div className='searchFormItem__content'>
@@ -119,12 +120,12 @@ export default function TourSingleSidebar({ tour }: TourSingleSidebarProps) {
                 </div>
               </div>
               <div className='searchFormItem__icon_chevron'>
-                <i className='icon-chevron-down d-flex text-18'></i>
+                <i className='d-flex text-18 icon-chevron-down'></i>
               </div>
             </div>
           </div>
 
-          <div className='searchFormItem js-select-control js-form-dd'>
+          <div className='js-select-control searchFormItem js-form-dd'>
             <div
               className='searchFormItem__button'
               onClick={() =>
@@ -133,7 +134,7 @@ export default function TourSingleSidebar({ tour }: TourSingleSidebarProps) {
                 )
               }
             >
-              <div className='searchFormItem__icon size-50 rounded-12 bg-light-1 flex-center'>
+              <div className='flex-center bg-light-1 rounded-12 size-50 searchFormItem__icon'>
                 <i className='text-20 icon-flag'></i>
               </div>
               <div className='searchFormItem__content'>
@@ -141,7 +142,7 @@ export default function TourSingleSidebar({ tour }: TourSingleSidebarProps) {
                 <div className='js-select-control-chosen'>{tourType ? tourType : 'All tour'}</div>
               </div>
               <div className='searchFormItem__icon_chevron'>
-                <i className='icon-chevron-down d-flex text-18'></i>
+                <i className='d-flex text-18 icon-chevron-down'></i>
               </div>
             </div>
 
@@ -152,7 +153,7 @@ export default function TourSingleSidebar({ tour }: TourSingleSidebarProps) {
 
       <button
         type='button'
-        className='button -md -dark-1 col-12 bg-accent-1 text-white mt-20'
+        className='mt-20 text-white bg-accent-1 button -md -dark-1 col-12'
         onClick={() => {
           const quoteSearchParams = new URLSearchParams();
 

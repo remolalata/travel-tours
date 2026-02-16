@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+
 import { locations } from '@/data/searchDDLocations';
 
 interface LocationProps {

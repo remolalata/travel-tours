@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import HeaderSerch from '@/components/layout/components/HeaderSerch';
-import Destinations from '@/components/layout/components/Destinations';
-import Activities from '@/components/layout/components/Activities';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+
+import Activities from '@/components/layout/shared/Activities';
+import Destinations from '@/components/layout/shared/Destinations';
+import HeaderSerch from '@/components/layout/shared/HeaderSerch';
 export default function SiteHeader() {
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 

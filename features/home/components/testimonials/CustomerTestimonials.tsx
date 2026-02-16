@@ -1,11 +1,15 @@
 'use client';
 
-import FadeIn from '@/components/common/motion/FadeIn';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination } from 'swiper/modules';
-import { testimonialsOne } from '@/data/testimonials';
 import Image from 'next/image';
+import { Pagination } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+import FadeIn from '@/components/common/motion/FadeIn';
+import { homeContent } from '@/content/features/home';
+import { testimonialsOne } from '@/data/testimonials';
 export default function CustomerTestimonials() {
+  const { testimonials } = homeContent;
+
   return (
     <section className='relative layout-pt-xl layout-pb-xl'>
       <div className='sectionBg md:d-none'>
@@ -16,7 +20,7 @@ export default function CustomerTestimonials() {
         <div className='row justify-center text-center'>
           <div className='col-auto'>
             <FadeIn as='h2' className='text-30 md:text-24'>
-              Customer Reviews
+              {testimonials.title}
             </FadeIn>
           </div>
         </div>

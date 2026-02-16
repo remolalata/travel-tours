@@ -1,24 +1,27 @@
-import FadeIn from '@/components/common/motion/FadeIn';
-import { popularThingsToDoCards } from '@/data/destinations';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
 
-export default function TourTypeOne() {
+import FadeIn from '@/components/common/motion/FadeIn';
+import { homeContent } from '@/content/features/home';
+import { popularThingsToDoCards } from '@/data/destinations';
+
+export default function PopularThingsToDoSection() {
+  const { tourTypes } = homeContent;
+
   return (
     <section className='layout-pt-xl layout-pb-xl'>
       <div className='container'>
         <div className='row justify-between items-end y-gap-10'>
           <div className='col-auto'>
             <FadeIn as='h2' className='text-30 md:text-24'>
-              Popular things to do
+              {tourTypes.title}
             </FadeIn>
           </div>
 
           <div className='col-auto'>
             <FadeIn delay={0.1}>
               <Link href='/tours' className='buttonArrow d-flex items-center '>
-                <span>See all</span>
+                <span>{tourTypes.ctaLabel}</span>
                 <i className='icon-arrow-top-right text-16 ml-10'></i>
               </Link>
             </FadeIn>

@@ -1,26 +1,27 @@
 'use client';
 
-import React, { useState } from 'react';
+import Image from 'next/image';
+import { useState } from 'react';
+
 import Calender from '@/components/common/dropdownSearch/Calender';
-import { durations, languages, toursTypes, features, rating } from '@/data/tourFilteringOptions';
 import RangeSlider from '@/components/common/RangeSlider';
 import Stars from '@/components/common/Stars';
-import Image from 'next/image';
+import { durations, features, languages, rating,toursTypes } from '@/data/tourFilteringOptions';
 
 export default function Sidebar() {
   const [ddActives, setDdActives] = useState(['tourtype']);
   return (
-    <div className='sidebar -type-1 rounded-12'>
-      <div className='sidebar__header bg-accent-1'>
+    <div className='rounded-12 sidebar -type-1'>
+      <div className='bg-accent-1 sidebar__header'>
         <div className='text-15 text-white fw-500'>When are you traveling?</div>
 
         <div className='mt-10'>
           <div className='searchForm -type-1 -col-1 -narrow' style={{ overflow: 'hidden' }}>
             <div className='searchForm__form'>
-              <div className='searchFormItem js-select-control js-form-dd js-calendar'>
+              <div className='js-select-control searchFormItem js-form-dd js-calendar'>
                 <div className='searchFormItem__button' data-x-click='calendar'>
-                  <div className='pl-calendar d-flex items-center'>
-                    <i className='icon-calendar text-20 mr-15'></i>
+                  <div className='d-flex items-center pl-calendar'>
+                    <i className='mr-15 text-20 icon-calendar'></i>
                     <div>
                       <span className='js-first-date'>
                         <Calender />
@@ -44,7 +45,7 @@ export default function Sidebar() {
               } `}
             >
               <div
-                className='accordion__button d-flex items-center justify-between'
+                className='d-flex justify-between items-center accordion__button'
                 onClick={() =>
                   setDdActives((pre) =>
                     pre.includes('tourtype')
@@ -55,7 +56,7 @@ export default function Sidebar() {
               >
                 <h5 className='text-18 fw-500'>Tour Type</h5>
 
-                <div className='accordion__icon flex-center'>
+                <div className='flex-center accordion__icon'>
                   <i className='icon-chevron-down'></i>
                   <i className='icon-chevron-down'></i>
                 </div>
@@ -70,7 +71,7 @@ export default function Sidebar() {
                     {toursTypes.map((elm, i) => (
                       <div key={i}>
                         <div className='d-flex items-center'>
-                          <div className='form-checkbox '>
+                          <div className='form-checkbox'>
                             <input type='checkbox' name='name' />
                             <div className='form-checkbox__mark'>
                               <div className='form-checkbox__icon'>
@@ -84,13 +85,13 @@ export default function Sidebar() {
                             </div>
                           </div>
 
-                          <div className='lh-11 ml-10'>{elm}</div>
+                          <div className='ml-10 lh-11'>{elm}</div>
                         </div>
                       </div>
                     ))}
                   </div>
 
-                  <a href='#' className='d-flex text-15 fw-500 text-accent-2 mt-15'>
+                  <a href='#' className='d-flex mt-15 text-15 text-accent-2 fw-500'>
                     See More
                   </a>
                 </div>
@@ -107,7 +108,7 @@ export default function Sidebar() {
               } `}
             >
               <div
-                className='accordion__button mb-10 d-flex items-center justify-between'
+                className='d-flex justify-between items-center mb-10 accordion__button'
                 onClick={() =>
                   setDdActives((pre) =>
                     pre.includes('pricerange')
@@ -118,7 +119,7 @@ export default function Sidebar() {
               >
                 <h5 className='text-18 fw-500'>Filter Price</h5>
 
-                <div className='accordion__icon flex-center'>
+                <div className='flex-center accordion__icon'>
                   <i className='icon-chevron-down'></i>
                   <i className='icon-chevron-down'></i>
                 </div>
@@ -144,7 +145,7 @@ export default function Sidebar() {
               } `}
             >
               <div
-                className='accordion__button d-flex items-center justify-between'
+                className='d-flex justify-between items-center accordion__button'
                 onClick={() =>
                   setDdActives((pre) =>
                     pre.includes('duration')
@@ -155,7 +156,7 @@ export default function Sidebar() {
               >
                 <h5 className='text-18 fw-500'>Duration</h5>
 
-                <div className='accordion__icon flex-center'>
+                <div className='flex-center accordion__icon'>
                   <i className='icon-chevron-down'></i>
                   <i className='icon-chevron-down'></i>
                 </div>
@@ -170,7 +171,7 @@ export default function Sidebar() {
                     {durations.map((elm, i) => (
                       <div key={i}>
                         <div className='d-flex items-center'>
-                          <div className='form-checkbox '>
+                          <div className='form-checkbox'>
                             <input type='checkbox' name='name' />
                             <div className='form-checkbox__mark'>
                               <div className='form-checkbox__icon'>
@@ -184,7 +185,7 @@ export default function Sidebar() {
                             </div>
                           </div>
 
-                          <div className='lh-11 ml-10'>{elm}</div>
+                          <div className='ml-10 lh-11'>{elm}</div>
                         </div>
                       </div>
                     ))}
@@ -203,7 +204,7 @@ export default function Sidebar() {
               } `}
             >
               <div
-                className='accordion__button d-flex items-center justify-between'
+                className='d-flex justify-between items-center accordion__button'
                 onClick={() =>
                   setDdActives((pre) =>
                     pre.includes('language')
@@ -214,7 +215,7 @@ export default function Sidebar() {
               >
                 <h5 className='text-18 fw-500'>Language</h5>
 
-                <div className='accordion__icon flex-center'>
+                <div className='flex-center accordion__icon'>
                   <i className='icon-chevron-down'></i>
                   <i className='icon-chevron-down'></i>
                 </div>
@@ -229,7 +230,7 @@ export default function Sidebar() {
                     {languages.map((elm, i) => (
                       <div key={i}>
                         <div className='d-flex items-center'>
-                          <div className='form-checkbox '>
+                          <div className='form-checkbox'>
                             <input type='checkbox' name='name' />
                             <div className='form-checkbox__mark'>
                               <div className='form-checkbox__icon'>
@@ -243,7 +244,7 @@ export default function Sidebar() {
                             </div>
                           </div>
 
-                          <div className='lh-11 ml-10'>{elm}</div>
+                          <div className='ml-10 lh-11'>{elm}</div>
                         </div>
                       </div>
                     ))}
@@ -262,7 +263,7 @@ export default function Sidebar() {
               } `}
             >
               <div
-                className='accordion__button d-flex items-center justify-between'
+                className='d-flex justify-between items-center accordion__button'
                 onClick={() =>
                   setDdActives((pre) =>
                     pre.includes('rating')
@@ -273,7 +274,7 @@ export default function Sidebar() {
               >
                 <h5 className='text-18 fw-500'>Rating</h5>
 
-                <div className='accordion__icon flex-center'>
+                <div className='flex-center accordion__icon'>
                   <i className='icon-chevron-down'></i>
                   <i className='icon-chevron-down'></i>
                 </div>
@@ -315,7 +316,7 @@ export default function Sidebar() {
               } `}
             >
               <div
-                className='accordion__button d-flex items-center justify-between'
+                className='d-flex justify-between items-center accordion__button'
                 onClick={() =>
                   setDdActives((pre) =>
                     pre.includes('features')
@@ -326,7 +327,7 @@ export default function Sidebar() {
               >
                 <h5 className='text-18 fw-500'>Specials</h5>
 
-                <div className='accordion__icon flex-center'>
+                <div className='flex-center accordion__icon'>
                   <i className='icon-chevron-down'></i>
                   <i className='icon-chevron-down'></i>
                 </div>
@@ -341,7 +342,7 @@ export default function Sidebar() {
                     {features.map((elm, i) => (
                       <div key={i}>
                         <div className='d-flex items-center'>
-                          <div className='form-checkbox '>
+                          <div className='form-checkbox'>
                             <input type='checkbox' name='name' />
                             <div className='form-checkbox__mark'>
                               <div className='form-checkbox__icon'>
@@ -355,7 +356,7 @@ export default function Sidebar() {
                             </div>
                           </div>
 
-                          <div className='lh-11 ml-10'>{elm}</div>
+                          <div className='ml-10 lh-11'>{elm}</div>
                         </div>
                       </div>
                     ))}

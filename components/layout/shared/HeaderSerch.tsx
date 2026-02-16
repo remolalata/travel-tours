@@ -1,70 +1,20 @@
 'use client';
 
 import Image from 'next/image';
-import React, { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
+
+import { headerSearchContent } from '@/content/shared/layoutHeaderSearch';
 
 interface HeaderSearchProps {
   white?: boolean;
 }
-
-interface SearchItem {
-  id: number;
-  iconClass?: string;
-  img?: string;
-  title: string;
-  location: string;
-}
-
-const searchData: SearchItem[] = [
-  {
-    id: 1,
-    iconClass: 'icon-pin text-20',
-    title: 'Boracay tour package',
-    location: 'Philippines',
-  },
-  {
-    id: 2,
-    iconClass: 'icon-pin text-20',
-    title: 'Thailand Tour package',
-    location: 'Thailand',
-  },
-  {
-    id: 3,
-    iconClass: 'icon-pin text-20',
-    title: 'Palawan tour package',
-    location: 'Philippines',
-  },
-  {
-    id: 4,
-    iconClass: 'icon-pin text-20',
-    title: 'Cebu and Bohol tour package',
-    location: 'Philippines',
-  },
-  {
-    id: 5,
-    iconClass: 'icon-pin text-20',
-    title: 'Siargao island hopping package',
-    location: 'Philippines',
-  },
-  {
-    id: 6,
-    iconClass: 'icon-pin text-20',
-    title: 'Batanes cultural tour package',
-    location: 'Philippines',
-  },
-  {
-    id: 7,
-    iconClass: 'icon-pin text-20',
-    title: 'Ilocos heritage tour package',
-    location: 'Philippines',
-  },
-];
 
 export default function HeaderSerch({ white = false }: HeaderSearchProps) {
   const [selected, setSelected] = useState<string>('');
   const [ddActive, setDdActive] = useState<boolean>(false);
   const headerSearchInputId = useId();
   const dropDownContainer = useRef<HTMLDivElement | null>(null);
+  const { labels, searchData } = headerSearchContent;
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
@@ -91,17 +41,17 @@ export default function HeaderSerch({ white = false }: HeaderSearchProps) {
 
   return (
     <div ref={dropDownContainer} className='header__search js-liverSearch js-form-dd'>
-      <i className='icon-search text-18'></i>
+      <i className='text-18 icon-search'></i>
       <label className='visually-hidden' htmlFor={headerSearchInputId}>
-        Search destinations or activities
+        {labels.inputLabel}
       </label>
       <input
         id={headerSearchInputId}
         value={selected}
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSelected(event.target.value)}
+        onChange={(event) => setSelected(event.target.value)}
         onClick={() => setDdActive((previousValue) => !previousValue)}
         type='text'
-        placeholder='Search destinations or activities'
+        placeholder={labels.inputPlaceholder}
         className={`js-search ${white ? 'text-white' : ''}`}
       />
 
@@ -111,7 +61,7 @@ export default function HeaderSerch({ white = false }: HeaderSearchProps) {
       >
         <div className='headerSearchRecent__container'>
           <div className='headerSearchRecent__title'>
-            <p className='text-18 fw-500'>Recent Searches</p>
+            <p className='text-18 fw-500'>{labels.recentSearchesTitle}</p>
           </div>
 
           <div className='headerSearchRecent__list js-results'>
@@ -125,7 +75,7 @@ export default function HeaderSerch({ white = false }: HeaderSearchProps) {
                 className='headerSearchRecent__item js-search-option'
                 data-x-click='headerSearch'
               >
-                <div className='size-50 bg-white rounded-12 border-1 flex-center'>
+                <div className='flex-center bg-white border rounded-12 size-50'>
                   {item.iconClass && <i className={item.iconClass}></i>}
                   {item.img && (
                     <Image
@@ -139,7 +89,7 @@ export default function HeaderSerch({ white = false }: HeaderSearchProps) {
                 </div>
                 <div className='ml-10'>
                   <div className='fw-500 js-search-option-target'>{item.title}</div>
-                  <div className='lh-14 text-14 text-light-2'>{item.location}</div>
+                  <div className='text-14 text-light-2 lh-14'>{item.location}</div>
                 </div>
               </button>
             ))}

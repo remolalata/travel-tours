@@ -1,12 +1,13 @@
 'use client';
 
 import { useMemo } from 'react';
+
 import type { ContactChannelLinks } from './useMessengerLink';
 
-const VIBER_APP_BASE_URL = 'viber://chat?number=';
-const VIBER_WEB_BASE_URL = 'https://invite.viber.com/?number=';
+const WHATSAPP_APP_BASE_URL = 'whatsapp://send?phone=';
+const WHATSAPP_WEB_BASE_URL = 'https://api.whatsapp.com/send?phone=';
 
-export default function useViberLink(
+export default function useWhatsAppLink(
   phoneNumber: string | number | null | undefined,
 ): ContactChannelLinks | null {
   return useMemo(() => {
@@ -22,11 +23,9 @@ export default function useViberLink(
       return null;
     }
 
-    const encodedPhoneNumber = encodeURIComponent(`+${digitsOnly}`);
-
     return {
-      appUrl: `${VIBER_APP_BASE_URL}${encodedPhoneNumber}`,
-      webUrl: `${VIBER_WEB_BASE_URL}${encodedPhoneNumber}`,
+      appUrl: `${WHATSAPP_APP_BASE_URL}${digitsOnly}`,
+      webUrl: `${WHATSAPP_WEB_BASE_URL}${digitsOnly}`,
     };
   }, [phoneNumber]);
 }

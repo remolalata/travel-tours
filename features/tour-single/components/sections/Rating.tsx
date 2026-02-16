@@ -1,6 +1,5 @@
-import { defaultTourContent } from '@/data/tourSingleContent';
 import type { RatingItem, TourContent } from '@/data/tourSingleContent';
-import React from 'react';
+import { defaultTourContent } from '@/data/tourSingleContent';
 
 interface RatingProps {
   tourContent?: TourContent;
@@ -24,9 +23,9 @@ export default function Rating({ tourContent }: RatingProps) {
               </div>
             </div>
 
-            <div className='overallRating__rating d-flex items-center'>
-              <i className='icon-star text-yellow-2 text-16'></i>
-              <div className='text-16 fw-500 ml-10'>{elm.rating}</div>
+            <div className='d-flex items-center overallRating__rating'>
+              <i className='text-16 text-yellow-2 icon-star'></i>
+              <div className='ml-10 text-16 fw-500'>{elm.rating}</div>
             </div>
           </div>
         ))}

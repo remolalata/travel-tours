@@ -1,17 +1,19 @@
 'use client';
 
-import FadeIn from '@/components/common/motion/FadeIn';
-import { formatNumber } from '@/helpers/formatNumber';
-
-import React from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination } from 'swiper/modules';
-import Stars from '@/components/common/Stars';
-import { tourData } from '@/data/tours';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Navigation, Pagination } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+import FadeIn from '@/components/common/motion/FadeIn';
+import Stars from '@/components/common/Stars';
+import { homeContent } from '@/content/features/home';
+import { tourData } from '@/data/tours';
+import { formatNumber } from '@/utils/helpers/formatNumber';
 
 export default function TrendingToursCarousel() {
+  const { trendingTours } = homeContent;
+
   return (
     <section className='layout-pt-xl layout-pb-xl relative'>
       <div className='sectionBg -w-1530 rounded-12 bg-light-1'></div>
@@ -20,14 +22,14 @@ export default function TrendingToursCarousel() {
         <div className='row justify-between items-end y-gap-10'>
           <div className='col-auto'>
             <FadeIn as='h2' className='text-30 md:text-24'>
-              Top Trending
+              {trendingTours.title}
             </FadeIn>
           </div>
 
           <div className='col-auto'>
             <FadeIn delay={0.1}>
               <Link href='/tours' className='buttonArrow d-flex items-center'>
-                <span>See all</span>
+                <span>{trendingTours.ctaLabel}</span>
                 <i className='icon-arrow-top-right text-16 ml-10'></i>
               </Link>
             </FadeIn>
@@ -83,8 +85,8 @@ export default function TrendingToursCarousel() {
 
                         <button
                           className='tourCard__favorite'
-                          aria-label='Add to favorites'
-                          title='Add to favorites'
+                          aria-label={trendingTours.favoriteLabel}
+                          title={trendingTours.favoriteLabel}
                         >
                           <i className='icon-heart'></i>
                         </button>
@@ -117,7 +119,8 @@ export default function TrendingToursCarousel() {
                           </div>
 
                           <div>
-                            From <span className='text-16 fw-500'>${formatNumber(elm.price)}</span>
+                            {trendingTours.pricePrefix}{' '}
+                            <span className='text-16 fw-500'>${formatNumber(elm.price)}</span>
                           </div>
                         </div>
                       </div>
@@ -132,8 +135,8 @@ export default function TrendingToursCarousel() {
             <button
               type='button'
               className='navAbsolute__button bg-white js-slider1-prev prev1'
-              aria-label='Previous top trending tours'
-              title='Previous top trending tours'
+              aria-label={trendingTours.navigation.previousLabel}
+              title={trendingTours.navigation.previousLabel}
             >
               <i className='icon-arrow-left text-14'></i>
             </button>
@@ -141,8 +144,8 @@ export default function TrendingToursCarousel() {
             <button
               type='button'
               className='navAbsolute__button bg-white js-slider1-next next1'
-              aria-label='Next top trending tours'
-              title='Next top trending tours'
+              aria-label={trendingTours.navigation.nextLabel}
+              title={trendingTours.navigation.nextLabel}
             >
               <i className='icon-arrow-right text-14'></i>
             </button>

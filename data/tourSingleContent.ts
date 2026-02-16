@@ -1,4 +1,3 @@
-import { allTour } from './tours';
 import type {
   FaqItem,
   IncludedExcludedItem,
@@ -7,6 +6,8 @@ import type {
   ReviewItem,
   TourContent,
 } from '@/types/tourContent';
+
+import { allTour } from './tours';
 
 export type {
   FaqItem,

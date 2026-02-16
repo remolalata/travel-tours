@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function PageHeader() {
   return (
     <section className='pageHeader -type-3'>

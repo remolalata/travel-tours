@@ -1,8 +1,9 @@
-import { locations } from '@/data/searchDDLocations';
-import { tourTypeOptions } from '@/components/common/dropdownSearch/TourType';
-import type { QuoteFormState } from '@/features/get-quote/hooks/useQuoteRequestForm';
 import type { SxProps, Theme } from '@mui/material/styles';
 import type { TextFieldProps } from '@mui/material/TextField';
+
+import { tourTypeOptions } from '@/content/shared/tourTypeOptions';
+import { locations } from '@/data/searchDDLocations';
+import type { QuoteFormState } from '@/features/get-quote/hooks/useQuoteRequestForm';
 
 export interface QuoteFieldConfig {
   name: keyof QuoteFormState;

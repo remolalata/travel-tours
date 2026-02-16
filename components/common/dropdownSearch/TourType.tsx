@@ -1,20 +1,11 @@
 'use client';
-import React from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 
-export const tourTypeOptions = [
-  'Island Hopping',
-  'Beach Getaway',
-  'City Tour',
-  'Cultural & Heritage',
-  'Family Package',
-  'Honeymoon Package',
-  'International Tour',
-  'Adventure Tour',
-];
+import { tourTypeOptions } from '@/content/shared/tourTypeOptions';
 
 interface TourTypeProps {
   active: boolean;
-  setTourType: React.Dispatch<React.SetStateAction<string>>;
+  setTourType: Dispatch<SetStateAction<string>>;
 }
 
 export default function TourType({ active, setTourType }: TourTypeProps) {

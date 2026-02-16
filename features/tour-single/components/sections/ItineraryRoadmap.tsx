@@ -1,8 +1,9 @@
 'use client';
 
-import { defaultTourContent } from '@/data/tourSingleContent';
+import { useState } from 'react';
+
 import type { ItineraryStep, TourContent } from '@/data/tourSingleContent';
-import React, { useState } from 'react';
+import { defaultTourContent } from '@/data/tourSingleContent';
 
 interface ItineraryRoadmapProps {
   tourContent?: TourContent;
@@ -30,7 +31,7 @@ export default function ItineraryRoadmap({ tourContent }: ItineraryRoadmapProps)
           )}
           <div className='roadmap__wrap'>
             <div
-              className='roadmap__title '
+              className='roadmap__title'
               onClick={() => setActiveRoadmap((previousValue) => (previousValue === i ? -1 : i))}
             >
               {elm.title}

@@ -1,10 +1,16 @@
 import nextVitals from 'eslint-config-next/core-web-vitals';
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
 
 const config = [
   ...nextVitals,
   {
     files: ['**/*.{js,jsx,ts,tsx,mjs,cjs}'],
+    plugins: {
+      'simple-import-sort': simpleImportSort,
+    },
     rules: {
+      'simple-import-sort/imports': 'error',
+      'simple-import-sort/exports': 'error',
       'no-restricted-imports': [
         'error',
         {
@@ -37,6 +43,16 @@ const config = [
             },
           ],
         },
+      ],
+    },
+  },
+  {
+    files: ['**/*.{ts,tsx}'],
+    rules: {
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
     },
   },

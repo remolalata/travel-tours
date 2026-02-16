@@ -1,7 +1,5 @@
 'use client';
 
-import React from 'react';
-
 interface StarsProps {
   star: number | string | null | undefined;
   font?: number | string;

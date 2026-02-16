@@ -1,12 +1,10 @@
 import SiteFooter from '@/components/layout/footers/SiteFooter';
 import SiteHeader from '@/components/layout/header/SiteHeader';
-import PageHeader from '@/features/tour-single/components/sections/PageHeader';
-import TourSlider from '@/features/tour-single/components/sections/TourSlider';
-import TourDetailsContent from '@/features/tour-single/components/sections/TourDetailsContent';
-import { getTourContentById } from '@/data/tourSingleContent';
 import { allTour } from '@/data/tours';
-
-import React from 'react';
+import { getTourContentById } from '@/data/tourSingleContent';
+import PageHeader from '@/features/tour-single/components/sections/PageHeader';
+import TourDetailsContent from '@/features/tour-single/components/sections/TourDetailsContent';
+import TourSlider from '@/features/tour-single/components/sections/TourSlider';
 
 export const metadata = {
   title: 'Boracay Tour Package | Gr8 Escapes Travel & Tours',

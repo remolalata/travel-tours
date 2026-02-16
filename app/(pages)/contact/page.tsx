@@ -1,13 +1,13 @@
+import ContactForm from '@/components/contact/sections/ContactForm';
+import Locations from '@/components/contact/sections/Locations';
+import Map from '@/components/contact/sections/Map';
 import SiteFooter from '@/components/layout/footers/SiteFooter';
 import SiteHeader from '@/components/layout/header/SiteHeader';
-import ContactForm from '@/features/contact/components/sections/ContactForm';
-import Locations from '@/features/contact/components/sections/Locations';
-import Map from '@/features/contact/components/sections/Map';
-import React from 'react';
+import { contactPageContent } from '@/content/features/contact';
 
 export const metadata = {
-  title: 'Contact || ViaTour - Travel & Tour React NextJS Template',
-  description: 'ViaTour - Travel & Tour React NextJS Template',
+  title: contactPageContent.metadata.title,
+  description: contactPageContent.metadata.description,
 };
 
 export default function page() {

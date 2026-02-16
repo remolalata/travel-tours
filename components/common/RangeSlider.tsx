@@ -1,10 +1,9 @@
 'use client';
-import { useState } from 'react';
+import type { SliderProps } from '@mui/material/Slider';
 import Slider from '@mui/material/Slider';
 import { ThemeProvider } from '@mui/material/styles';
-import type { SliderProps } from '@mui/material/Slider';
-
 import { createTheme } from '@mui/material/styles';
+import { useState } from 'react';
 
 const theme = createTheme({
   palette: {

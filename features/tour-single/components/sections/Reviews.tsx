@@ -1,8 +1,8 @@
-import { defaultTourContent } from '@/data/tourSingleContent';
-import type { ReviewItem, TourContent } from '@/data/tourSingleContent';
-import React from 'react';
-import Stars from '@/components/common/Stars';
 import Image from 'next/image';
+
+import Stars from '@/components/common/Stars';
+import type { ReviewItem, TourContent } from '@/data/tourSingleContent';
+import { defaultTourContent } from '@/data/tourSingleContent';
 
 interface ReviewsProps {
   tourContent?: TourContent;
@@ -14,10 +14,10 @@ export default function Reviews({ tourContent }: ReviewsProps) {
     <>
       {reviewItems.map((elm: ReviewItem, i) => (
         <div key={i} className='pt-30'>
-          <div className='row justify-between'>
+          <div className='justify-between row'>
             <div className='col-auto'>
               <div className='d-flex items-center'>
-                <div className='size-40 rounded-full'>
+                <div className='rounded-full size-40'>
                   <Image
                     width={40}
                     height={40}
@@ -27,7 +27,7 @@ export default function Reviews({ tourContent }: ReviewsProps) {
                   />
                 </div>
 
-                <div className='text-16 fw-500 ml-20'>{elm.name}</div>
+                <div className='ml-20 text-16 fw-500'>{elm.name}</div>
               </div>
             </div>
 
@@ -40,12 +40,12 @@ export default function Reviews({ tourContent }: ReviewsProps) {
             <div className='d-flex x-gap-5'>
               <Stars star={elm.stars} />
             </div>
-            <div className='text-16 fw-500 ml-10'>{elm.reviewText}</div>
+            <div className='ml-10 text-16 fw-500'>{elm.reviewText}</div>
           </div>
 
           <p className='mt-10'>{elm.desc}</p>
 
-          <div className='row x-gap-20 y-gap-20 pt-20'>
+          <div className='x-gap-20 y-gap-20 pt-20 row'>
             {elm.images.map((imagePath, i2) => (
               <div key={i2} className='col-auto'>
                 <div className='size-130'>
@@ -54,23 +54,23 @@ export default function Reviews({ tourContent }: ReviewsProps) {
                     height={195}
                     src={imagePath}
                     alt='image'
-                    className='img-cover rounded-12'
+                    className='rounded-12 img-cover'
                   />
                 </div>
               </div>
             ))}
           </div>
 
-          <div className='d-flex x-gap-30 items-center mt-20'>
+          <div className='d-flex items-center x-gap-30 mt-20'>
             <div>
               <a href='#' className='d-flex items-center'>
-                <i className='icon-like text-16 mr-10'></i>
+                <i className='mr-10 text-16 icon-like'></i>
                 Helpful
               </a>
             </div>
             <div>
               <a href='#' className='d-flex items-center'>
-                <i className='icon-dislike text-16 mr-10'></i>
+                <i className='mr-10 text-16 icon-dislike'></i>
                 Not helpful
               </a>
             </div>

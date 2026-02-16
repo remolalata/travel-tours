@@ -1,9 +1,12 @@
-import FadeIn from '@/components/common/motion/FadeIn';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+
+import FadeIn from '@/components/common/motion/FadeIn';
+import { homeContent } from '@/content/features/home';
 
 export default function FeaturedDealsBanner() {
+  const { featuredDeals } = homeContent;
+
   return (
     <section className='cta -type-2'>
       <div className='cta__bg'>
@@ -21,21 +24,22 @@ export default function FeaturedDealsBanner() {
           <div className='col-xxl-4 col-xl-5 col-lg-6 col-md-7'>
             <div className='cta__content'>
               <FadeIn as='h2' className='text-40 md:text-30 lh-13'>
-                Grab up to <span className='text-accent-1'>35% off</span>
+                {featuredDeals.headlinePrefix}{' '}
+                <span className='text-accent-1'>{featuredDeals.headlineHighlight}</span>
                 <br className='lg:d-none' />
-                on your favorite
+                {featuredDeals.headlineLineTwo}
                 <br className='lg:d-none' />
-                Destination
+                {featuredDeals.headlineLineThree}
               </FadeIn>
 
               <FadeIn as='p' className='mt-10'>
-                Limited time offer, don&apos;t miss the opportunity
+                {featuredDeals.description}
               </FadeIn>
 
               <div className='mt-30 md:mt-20'>
                 <FadeIn>
                   <Link href='/get-quote' className='text-white bg-accent-1 button -md -dark-1'>
-                    Get a Quote
+                    {featuredDeals.ctaLabel}
                     <i className='icon-arrow-top-right ml-10 text-16'></i>
                   </Link>
                 </FadeIn>

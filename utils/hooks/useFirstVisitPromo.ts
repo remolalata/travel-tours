@@ -11,7 +11,7 @@ export default function useFirstVisitPromo() {
   const markPromoAsSeen = useCallback(() => {
     try {
       localStorage.setItem(FIRST_VISIT_PROMO_KEY, '1');
-    } catch (error) {
+    } catch {
       // Ignore storage errors (private mode / blocked storage).
     }
   }, []);
@@ -26,7 +26,7 @@ export default function useFirstVisitPromo() {
 
     try {
       hasSeenPromo = localStorage.getItem(FIRST_VISIT_PROMO_KEY) === '1';
-    } catch (error) {
+    } catch {
       hasSeenPromo = false;
     }
 

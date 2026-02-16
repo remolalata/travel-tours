@@ -1,7 +1,8 @@
 'use client';
 
-import DateRangePickerInput from '@/components/common/date/DateRangePickerInput';
 import type { Dayjs } from 'dayjs';
+
+import DateRangePickerInput from '@/components/common/date/DateRangePickerInput';
 
 interface CalenderProps {
   active?: boolean;

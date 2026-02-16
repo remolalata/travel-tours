@@ -1,8 +1,9 @@
 'use client';
 
-import { defaultTourContent } from '@/data/tourSingleContent';
+import { useEffect, useRef, useState } from 'react';
+
 import type { FaqItem, TourContent } from '@/data/tourSingleContent';
-import React, { useEffect, useRef, useState } from 'react';
+import { defaultTourContent } from '@/data/tourSingleContent';
 
 interface FaqProps {
   tourContent?: TourContent;
@@ -37,12 +38,12 @@ export default function Faq({ tourContent }: FaqProps) {
             } `}
           >
             <div
-              className='accordion__button d-flex items-center justify-between'
+              className='d-flex justify-between items-center accordion__button'
               onClick={() => setCurrentActiveFaq((previousValue) => (previousValue === i ? -1 : i))}
             >
-              <div className='button text-16 text-dark-1'>{elm.question}</div>
+              <div className='text-16 text-dark-1 button'>{elm.question}</div>
 
-              <div className='accordion__icon size-30 flex-center bg-light-2 rounded-full'>
+              <div className='flex-center bg-light-2 rounded-full size-30 accordion__icon'>
                 <i className='icon-plus'></i>
                 <i className='icon-minus'></i>
               </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import React from 'react';
+import { Dispatch, SetStateAction } from 'react';
 
 interface ImageLightBoxImage {
   image: string;
@@ -9,10 +9,10 @@ interface ImageLightBoxImage {
 
 interface ImageLightBoxProps {
   images: ImageLightBoxImage[];
-  setActiveLightBox: React.Dispatch<React.SetStateAction<boolean>>;
+  setActiveLightBox: Dispatch<SetStateAction<boolean>>;
   activeLightBox: boolean;
   currentSlideIndex: number;
-  setCurrentSlideIndex: React.Dispatch<React.SetStateAction<number>>;
+  setCurrentSlideIndex: Dispatch<SetStateAction<number>>;
 }
 
 export default function ImageLightBox({

@@ -1,11 +1,12 @@
 'use client';
 
-import { memo, useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
-import useMessengerLink from '@/hooks/contact/useMessengerLink';
-import useViberLink from '@/hooks/contact/useViberLink';
-import useWhatsAppLink from '@/hooks/contact/useWhatsAppLink';
-import type { ContactChannelLinks } from '@/hooks/contact/useMessengerLink';
 import type { CSSProperties, MouseEvent as ReactMouseEvent, ReactElement } from 'react';
+import { memo, useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
+
+import type { ContactChannelLinks } from '@/utils/hooks/contact/useMessengerLink';
+import useMessengerLink from '@/utils/hooks/contact/useMessengerLink';
+import useViberLink from '@/utils/hooks/contact/useViberLink';
+import useWhatsAppLink from '@/utils/hooks/contact/useWhatsAppLink';
 
 function MessengerIcon() {
   return (

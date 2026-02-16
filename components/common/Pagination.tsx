@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 interface PaginationProps {
   range?: number;
@@ -9,10 +9,10 @@ interface PaginationProps {
 export default function Pagination({ range = 20 }: PaginationProps) {
   const [activeIndex, setActiveIndex] = useState<number>(1);
   return (
-    <div className='pagination justify-center'>
+    <div className='justify-center pagination'>
       <button
         onClick={() => setActiveIndex((pre) => (pre > 1 ? pre - 1 : 1))}
-        className='pagination__button customStylePaginationPre button -accent-1 mr-15 -prev'
+        className='mr-15 -accent-1 pagination__button customStylePaginationPre button -prev'
       >
         <i className='icon-arrow-left text-15'></i>
       </button>
@@ -82,7 +82,7 @@ export default function Pagination({ range = 20 }: PaginationProps) {
 
       <button
         onClick={() => setActiveIndex((pre) => (pre < range ? pre + 1 : pre))}
-        className='pagination__button customStylePaginationNext button -accent-1 ml-15 -next'
+        className='ml-15 -accent-1 pagination__button customStylePaginationNext button -next'
       >
         <i className='icon-arrow-right text-15'></i>
       </button>

@@ -1,14 +1,14 @@
 'use client';
 
-import FadeIn from '@/components/common/motion/FadeIn';
-import { formatNumber } from '@/helpers/formatNumber';
-
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination } from 'swiper/modules';
-import { tourData } from '@/data/tours';
 import Image from 'next/image';
-import Stars from '@/components/common/Stars';
 import Link from 'next/link';
+import { Navigation, Pagination } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+import FadeIn from '@/components/common/motion/FadeIn';
+import Stars from '@/components/common/Stars';
+import { tourData } from '@/data/tours';
+import { formatNumber } from '@/utils/helpers/formatNumber';
 
 export default function TourSlider() {
   return (

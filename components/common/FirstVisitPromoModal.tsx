@@ -1,9 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect } from 'react';
 import type { MouseEvent } from 'react';
-import useFirstVisitPromo from '@/hooks/useFirstVisitPromo';
+import { useEffect } from 'react';
+
+import useFirstVisitPromo from '@/utils/hooks/useFirstVisitPromo';
 
 export default function FirstVisitPromoModal() {
   const { isOpen, closePromo } = useFirstVisitPromo();

@@ -1,36 +1,39 @@
 'use client';
 
-import FadeIn from '@/components/common/motion/FadeIn';
-import { formatNumber } from '@/helpers/formatNumber';
-import Stars from '@/components/common/Stars';
-import { tourData } from '@/data/tours';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+
+import FadeIn from '@/components/common/motion/FadeIn';
+import Stars from '@/components/common/Stars';
+import { homeContent } from '@/content/features/home';
+import { tourData } from '@/data/tours';
+import { formatNumber } from '@/utils/helpers/formatNumber';
 
 export default function PopularToursSection() {
+  const { popularTours } = homeContent;
+
   return (
     <section className='layout-pt-xl layout-pb-xl'>
       <div className='container'>
-        <div className='row justify-between items-end y-gap-10'>
+        <div className='justify-between items-end y-gap-10 row'>
           <div className='col-auto'>
             <FadeIn as='h2' className='text-30 md:text-24'>
-              Find Popular Tours
+              {popularTours.title}
             </FadeIn>
           </div>
 
           <div className='col-auto'>
             <FadeIn delay={0.1}>
-              <Link href='/tours' className='buttonArrow d-flex items-center'>
-                <span>See all</span>
-                <i className='icon-arrow-top-right text-16 ml-10'></i>
+              <Link href='/tours' className='d-flex items-center buttonArrow'>
+                <span>{popularTours.ctaLabel}</span>
+                <i className='icon-arrow-top-right ml-10 text-16'></i>
               </Link>
             </FadeIn>
           </div>
         </div>
 
         <FadeIn
-          className='row y-gap-30 justify-between pt-40 sm:pt-20 mobile-css-slider -w-300'
+          className='justify-between y-gap-30 pt-40 sm:pt-20 -w-300 row mobile-css-slider'
           amount={0.08}
           margin='0px'
         >
@@ -38,7 +41,7 @@ export default function PopularToursSection() {
             <div key={i} className='col-lg-3 col-md-6'>
               <Link
                 href={`/tour/${elm.id}`}
-                className='tourCard -type-1 py-10 px-10 border-1 rounded-12  -hover-shadow'
+                className='-hover-shadow px-10 py-10 border-1 rounded-12 tourCard -type-1'
               >
                 <div className='tourCard__header'>
                   <div className='tourCard__image ratio ratio-28:20'>
@@ -47,47 +50,48 @@ export default function PopularToursSection() {
                       height={301}
                       src={elm.imageSrc}
                       alt='image'
-                      className='img-ratio rounded-12'
+                      className='rounded-12 img-ratio'
                     />
                   </div>
 
                   <button
                     className='tourCard__favorite'
-                    aria-label='Add to favorites'
-                    title='Add to favorites'
+                    aria-label={popularTours.favoriteLabel}
+                    title={popularTours.favoriteLabel}
                   >
                     <i className='icon-heart'></i>
                   </button>
                 </div>
 
-                <div className='tourCard__content px-10 pt-10'>
-                  <div className='tourCard__location d-flex items-center text-13 text-light-2'>
-                    <i className='icon-pin d-flex text-16 text-light-2 mr-5'></i>
+                <div className='px-10 pt-10 tourCard__content'>
+                  <div className='d-flex items-center text-13 text-light-2 tourCard__location'>
+                    <i className='d-flex mr-5 text-16 text-light-2 icon-pin'></i>
                     {elm.location}
                   </div>
 
-                  <h3 className='tourCard__title text-16 fw-500 mt-5'>
+                  <h3 className='mt-5 text-16 tourCard__title fw-500'>
                     <span>{elm.title}</span>
                   </h3>
 
-                  <div className='tourCard__rating d-flex items-center text-13 mt-5'>
+                  <div className='d-flex items-center mt-5 text-13 tourCard__rating'>
                     <div className='d-flex x-gap-5'>
                       <Stars star={elm.rating} />
                     </div>
 
-                    <span className='text-dark-1 ml-10'>
+                    <span className='ml-10 text-dark-1'>
                       {elm.rating} ({elm.ratingCount})
                     </span>
                   </div>
 
-                  <div className='d-flex justify-between items-center border-1-top text-13 text-dark-1 pt-10 mt-10'>
+                  <div className='d-flex justify-between items-center mt-10 pt-10 border-1-top text-13 text-dark-1'>
                     <div className='d-flex items-center'>
-                      <i className='icon-clock text-16 mr-5'></i>
+                      <i className='mr-5 text-16 icon-clock'></i>
                       {elm.duration}
                     </div>
 
                     <div>
-                      From <span className='text-16 fw-500'>₱{formatNumber(elm.price)}</span>
+                      {popularTours.pricePrefix}{' '}
+                      <span className='text-16 fw-500'>₱{formatNumber(elm.price)}</span>
                     </div>
                   </div>
                 </div>
