@@ -57,7 +57,15 @@ const config = [
     },
   },
   {
-    ignores: ['.next/**', 'node_modules/**', 'out/**', 'build/**', 'dist/**', 'coverage/**'],
+    ignores: [
+      '.next/**',
+      'node_modules/**',
+      'out/**',
+      'build/**',
+      'dist/**',
+      'coverage/**',
+      'template/**',
+    ],
   },
 ];
 

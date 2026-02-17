@@ -4,12 +4,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
+import MobileMenu from '@/components/layout/components/MobileMenu';
 import Activities from '@/components/layout/shared/Activities';
 import Destinations from '@/components/layout/shared/Destinations';
 import HeaderSerch from '@/components/layout/shared/HeaderSerch';
-export default function SiteHeader() {
-  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
+export default function SiteHeader() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [addClass, setAddClass] = useState(false);
 
   // Add a class to the element when scrolled 50px
@@ -48,7 +50,15 @@ export default function SiteHeader() {
     <>
       <header className={`header -type-1 js-header ${addClass ? '-is-sticky' : ''}`}>
         <div className='header__container container'>
-          <div className='headerMobile__left'></div>
+          <div className='headerMobile__left'>
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className='header__menuBtn js-menu-button'
+              aria-label='Open main menu'
+            >
+              <i className='icon-main-menu'></i>
+            </button>
+          </div>
 
           <div className='header__logo'>
             <Link href='/' className='header__logo'>
@@ -74,6 +84,13 @@ export default function SiteHeader() {
           <div className='header__right'>
             <Destinations />
             <Activities />
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className='header__menuBtn ml-30 js-menu-button'
+              aria-label='Open main menu'
+            >
+              <i className='icon-main-menu'></i>
+            </button>
           </div>
         </div>
 
@@ -81,6 +98,7 @@ export default function SiteHeader() {
           <HeaderSerch />
         </div>
       </header>
+      <MobileMenu mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
     </>
   );
 }
