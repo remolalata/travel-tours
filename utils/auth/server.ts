@@ -11,9 +11,10 @@ export async function getServerAuthState() {
   }
 
   const { data: adminUser, error } = await supabase
-    .from('admin_users')
-    .select('user_id')
+    .from('users')
+    .select('user_id, role')
     .eq('user_id', user.id)
+    .eq('role', 'admin')
     .maybeSingle();
 
   return { user, isAdmin: !error && Boolean(adminUser) };

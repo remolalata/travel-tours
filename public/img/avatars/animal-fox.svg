@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Fox avatar">
+  <defs>
+    <linearGradient id="bgFox" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFE6CC"/>
+      <stop offset="100%" stop-color="#FFD1A6"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" rx="40" fill="url(#bgFox)"/>
+  <path d="M45 78 L70 48 L86 82 Z" fill="#D76E2D"/>
+  <path d="M155 78 L130 48 L114 82 Z" fill="#D76E2D"/>
+  <path d="M100 150 C62 150 48 124 48 102 C48 75 71 58 100 58 C129 58 152 75 152 102 C152 124 138 150 100 150 Z" fill="#E67E35"/>
+  <path d="M100 145 C74 145 62 126 62 108 C62 92 78 80 100 80 C122 80 138 92 138 108 C138 126 126 145 100 145 Z" fill="#FFF2E8"/>
+  <circle cx="80" cy="102" r="6" fill="#2B2B2B"/>
+  <circle cx="120" cy="102" r="6" fill="#2B2B2B"/>
+  <path d="M100 112 L92 122 H108 Z" fill="#2B2B2B"/>
+  <path d="M92 128 Q100 136 108 128" fill="none" stroke="#2B2B2B" stroke-width="4" stroke-linecap="round"/>
+</svg>

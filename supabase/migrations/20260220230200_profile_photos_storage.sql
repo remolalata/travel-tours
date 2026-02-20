@@ -1,4 +1,4 @@
--- Enforce deterministic storage policies for profile photos across environments
+-- Profile photo storage bucket and deterministic RLS policies
 
 insert into storage.buckets (id, name, public)
 values ('profile-photos', 'profile-photos', true)
@@ -49,3 +49,4 @@ using (
   bucket_id = 'profile-photos'
   and (storage.foldername(name))[1] = auth.uid()::text
 );
+

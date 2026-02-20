@@ -75,26 +75,11 @@ export interface AdminMainContent {
   chartTabs: AdminChartTab[];
 }
 
-export type BookingStatus = 'Approved' | 'Pending' | 'Cancelled';
-
-export interface AdminBookingItem {
-  id: number;
-  orderNumber: string;
-  imageUrl: string;
-  title: string;
-  startDate: string;
-  endDate: string;
-  numberOfPeople: string;
-  cost: string;
-  status: BookingStatus;
-}
+export type BookingStatus = 'Approved' | 'Pending' | 'Cancelled' | 'Completed';
 
 export interface AdminBookingContent {
   intro: AdminSectionIntro;
   tabs: BookingStatus[];
-  tableHeaders: string[];
-  bookings: AdminBookingItem[];
-  resultSummary: string;
 }
 
 export interface AdminListingItem {

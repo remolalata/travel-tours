@@ -59,9 +59,13 @@ Required public variables (used by floating chat buttons):
 
 ## Supabase Migrations
 
-Database schema and RLS for auth/admin/profile are versioned in:
+Database schema, RLS, and seed data are versioned in:
 
-- `supabase/migrations/20260220183032_auth_admin_profile.sql`
+- `supabase/migrations/20260220230000_users.sql`
+- `supabase/migrations/20260220230100_profiles.sql`
+- `supabase/migrations/20260220230200_profile_photos_storage.sql`
+- `supabase/migrations/20260220230300_destinations.sql`
+- `supabase/migrations/20260220230400_bookings.sql`
 
 Recommended workflow:
 
@@ -77,13 +81,29 @@ npx supabase init
 npx supabase link --project-ref <your-project-ref>
 ```
 
-3. Apply migrations to that project:
+3. Apply migrations to the linked remote project:
 
 ```bash
 npx supabase db push
 ```
 
-For a new organization/project, run steps 2-3 and the same schema/policies will be created automatically.
+Optional reset commands:
+
+- Reset local Supabase (Docker) and re-run all migrations/seeds:
+
+```bash
+npx supabase db reset
+```
+
+- Reset linked remote Supabase project and re-run all migrations/seeds:
+
+```bash
+npx supabase db reset --linked
+```
+
+Warning: `db reset --linked` is destructive for remote data.
+
+For a new project, run steps 2-3 and the same schema/policies will be created automatically.
 
 ## Getting Started
 
