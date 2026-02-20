@@ -35,19 +35,22 @@
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "recharts": "^2.15.3",
-    "swiper": "^11.2.7"
+    "swiper": "^12.1.2"
   },
   "devDependencies": {
     "@types/bootstrap": "^5.2.10",
     "@types/node": "^25.2.3",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "eslint": "^9.38.0",
+    "eslint": "^9.39.2",
     "eslint-config-next": "^16.1.6",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "jiti": "^2.6.1",
     "prettier": "^3.6.2",
     "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "minimatch": "^10.2.1"
   },
   "packageManager": "npm@11.6.2"
 }
