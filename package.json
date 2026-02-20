@@ -27,6 +27,8 @@
     "@mui/x-date-pickers": "^8.27.0",
     "@popperjs/core": "2.11.8",
     "@react-google-maps/api": "^2.20.6",
+    "@supabase/ssr": "^0.8.0",
+    "@supabase/supabase-js": "^2.97.0",
     "bootstrap": "^5.3.6",
     "dayjs": "^1.11.19",
     "framer-motion": "^12.34.0",

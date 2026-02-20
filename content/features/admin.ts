@@ -112,7 +112,7 @@ export const adminContent: AdminContent = {
       { id: 5, href: '/admin/favorites', iconClass: 'icon-heart text-26', label: 'My Favorites' },
       { id: 6, href: '/admin/messages', iconClass: 'icon-message text-26', label: 'Messages' },
       { id: 7, href: '/admin/profile', iconClass: 'icon-account text-26', label: 'My Profile' },
-      { id: 8, href: '/', iconClass: 'icon-logout text-26', label: 'Logout' },
+      { id: 8, href: '/logout', iconClass: 'icon-logout text-26', label: 'Logout' },
     ],
     topActions: [
       { id: 1, iconClass: 'icon-mail text-20', label: 'Notifications' },

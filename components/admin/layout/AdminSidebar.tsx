@@ -26,10 +26,19 @@ export default function AdminSidebar({ onClose }: AdminSidebarProps) {
       <div className='sidebar -dashboard'>
         {adminContent.shell.navItems.map((item) => (
           <div key={item.id} className={`sidebar__item ${pathname === item.href ? '-is-active' : ''}`}>
-            <Link href={item.href}>
-              <i className={item.iconClass}></i>
-              <span className='ml-10'>{item.label}</span>
-            </Link>
+            {item.href === '/logout' ? (
+              <form action='/logout' method='post' className='sidebar__logoutForm'>
+                <button type='submit' className='sidebar__linkButton'>
+                  <i className={item.iconClass}></i>
+                  <span className='ml-10'>{item.label}</span>
+                </button>
+              </form>
+            ) : (
+              <Link href={item.href} className='sidebar__linkButton'>
+                <i className={item.iconClass}></i>
+                <span className='ml-10'>{item.label}</span>
+              </Link>
+            )}
           </div>
         ))}
       </div>
