@@ -54,6 +54,36 @@ Required public variables (used by floating chat buttons):
 - `NEXT_PUBLIC_WHATSAPP_NUMBER`
 - `NEXT_PUBLIC_VIBER_NUMBER`
 - `NEXT_PUBLIC_SITE_URL` (for canonical URLs, `robots.txt`, and sitemap)
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+## Supabase Migrations
+
+Database schema and RLS for auth/admin/profile are versioned in:
+
+- `supabase/migrations/20260220183032_auth_admin_profile.sql`
+
+Recommended workflow:
+
+1. Initialize Supabase project files (once):
+
+```bash
+npx supabase init
+```
+
+2. Link to your target Supabase project:
+
+```bash
+npx supabase link --project-ref <your-project-ref>
+```
+
+3. Apply migrations to that project:
+
+```bash
+npx supabase db push
+```
+
+For a new organization/project, run steps 2-3 and the same schema/policies will be created automatically.
 
 ## Getting Started
 

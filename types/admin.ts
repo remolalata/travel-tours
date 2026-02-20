@@ -197,6 +197,8 @@ export interface AdminProfileContent {
   profileTitle: string;
   profileFields: AdminProfileField[];
   profileSaveLabel: string;
+  savingLabel: string;
+  loadingLabel: string;
   photoTitle: string;
   photoHint: string;
   photos: AdminGalleryItem[];
@@ -204,6 +206,16 @@ export interface AdminProfileContent {
   passwordFields: AdminProfileField[];
   passwordSaveLabel: string;
   uploadLabel: string;
+  messages: {
+    fixHighlightedFields: string;
+    sessionExpired: string;
+    profileUploadFailedPrefix: string;
+    profileTableMissing: string;
+    profileSaved: string;
+    passwordOldIncorrect: string;
+    passwordSaved: string;
+  };
+  validationMessages: Record<string, string>;
 }
 
 export interface AdminPageContentMap {
@@ -220,4 +232,17 @@ export interface AdminContent {
   metadata: Record<AdminPageKey, AdminMetadata>;
   shell: AdminShellContent;
   pages: AdminPageContentMap;
+}
+
+export interface AdminProfileFormState {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+}
+
+export interface AdminPasswordFormState {
+  oldPassword: string;
+  newPassword: string;
+  confirmPassword: string;
 }
