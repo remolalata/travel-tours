@@ -1,104 +1,17 @@
-'use client';
+import type { AuthViewerState } from '@/api/auth/mutations/authApi';
+import SiteHeaderClient from '@/components/layout/header/SiteHeaderClient';
+import { getServerAuthState } from '@/utils/auth/server';
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
+export default async function SiteHeader() {
+  const authState = await getServerAuthState();
 
-import MobileMenu from '@/components/layout/components/MobileMenu';
-import Activities from '@/components/layout/shared/Activities';
-import Destinations from '@/components/layout/shared/Destinations';
-import HeaderSerch from '@/components/layout/shared/HeaderSerch';
-
-export default function SiteHeader() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
-  const [addClass, setAddClass] = useState(false);
-
-  // Add a class to the element when scrolled 50px
-  const handleScroll = () => {
-    if (window.scrollY >= 50) {
-      setAddClass(true);
-    } else {
-      setAddClass(false);
-    }
+  const initialAuthState: AuthViewerState = {
+    isAuthenticated: Boolean(authState.user),
+    role: authState.role,
+    avatarUrl: authState.avatarUrl,
+    fullName: authState.fullName,
+    email: authState.email,
   };
 
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-
-    // Cleanup the event listener when the component unmounts
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth > 767) {
-        setMobileSearchOpen(false);
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-  return (
-    <>
-      <header className={`header -type-1 js-header ${addClass ? '-is-sticky' : ''}`}>
-        <div className='header__container container'>
-          <div className='headerMobile__left'>
-            <button
-              onClick={() => setMobileMenuOpen(true)}
-              className='header__menuBtn js-menu-button'
-              aria-label='Open main menu'
-            >
-              <i className='icon-main-menu'></i>
-            </button>
-          </div>
-
-          <div className='header__logo'>
-            <Link href='/' className='header__logo'>
-              <Image width='167' height='32' src='/img/logo.svg' alt='logo icon' priority />
-            </Link>
-
-            <div className='xl:d-none ml-30'>
-              <HeaderSerch />
-            </div>
-          </div>
-
-          <div className='headerMobile__right'>
-            <button
-              onClick={() => setMobileSearchOpen((prev) => !prev)}
-              className='d-flex'
-              aria-label='Toggle search'
-              aria-expanded={mobileSearchOpen}
-            >
-              <i className='icon-search text-18'></i>
-            </button>
-          </div>
-
-          <div className='header__right'>
-            <Destinations />
-            <Activities />
-            <button
-              onClick={() => setMobileMenuOpen(true)}
-              className='header__menuBtn ml-30 js-menu-button'
-              aria-label='Open main menu'
-            >
-              <i className='icon-main-menu'></i>
-            </button>
-          </div>
-        </div>
-
-        <div className={`headerMobileSearch ${mobileSearchOpen ? 'is-active' : ''}`}>
-          <HeaderSerch />
-        </div>
-      </header>
-      <MobileMenu mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
-    </>
-  );
+  return <SiteHeaderClient initialAuthState={initialAuthState} />;
 }

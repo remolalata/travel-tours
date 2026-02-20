@@ -38,21 +38,19 @@ export default function useLoginForm() {
       return;
     }
 
-    const { data: adminUser, error: adminCheckError } = await supabase
+    const { data: userRole, error: userRoleError } = await supabase
       .from('users')
-      .select('user_id, role')
+      .select('role')
       .eq('user_id', user.id)
-      .eq('role', 'admin')
       .maybeSingle();
 
-    if (adminCheckError || !adminUser) {
-      await supabase.auth.signOut();
-      setErrorMessage(authContent.login.messages.unauthorizedAdmin);
+    if (userRoleError) {
+      setErrorMessage(authContent.login.messages.userVerificationFailed);
       setIsSubmitting(false);
       return;
     }
 
-    router.replace('/admin/dashboard');
+    router.replace(userRole?.role === 'admin' ? '/admin/dashboard' : '/');
     router.refresh();
   };
 

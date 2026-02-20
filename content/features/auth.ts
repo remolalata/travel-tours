@@ -1,13 +1,13 @@
 export const authContent = {
   login: {
     metadata: {
-      title: 'Admin Login',
-      description: 'Sign in to access the admin dashboard.',
+      title: 'Login',
+      description: 'Sign in to access your account.',
     },
     heading: 'Log In',
-    subheading: 'Admin access only.',
-    helpPrefix: 'Need an account? Contact site administrators or',
-    helpLinkLabel: 'request access.',
+    subheading: 'Access your account.',
+    helpPrefix: 'Need help?',
+    helpLinkLabel: 'Contact support.',
     fields: {
       emailLabel: 'Email Address',
       passwordLabel: 'Password',
@@ -18,7 +18,6 @@ export const authContent = {
     },
     messages: {
       userVerificationFailed: 'Unable to verify your account. Please try again.',
-      unauthorizedAdmin: 'This account is not allowed to access the admin area.',
     },
   },
 } as const;

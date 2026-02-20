@@ -1,6 +1,14 @@
-import { createClient } from '@/utils/supabase/server';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 export type AuthRole = 'admin' | 'customer';
+
+export type AuthViewerState = {
+  isAuthenticated: boolean;
+  role: AuthRole | null;
+  avatarUrl: string | null;
+  fullName: string | null;
+  email: string | null;
+};
 
 type UserRoleRow = {
   role: AuthRole;
@@ -17,16 +25,14 @@ function buildFullName(firstName: string | null, lastName: string | null): strin
   return fullName || null;
 }
 
-export async function getServerAuthState() {
-  const supabase = await createClient();
+export async function fetchAuthViewerState(supabase: SupabaseClient): Promise<AuthViewerState> {
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (!user) {
     return {
-      user: null,
-      isAdmin: false,
+      isAuthenticated: false,
       role: null,
       avatarUrl: null,
       fullName: null,
@@ -46,8 +52,7 @@ export async function getServerAuthState() {
   const role = roleData?.role ?? 'customer';
 
   return {
-    user,
-    isAdmin: role === 'admin',
+    isAuthenticated: true,
     role,
     avatarUrl: profileData?.avatar_url ?? null,
     fullName: buildFullName(profileData?.first_name ?? null, profileData?.last_name ?? null),
