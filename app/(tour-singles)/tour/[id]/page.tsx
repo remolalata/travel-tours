@@ -7,9 +7,9 @@ import TourDetailsContent from '@/features/tour-single/components/sections/TourD
 import TourSlider from '@/features/tour-single/components/sections/TourSlider';
 
 export const metadata = {
-  title: 'Boracay Tour Package | Gr8 Escapes Travel & Tours',
+  title: 'Boracay Tour Package | Travel & Tours',
   description:
-    'Discover Boracay with Gr8 Escapes Travel & Tours. Enjoy curated Boracay tour packages, island activities, and hassle-free booking.',
+    'Discover Boracay with Travel & Tours. Enjoy curated Boracay tour packages, island activities, and hassle-free booking.',
 };
 
 interface TourPageProps {

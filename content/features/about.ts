@@ -2,8 +2,8 @@ import type { AboutContent } from '@/types/about';
 
 export const aboutContent: AboutContent = {
   metadata: {
-    title: 'About | Gr8 Escapes Travel & Tours',
-    description: 'Learn about Gr8 Escapes Travel & Tours and the team behind your travel experiences.',
+    title: 'About | Travel & Tours',
+    description: 'Learn about Travel & Tours and the team behind your travel experiences.',
   },
   hero: {
     title: 'About Us',

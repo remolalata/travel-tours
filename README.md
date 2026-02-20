@@ -1,6 +1,6 @@
-# GR8 Escapes Website
+# Travel & Tours Website
 
-Marketing website for **Gr8 Escapes Travel & Tours** built with **Next.js (App Router)**.
+Marketing website for **Travel & Tours** built with **Next.js (App Router)**.
 
 ## Stack
 
@@ -31,13 +31,13 @@ Marketing website for **Gr8 Escapes Travel & Tours** built with **Next.js (App R
 
 - Hook: `components/common/hooks/useFirstVisitPromo.js`
 - Modal: `components/common/FirstVisitPromoModal.jsx`
-- Storage key: `gr8escapes:first-visit-promo-seen`
+- Storage key: `travel-tours:first-visit-promo-seen`
 - Behavior: opens after 5 seconds for first-time visitors only
 
 To test it again in browser devtools:
 
 ```js
-localStorage.removeItem('gr8escapes:first-visit-promo-seen');
+localStorage.removeItem('travel-tours:first-visit-promo-seen');
 ```
 
 ## Environment Variables

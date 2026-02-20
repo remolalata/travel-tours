@@ -34,6 +34,6 @@ export const footerContent = {
     emailPlaceholder: 'Your email address',
     submitLabel: 'Send',
   },
-  copyright: '© Copyright Gr8 Escapes Travel & Tours 2026',
+  copyright: '© Copyright Travel & Tours 2026',
 } as const;
 

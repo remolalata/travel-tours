@@ -72,38 +72,38 @@ const listingCards = [
 export const adminContent: AdminContent = {
   metadata: {
     main: {
-      title: 'Admin | Gr8 Escapes Travel & Tours',
+      title: 'Admin | Travel & Tours',
       description: 'Manage bookings, listings, messages, and profile settings.',
     },
     booking: {
-      title: 'My Booking | Gr8 Escapes Travel & Tours',
+      title: 'My Booking | Travel & Tours',
       description: 'Review approved, pending, and cancelled bookings.',
     },
     listing: {
-      title: 'My Listings | Gr8 Escapes Travel & Tours',
+      title: 'My Listings | Travel & Tours',
       description: 'View and manage your listed travel packages.',
     },
     addTour: {
-      title: 'Add Tour | Gr8 Escapes Travel & Tours',
+      title: 'Add Tour | Travel & Tours',
       description: 'Create a new tour listing for your dashboard.',
     },
     favorites: {
-      title: 'My Favorites | Gr8 Escapes Travel & Tours',
+      title: 'My Favorites | Travel & Tours',
       description: 'Access your favorite travel package list.',
     },
     messages: {
-      title: 'Messages | Gr8 Escapes Travel & Tours',
+      title: 'Messages | Travel & Tours',
       description: 'Read and reply to your inbox messages.',
     },
     profile: {
-      title: 'My Profile | Gr8 Escapes Travel & Tours',
+      title: 'My Profile | Travel & Tours',
       description: 'Update your profile details and password.',
     },
   },
   shell: {
-    brandLabel: 'Gr8 Escapes',
+    brandLabel: 'Travel & Tours',
     searchPlaceholder: 'Search',
-    footerPrefix: 'Copyright Gr8 Escapes',
+    footerPrefix: 'Copyright Travel & Tours',
     navItems: [
       { id: 1, href: '/admin/dashboard', iconClass: 'icon-dashboard text-26', label: 'Dashboard' },
       { id: 2, href: '/admin/booking', iconClass: 'icon-calendar text-26', label: 'My Booking' },

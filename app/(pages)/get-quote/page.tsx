@@ -5,8 +5,8 @@ import SiteHeader from '@/components/layout/header/SiteHeader';
 import GetQuoteFormSection from '@/features/get-quote/components/sections/GetQuoteFormSection';
 
 export const metadata = {
-  title: 'Get a Quote | Gr8 Escapes Travel & Tours',
-  description: 'Request a custom travel package quote from Gr8 Escapes Travel & Tours.',
+  title: 'Get a Quote | Travel & Tours',
+  description: 'Request a custom travel package quote from Travel & Tours.',
 };
 
 export default function Page() {

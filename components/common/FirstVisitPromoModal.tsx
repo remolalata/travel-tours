@@ -55,7 +55,7 @@ export default function FirstVisitPromoModal() {
           <span aria-hidden='true'>×</span>
         </button>
 
-        <p className='promoModal__eyebrow'>Welcome to Gr8 Escapes</p>
+        <p className='promoModal__eyebrow'>Welcome to Travel & Tours</p>
         <h2 id='first-visit-promo-title' className='promoModal__title'>
           First-Time Visitor Promo
         </h2>

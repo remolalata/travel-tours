@@ -2,7 +2,7 @@ import type { HelpCenterPageContent } from '@/types/help-center';
 
 export const helpCenterPageContent: HelpCenterPageContent = {
   metadata: {
-    title: 'Help Center | Gr8 Escapes Travel & Tours',
+    title: 'Help Center | Travel & Tours',
     description: 'Find answers about bookings, payments, changes, and travel support.',
   },
   hero: {

@@ -99,7 +99,7 @@ const itineraryStepsBase: ItineraryStep[] = [
     icon: 'icon-flag',
     title: 'Day 7: Check-Out and Airport Transfer',
     content:
-      'After breakfast, check out from the hotel and enjoy your scheduled transfer to the airport. Salamat and we hope to see you again on your next GR8 escape!',
+      'After breakfast, check out from the hotel and enjoy your scheduled transfer to the airport. Salamat and we hope to see you again on your next Travel & Tours escape!',
   },
 ];
 

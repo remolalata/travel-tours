@@ -25,7 +25,7 @@ export const contactPageContent = {
       id: 1,
       title: 'Office Address',
       address: 'Pangasinan, Manaoag, Philippines, 2430',
-      contact: 'Gr8 Escapes Travel & Tours',
+      contact: 'Travel & Tours',
     },
     {
       id: 2,

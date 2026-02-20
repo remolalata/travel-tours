@@ -89,14 +89,14 @@ const sharedArticle = {
 export const blogContent: BlogContent = {
   metadata: {
     list: {
-      title: 'Blog | Gr8 Escapes Travel & Tours',
-      description: 'Travel guides, destination stories, and tips from Gr8 Escapes.',
+      title: 'Blog | Travel & Tours',
+      description: 'Travel guides, destination stories, and tips from Travel & Tours.',
     },
     single: {
-      title: 'Blog Article | Gr8 Escapes Travel & Tours',
+      title: 'Blog Article | Travel & Tours',
       description: 'Detailed travel stories and destination insights.',
     },
-    singleTitleSuffix: 'Gr8 Escapes Travel & Tours',
+    singleTitleSuffix: 'Travel & Tours',
   },
   hero: {
     defaultTitle: 'Your guide to everywhere',

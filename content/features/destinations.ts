@@ -2,7 +2,7 @@ import type { DestinationsPageContent } from '@/types/destinations';
 
 export const destinationsPageContent: DestinationsPageContent = {
   metadata: {
-    title: 'Destinations | Gr8 Escapes Travel & Tours',
+    title: 'Destinations | Travel & Tours',
     description: 'Explore popular destinations, featured tours, and travel information.',
   },
   hero: {

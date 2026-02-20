@@ -55,8 +55,8 @@ export const viewport: Viewport = {
 };
 
 const siteUrl = getSiteUrl();
-const siteName = 'Gr8 Escapes Travel & Tours';
-const defaultDescription = 'Book curated tours and travel packages with Gr8 Escapes Travel & Tours.';
+const siteName = 'Travel & Tours';
+const defaultDescription = 'Book curated tours and travel packages with Travel & Tours.';
 const logoUrl = `${siteUrl}/img/logo.svg`;
 
 const organizationJsonLd = {

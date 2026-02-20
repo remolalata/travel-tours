@@ -5,7 +5,7 @@ export const homeContent = {
   hero: {
     title: 'Your Dream Destination, Made Hassle-Free',
     description:
-      'From flights and hotels to tours and transfers, Gr8 Escapes Travel & Tours brings you complete travel packages for unforgettable local and international getaways.',
+      'From flights and hotels to tours and transfers, Travel & Tours brings you complete travel packages for unforgettable local and international getaways.',
     fields: {
       whereLabel: 'Where',
       wherePlaceholder: 'Search destinations',
@@ -16,7 +16,7 @@ export const homeContent = {
     submitLabel: 'Get a Quote',
   },
   whyChooseUs: {
-    title: 'Why Gr8 Escapes',
+    title: 'Why Travel & Tours',
     features: [
       {
         id: 1,
@@ -84,7 +84,7 @@ export const homeContent = {
     titleLineOne: 'Get 5% off your 1st',
     titleLineTwo: 'app booking',
     descriptionLineOne: "Booking's better on the app. Use promo code",
-    descriptionLineTwo: '"Gr8Escapes" to save!',
+    descriptionLineTwo: '"Travel & Tours" to save!',
     magicLinkLabel: 'Get a magic link sent to your email',
     emailLabel: 'Email address',
     emailPlaceholder: 'Email',
