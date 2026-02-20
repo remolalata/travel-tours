@@ -53,6 +53,7 @@ Required public variables (used by floating chat buttons):
 - `NEXT_PUBLIC_FB_PAGE_ID`
 - `NEXT_PUBLIC_WHATSAPP_NUMBER`
 - `NEXT_PUBLIC_VIBER_NUMBER`
+- `NEXT_PUBLIC_SITE_URL` (for canonical URLs, `robots.txt`, and sitemap)
 
 ## Getting Started
 
