@@ -4,16 +4,27 @@ import Image from 'next/image';
 import { Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
+import useReviewsQuery from '@/api/reviews/hooks/useReviewsQuery';
 import FadeIn from '@/components/common/motion/FadeIn';
 import { homeContent } from '@/content/features/home';
-import { testimonialsOne } from '@/data/testimonials';
+import CustomerTestimonialSlide from '@/features/home/components/testimonials/CustomerTestimonialSlide';
+
+const HOMEPAGE_REVIEW_QUERY = {
+  isPublished: true,
+  rating: 5,
+  limit: 10,
+} as const;
+
 export default function CustomerTestimonials() {
   const { testimonials } = homeContent;
+  const reviewsQuery = useReviewsQuery(HOMEPAGE_REVIEW_QUERY);
+  const reviews = reviewsQuery.data ?? [];
+  const shouldLoop = reviews.length > 1;
 
   return (
     <section className='relative layout-pt-xl layout-pb-xl'>
       <div className='sectionBg md:d-none'>
-        <Image width={1920} height={871} src='/img/testimonials/1/1.png' alt='image' />
+        <Image width={1920} height={871} src='/img/testimonials/1/1.png' alt={testimonials.backgroundImageAlt} />
       </div>
 
       <div className='container'>
@@ -30,9 +41,10 @@ export default function CustomerTestimonials() {
             <div className='overflow-hidden js-section-slider'>
               <FadeIn className='swiper-wrapper'>
                 <Swiper
+                  key={`reviews-${reviews.length}-${reviewsQuery.isLoading ? 'loading' : 'ready'}`}
                   spaceBetween={30}
                   className='w-100'
-                  loop
+                  loop={shouldLoop}
                   pagination={{
                     el: '.pbutton2',
                     clickable: true,
@@ -53,49 +65,31 @@ export default function CustomerTestimonials() {
                     },
                   }}
                 >
-                  {testimonialsOne.map((elm, i) => (
-                    <SwiperSlide key={i}>
+                  {reviewsQuery.isLoading ? (
+                    <SwiperSlide>
                       <div className='testimonials -type-1 pt-10 text-center'>
-                        <div className='testimonials__image size-100 rounded-full'>
-                          <div className='size-100 rounded-full overflow-hidden'>
-                            <Image
-                              width={98}
-                              height={98}
-                              src={elm.imageSrc}
-                              alt='image'
-                              className='rounded-full object-cover'
-                            />
-                          </div>
-
-                          <div className='testimonials__icon'>
-                            <svg
-                              width='16'
-                              height='13'
-                              viewBox='0 0 16 13'
-                              fill='none'
-                              xmlns='http://www.w3.org/2000/svg'
-                            >
-                              <path
-                                d='M13.3165 0.838867C12.1013 1.81846 10.9367 3.43478 9.77215 5.63887C8.65823 7.84295 8 10.2429 7.8481 12.8389H12.4557C12.4051 8.87152 13.6203 5.24703 16 1.91642L13.3165 0.838867ZM5.51899 0.838867C4.25316 1.81846 3.08861 3.43478 1.92405 5.63887C0.810126 7.84295 0.151899 10.2429 0 12.8389H4.60759C4.55696 8.87152 5.77215 5.19805 8.20253 1.91642L5.51899 0.838867Z'
-                                fill='white'
-                              />
-                            </svg>
-                          </div>
-                        </div>
-
-                        <div className='text-18 fw-500 text-accent-1 mt-60 md:mt-40'>
-                          {elm.title}
-                        </div>
-
-                        <div className='text-20 fw-500 mt-20'>{elm.content}</div>
-
-                        <div className='mt-20 md:mt-40'>
-                          <div className='lh-16 text-16 fw-500'>{elm.authorName}</div>
-                          <div className='lh-16'>{elm.authorRole}</div>
-                        </div>
+                        <div className='text-20 fw-500 mt-20'>{testimonials.loadingLabel}</div>
                       </div>
                     </SwiperSlide>
-                  ))}
+                  ) : reviews.length > 0 ? (
+                    reviews.map((review) => (
+                      <SwiperSlide key={review.id}>
+                        <CustomerTestimonialSlide
+                          review={review}
+                          avatarSrc={review.reviewerAvatarUrl ?? testimonials.avatarImageSrc}
+                          avatarAlt={testimonials.avatarImageAlt}
+                          reviewerName={review.reviewerName ?? testimonials.reviewerNameFallback}
+                          reviewerRole={testimonials.reviewerRoleLabel}
+                        />
+                      </SwiperSlide>
+                    ))
+                  ) : (
+                    <SwiperSlide>
+                      <div className='testimonials -type-1 pt-10 text-center'>
+                        <div className='text-20 fw-500 mt-20'>{testimonials.emptyLabel}</div>
+                      </div>
+                    </SwiperSlide>
+                  )}
                 </Swiper>
               </FadeIn>
 

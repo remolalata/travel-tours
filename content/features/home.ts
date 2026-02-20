@@ -79,6 +79,13 @@ export const homeContent = {
   },
   testimonials: {
     title: 'Customer Reviews',
+    loadingLabel: 'Loading customer reviews...',
+    emptyLabel: 'No customer reviews yet.',
+    reviewerNameFallback: 'Verified Traveler',
+    reviewerRoleLabel: 'Traveler',
+    backgroundImageAlt: 'Customer reviews background',
+    avatarImageAlt: 'Customer review avatar',
+    avatarImageSrc: '/img/reviews/avatars/1.png',
   },
   appPromo: {
     titleLineOne: 'Get 5% off your 1st',
