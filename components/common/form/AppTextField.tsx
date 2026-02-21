@@ -35,7 +35,7 @@ export default function AppTextField({
       onChange={(event) => onChange(event.target.value)}
       autoComplete={autoComplete}
       error={Boolean(errorMessage)}
-      helperText={errorMessage ?? ' '}
+      helperText={errorMessage}
       disabled={disabled}
       sx={sx ?? muiFieldSx}
     />

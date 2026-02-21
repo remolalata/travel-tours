@@ -75,6 +75,10 @@ export const adminContent: AdminContent = {
       title: 'Admin | Travel & Tours',
       description: 'Manage bookings, listings, messages, and profile settings.',
     },
+    destinations: {
+      title: 'Destinations | Travel & Tours',
+      description: 'Manage destination records and visibility.',
+    },
     booking: {
       title: 'My Booking | Travel & Tours',
       description: 'Review approved, pending, and cancelled bookings.',
@@ -106,13 +110,14 @@ export const adminContent: AdminContent = {
     footerPrefix: 'Copyright Travel & Tours',
     navItems: [
       { id: 1, href: '/admin/dashboard', iconClass: 'icon-dashboard text-26', label: 'Dashboard' },
-      { id: 2, href: '/admin/booking', iconClass: 'icon-calendar text-26', label: 'My Booking' },
-      { id: 3, href: '/admin/listing', iconClass: 'icon-menu text-26', label: 'My Listings' },
-      { id: 4, href: '/admin/add-tour', iconClass: 'icon-clipboard text-26', label: 'Add Tour' },
-      { id: 5, href: '/admin/favorites', iconClass: 'icon-heart text-26', label: 'My Favorites' },
-      { id: 6, href: '/admin/messages', iconClass: 'icon-message text-26', label: 'Messages' },
-      { id: 7, href: '/admin/profile', iconClass: 'icon-account text-26', label: 'My Profile' },
-      { id: 8, href: '/logout', iconClass: 'icon-logout text-26', label: 'Logout' },
+      { id: 2, href: '/admin/destinations', iconClass: 'icon-pin text-26', label: 'Destinations' },
+      { id: 3, href: '/admin/booking', iconClass: 'icon-calendar text-26', label: 'My Booking' },
+      { id: 4, href: '/admin/listing', iconClass: 'icon-menu text-26', label: 'My Listings' },
+      { id: 5, href: '/admin/add-tour', iconClass: 'icon-clipboard text-26', label: 'Add Tour' },
+      { id: 6, href: '/admin/favorites', iconClass: 'icon-heart text-26', label: 'My Favorites' },
+      { id: 7, href: '/admin/messages', iconClass: 'icon-message text-26', label: 'Messages' },
+      { id: 8, href: '/admin/profile', iconClass: 'icon-account text-26', label: 'My Profile' },
+      { id: 9, href: '/logout', iconClass: 'icon-logout text-26', label: 'Logout' },
     ],
     topActions: [
       { id: 1, iconClass: 'icon-mail text-20', label: 'Notifications' },
@@ -231,6 +236,81 @@ export const adminContent: AdminContent = {
           ],
         },
       ],
+    },
+    destinations: {
+      intro: {
+        title: 'Destinations',
+        description: 'Manage destination setup from your dashboard.',
+      },
+      addButtonLabel: 'Add Destination',
+      addModal: {
+        title: 'Add Destination',
+        fields: {
+          name: 'Name',
+          active: 'Active',
+        },
+        image: {
+          uploadLabel: 'Upload Image',
+          clearLabel: 'Remove image',
+          previewAlt: 'Destination image preview',
+        },
+        actions: {
+          cancel: 'Cancel',
+          save: 'Save',
+          saving: 'Saving...',
+        },
+        messages: {
+          requiredName: 'Name is required.',
+          uploadFailedPrefix: 'Image upload failed',
+          createFailedPrefix: 'Failed to create destination',
+          createSuccess: 'Destination created successfully.',
+        },
+      },
+      editModal: {
+        title: 'Edit Destination',
+        fields: {
+          name: 'Name',
+          active: 'Active',
+        },
+        image: {
+          uploadLabel: 'Upload Image',
+          clearLabel: 'Remove image',
+          previewAlt: 'Destination image preview',
+        },
+        actions: {
+          cancel: 'Cancel',
+          save: 'Save Changes',
+          saving: 'Saving...',
+        },
+        messages: {
+          requiredName: 'Name is required.',
+          uploadFailedPrefix: 'Image upload failed',
+          updateFailedPrefix: 'Failed to update destination',
+          updateSuccess: 'Destination updated successfully.',
+        },
+      },
+      table: {
+        columns: {
+          name: 'Name',
+          image: 'Image',
+          active: 'Active',
+          actions: 'Actions',
+        },
+        statusLabels: {
+          active: 'Active',
+          inactive: 'Inactive',
+        },
+        actions: {
+          editLabel: 'Edit destination',
+          deleteLabel: 'Delete destination',
+        },
+        messages: {
+          loadError: 'Failed to load destinations. Please refresh and try again.',
+          empty: 'No destinations found.',
+          deleteFailedPrefix: 'Failed to delete destination',
+          deleteSuccess: 'Destination deleted successfully.',
+        },
+      },
     },
     booking: {
       intro: {

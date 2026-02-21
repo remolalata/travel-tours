@@ -84,6 +84,39 @@ export default function HeaderAccountMenu({ authState }: HeaderAccountMenuProps)
         }}
       >
         <List sx={{ py: 0.5, px: 0.5, minWidth: 130 }}>
+          {authState.role === 'admin' ? (
+            <li style={{ listStyle: 'none' }}>
+              <ListItemButton
+                component={Link}
+                href='/admin/dashboard'
+                onClick={handleClose}
+                sx={{
+                  width: '100%',
+                  py: 0.5,
+                  px: 1.25,
+                  borderRadius: 1,
+                  gap: 1,
+                  justifyContent: 'flex-start',
+                  '& .MuiListItemText-primary': {
+                    fontSize: 14,
+                    fontWeight: 500,
+                  },
+                  '&:hover': {
+                    bgcolor: 'var(--color-blue-1)',
+                    '& i': {
+                      color: '#fff',
+                    },
+                    '& .MuiListItemText-primary': {
+                      color: '#fff',
+                    },
+                  },
+                }}
+              >
+                <i className={headerAccountContent.actions.dashboardIconClass} />
+                <ListItemText primary={headerAccountContent.actions.dashboard} />
+              </ListItemButton>
+            </li>
+          ) : null}
           <li style={{ listStyle: 'none' }}>
             <form action='/logout' method='post' style={{ width: '100%' }}>
               <ListItemButton

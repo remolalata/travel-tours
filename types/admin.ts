@@ -1,5 +1,6 @@
 export type AdminPageKey =
   | 'main'
+  | 'destinations'
   | 'booking'
   | 'listing'
   | 'addTour'
@@ -80,6 +81,79 @@ export type BookingStatus = 'Approved' | 'Pending' | 'Cancelled' | 'Completed';
 export interface AdminBookingContent {
   intro: AdminSectionIntro;
   tabs: BookingStatus[];
+}
+
+export interface AdminDestinationsContent {
+  intro: AdminSectionIntro;
+  addButtonLabel: string;
+  addModal: {
+    title: string;
+    fields: {
+      name: string;
+      active: string;
+    };
+    image: {
+      uploadLabel: string;
+      clearLabel: string;
+      previewAlt: string;
+    };
+    actions: {
+      cancel: string;
+      save: string;
+      saving: string;
+    };
+    messages: {
+      requiredName: string;
+      uploadFailedPrefix: string;
+      createFailedPrefix: string;
+      createSuccess: string;
+    };
+  };
+  editModal: {
+    title: string;
+    fields: {
+      name: string;
+      active: string;
+    };
+    image: {
+      uploadLabel: string;
+      clearLabel: string;
+      previewAlt: string;
+    };
+    actions: {
+      cancel: string;
+      save: string;
+      saving: string;
+    };
+    messages: {
+      requiredName: string;
+      uploadFailedPrefix: string;
+      updateFailedPrefix: string;
+      updateSuccess: string;
+    };
+  };
+  table: {
+    columns: {
+      name: string;
+      image: string;
+      active: string;
+      actions: string;
+    };
+    statusLabels: {
+      active: string;
+      inactive: string;
+    };
+    actions: {
+      editLabel: string;
+      deleteLabel: string;
+    };
+    messages: {
+      loadError: string;
+      empty: string;
+      deleteFailedPrefix: string;
+      deleteSuccess: string;
+    };
+  };
 }
 
 export interface AdminListingItem {
@@ -205,6 +279,7 @@ export interface AdminProfileContent {
 
 export interface AdminPageContentMap {
   main: AdminMainContent;
+  destinations: AdminDestinationsContent;
   booking: AdminBookingContent;
   listing: AdminListingContent;
   addTour: AdminAddTourContent;

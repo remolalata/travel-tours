@@ -2,6 +2,8 @@ export const headerAccountContent = {
   actions: {
     signUp: 'Sign up',
     logIn: 'Log in',
+    dashboard: 'Dashboard',
+    dashboardIconClass: 'icon-dashboard text-16',
     logout: 'Logout',
     logoutIconClass: 'icon-logout text-16',
   },
