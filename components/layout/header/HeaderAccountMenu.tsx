@@ -78,12 +78,12 @@ export default function HeaderAccountMenu({ authState }: HeaderAccountMenuProps)
             sx: {
               mt: 1,
               borderRadius: 2,
-              minWidth: 130,
+              minWidth: 170,
             },
           },
         }}
       >
-        <List sx={{ py: 0.5, px: 0.5, minWidth: 130 }}>
+        <List sx={{ py: 0.75, px: 0.75, minWidth: 170 }}>
           {authState.role === 'admin' ? (
             <li style={{ listStyle: 'none' }}>
               <ListItemButton
@@ -92,17 +92,17 @@ export default function HeaderAccountMenu({ authState }: HeaderAccountMenuProps)
                 onClick={handleClose}
                 sx={{
                   width: '100%',
-                  py: 0.5,
-                  px: 1.25,
+                  py: 0.75,
+                  px: 1.5,
                   borderRadius: 1,
                   gap: 1,
                   justifyContent: 'flex-start',
                   '& .MuiListItemText-primary': {
-                    fontSize: 14,
+                    fontSize: 15,
                     fontWeight: 500,
                   },
                   '&:hover': {
-                    bgcolor: 'var(--color-blue-1)',
+                    bgcolor: '#05073c',
                     '& i': {
                       color: '#fff',
                     },
@@ -125,17 +125,17 @@ export default function HeaderAccountMenu({ authState }: HeaderAccountMenuProps)
                 onClick={handleClose}
                 sx={{
                   width: '100%',
-                  py: 0.5,
-                  px: 1.25,
+                  py: 0.75,
+                  px: 1.5,
                   borderRadius: 1,
                   gap: 1,
                   justifyContent: 'flex-start',
                   '& .MuiListItemText-primary': {
-                    fontSize: 14,
+                    fontSize: 15,
                     fontWeight: 500,
                   },
                   '&:hover': {
-                    bgcolor: 'var(--color-blue-1)',
+                    bgcolor: '#05073c',
                     '& i': {
                       color: '#fff',
                     },

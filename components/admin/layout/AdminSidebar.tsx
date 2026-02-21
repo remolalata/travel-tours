@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -19,7 +20,7 @@ export default function AdminSidebar({ onClose }: AdminSidebarProps) {
           &times;
         </button>
         <Link href='/' className='text-white text-20 fw-500'>
-          {adminContent.shell.brandLabel}
+          <Image width={167} height={32} src='/img/logo.svg' alt={adminContent.shell.brandLabel} priority />
         </Link>
       </div>
 
