@@ -22,7 +22,7 @@ export type AdminBookingData = {
 };
 
 export type FetchAdminBookingsInput = {
-  status?: RawBookingStatus;
+  statuses?: RawBookingStatus[];
   page: number;
   pageSize: number;
 };
@@ -37,6 +37,7 @@ export type PaginatedAdminBookings = {
 type BookingRow = {
   id: number;
   booking_reference: string;
+  customer_user_id: string | null;
   package_title: string;
   booking_status: RawBookingStatus;
   payment_status: RawPaymentStatus;
@@ -47,8 +48,6 @@ type BookingRow = {
   travel_start_date: string;
   travel_end_date: string;
   booked_at: string;
-  customer_first_name: string;
-  customer_last_name: string;
   destinations:
     | {
         name: string | null;
@@ -57,6 +56,12 @@ type BookingRow = {
         name: string | null;
       }>
     | null;
+};
+
+type ProfileRow = {
+  user_id: string;
+  first_name: string | null;
+  last_name: string | null;
 };
 
 function getDestination(
@@ -84,6 +89,7 @@ export async function fetchAdminBookings(
       `
       id,
       booking_reference,
+      customer_user_id,
       package_title,
       booking_status,
       payment_status,
@@ -94,8 +100,6 @@ export async function fetchAdminBookings(
       travel_start_date,
       travel_end_date,
       booked_at,
-      customer_first_name,
-      customer_last_name,
       destinations(name)
     `,
       { count: 'exact' },
@@ -103,8 +107,8 @@ export async function fetchAdminBookings(
     .order('booked_at', { ascending: false })
     .range(from, to);
 
-  if (input.status) {
-    query = query.eq('booking_status', input.status);
+  if (input.statuses && input.statuses.length > 0) {
+    query = query.in('booking_status', input.statuses);
   }
 
   const { data, error, count } = await query;
@@ -113,8 +117,25 @@ export async function fetchAdminBookings(
     throw new Error(`BOOKINGS_FETCH_FAILED:${error.message}`);
   }
 
-  const rows = ((data ?? []) as BookingRow[]).map((booking) => {
+  const bookings = (data ?? []) as BookingRow[];
+  const customerUserIds = [...new Set(bookings.map((booking) => booking.customer_user_id).filter(Boolean))];
+
+  const profileByUserId = new Map<string, ProfileRow>();
+
+  if (customerUserIds.length > 0) {
+    const { data: profileRows } = await supabase
+      .from('profiles')
+      .select('user_id,first_name,last_name')
+      .in('user_id', customerUserIds);
+
+    for (const profileRow of (profileRows ?? []) as ProfileRow[]) {
+      profileByUserId.set(profileRow.user_id, profileRow);
+    }
+  }
+
+  const rows = bookings.map((booking) => {
     const destination = getDestination(booking.destinations);
+    const profile = booking.customer_user_id ? profileByUserId.get(booking.customer_user_id) : null;
 
     return {
       id: booking.id,
@@ -130,8 +151,8 @@ export async function fetchAdminBookings(
       travelStartDate: booking.travel_start_date,
       travelEndDate: booking.travel_end_date,
       bookedAt: booking.booked_at,
-      customerFirstName: booking.customer_first_name,
-      customerLastName: booking.customer_last_name,
+      customerFirstName: profile?.first_name ?? '-',
+      customerLastName: profile?.last_name ?? '',
     };
   });
 

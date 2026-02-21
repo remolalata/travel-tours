@@ -6,6 +6,7 @@ import { useMemo, useState } from 'react';
 import useAdminBookingsQuery from '@/api/admin/bookings/hooks/useAdminBookingsQuery';
 import type { AdminBookingData } from '@/api/admin/bookings/mutations/bookingApi';
 import AdminShell from '@/components/admin/layout/AdminShell';
+import AppMultiSelectChips from '@/components/common/form/AppMultiSelectChips';
 import type { DataTableColumn } from '@/components/common/table/AppDataTable';
 import AppDataTable from '@/components/common/table/AppDataTable';
 import { adminContent } from '@/content/features/admin';
@@ -46,12 +47,13 @@ function formatCurrency(amount: number, currency: string): string {
 
 export default function AdminBookingPage() {
   const content = adminContent.pages.booking;
-  const [currentTab, setCurrentTab] = useState<BookingStatus>(content.tabs[0]);
+  const [currentTabs, setCurrentTabs] = useState<BookingStatus[]>([content.tabs[0]]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
+  const activeTabs = currentTabs.length > 0 ? currentTabs : content.tabs;
 
   const bookingsQuery = useAdminBookingsQuery({
-    status: bookingStatusValueMap[currentTab],
+    statuses: activeTabs.map((tab) => bookingStatusValueMap[tab]),
     page,
     pageSize: rowsPerPage,
   });
@@ -65,9 +67,7 @@ export default function AdminBookingPage() {
         flex: 1,
         sortable: false,
         renderCell: (params: GridRenderCellParams<AdminBookingData, string>) => (
-          <span className='d-inline-block bg-light-1 rounded-200 px-10 py-5 text-13 fw-500'>
-            {params.row.bookingReference}
-          </span>
+          <span className='fw-500'>{params.row.bookingReference}</span>
         ),
       },
       {
@@ -152,56 +152,40 @@ export default function AdminBookingPage() {
   return (
     <AdminShell title={content.intro.title} description={content.intro.description}>
       <div className='rounded-12 bg-white shadow-2 px-40 pt-40 pb-30 md:px-20 md:pt-20 md:mb-20 mt-60'>
-        <div className='tabs -underline-2 js-tabs'>
-          <div className='tabs__controls row x-gap-40 y-gap-10 lg:x-gap-20 js-tabs-controls'>
-            {content.tabs.map((tab) => (
-              <div key={tab} className='col-auto'>
-                <button
-                  className={`tabs__button text-20 lh-12 fw-500 pb-15 lg:pb-0 js-tabs-button ${
-                    tab === currentTab ? 'is-tab-el-active' : ''
-                  }`}
-                  onClick={() => {
-                    setCurrentTab(tab);
-                    setPage(0);
-                  }}
-                  type='button'
-                >
-                  {tab}
-                </button>
-              </div>
-            ))}
-          </div>
+        <AppMultiSelectChips<BookingStatus>
+          value={currentTabs}
+          options={content.tabs}
+          onChange={(nextTabs) => {
+            setCurrentTabs(nextTabs);
+            setPage(0);
+          }}
+        />
 
-          <div className='tabs__content js-tabs-content'>
-            <div className='tabs__pane -tab-item-1 is-tab-el-active'>
-              <AppDataTable
-                columns={columns}
-                rows={bookingsQuery.data?.rows ?? []}
-                rowKey={(row) => row.id}
-                loading={bookingsQuery.isLoading}
-                refreshing={bookingsQuery.isFetching && !bookingsQuery.isLoading}
-                errorMessage={bookingsQuery.isError ? 'Failed to load bookings. Please refresh and try again.' : null}
-                emptyMessage='No bookings found for this status.'
-                pagination={{
-                  page,
-                  rowsPerPage,
-                  total: bookingsQuery.data?.total ?? 0,
-                  rowsPerPageOptions,
-                  onPageChange: setPage,
-                  onRowsPerPageChange: (nextRowsPerPage) => {
-                    setRowsPerPage(nextRowsPerPage);
-                    setPage(0);
-                  },
-                }}
-              />
+        <AppDataTable
+          columns={columns}
+          rows={bookingsQuery.data?.rows ?? []}
+          rowKey={(row) => row.id}
+          loading={bookingsQuery.isLoading}
+          refreshing={bookingsQuery.isFetching && !bookingsQuery.isLoading}
+          errorMessage={bookingsQuery.isError ? 'Failed to load bookings. Please refresh and try again.' : null}
+          emptyMessage='No bookings found for this status.'
+          pagination={{
+            page,
+            rowsPerPage,
+            total: bookingsQuery.data?.total ?? 0,
+            rowsPerPageOptions,
+            onPageChange: setPage,
+            onRowsPerPageChange: (nextRowsPerPage) => {
+              setRowsPerPage(nextRowsPerPage);
+              setPage(0);
+            },
+          }}
+        />
 
-              <div className='text-14 text-center mt-20'>
-                {!bookingsQuery.isLoading && !bookingsQuery.isError
-                  ? `Showing ${(bookingsQuery.data?.rows ?? []).length} of ${bookingsQuery.data?.total ?? 0} ${currentTab.toLowerCase()} booking(s)`
-                  : null}
-              </div>
-            </div>
-          </div>
+        <div className='text-14 text-center mt-20'>
+          {!bookingsQuery.isLoading && !bookingsQuery.isError
+            ? `Showing ${(bookingsQuery.data?.rows ?? []).length} of ${bookingsQuery.data?.total ?? 0} booking(s)`
+            : null}
         </div>
       </div>
     </AdminShell>
