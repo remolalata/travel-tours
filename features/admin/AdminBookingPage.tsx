@@ -6,7 +6,7 @@ import { useMemo, useState } from 'react';
 import useAdminBookingsQuery from '@/api/admin/bookings/hooks/useAdminBookingsQuery';
 import type { AdminBookingData } from '@/api/admin/bookings/mutations/bookingApi';
 import AdminShell from '@/components/admin/layout/AdminShell';
-import AppMultiSelectChips from '@/components/common/form/AppMultiSelectChips';
+import AppMultiSelectPills from '@/components/common/form/AppMultiSelectPills';
 import type { DataTableColumn } from '@/components/common/table/AppDataTable';
 import AppDataTable from '@/components/common/table/AppDataTable';
 import { adminContent } from '@/content/features/admin';
@@ -111,8 +111,8 @@ export default function AdminBookingPage() {
       {
         field: 'numberOfTravelers',
         headerName: 'Travelers',
-        align: 'right',
-        headerAlign: 'right',
+        align: 'left',
+        headerAlign: 'left',
         minWidth: 100,
         flex: 0.7,
       },
@@ -128,8 +128,8 @@ export default function AdminBookingPage() {
       {
         field: 'totalAmount',
         headerName: 'Amount',
-        align: 'right',
-        headerAlign: 'right',
+        align: 'left',
+        headerAlign: 'left',
         minWidth: 130,
         flex: 0.8,
         sortable: false,
@@ -152,11 +152,11 @@ export default function AdminBookingPage() {
   return (
     <AdminShell title={content.intro.title} description={content.intro.description}>
       <div className='rounded-12 bg-white shadow-2 px-40 pt-40 pb-30 md:px-20 md:pt-20 md:mb-20 mt-60'>
-        <AppMultiSelectChips<BookingStatus>
-          value={currentTabs}
+        <AppMultiSelectPills<BookingStatus>
           options={content.tabs}
-          onChange={(nextTabs) => {
-            setCurrentTabs(nextTabs);
+          value={currentTabs}
+          onChange={(nextValue) => {
+            setCurrentTabs(nextValue);
             setPage(0);
           }}
         />

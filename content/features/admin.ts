@@ -111,7 +111,7 @@ export const adminContent: AdminContent = {
     navItems: [
       { id: 1, href: '/admin/dashboard', iconClass: 'icon-dashboard text-26', label: 'Dashboard' },
       { id: 2, href: '/admin/destinations', iconClass: 'icon-pin text-26', label: 'Destinations' },
-      { id: 3, href: '/admin/booking', iconClass: 'icon-calendar text-26', label: 'My Booking' },
+      { id: 3, href: '/admin/booking', iconClass: 'icon-calendar text-26', label: 'Bookings' },
       { id: 4, href: '/admin/listing', iconClass: 'icon-menu text-26', label: 'My Listings' },
       { id: 5, href: '/admin/add-tour', iconClass: 'icon-clipboard text-26', label: 'Add Tour' },
       { id: 6, href: '/admin/favorites', iconClass: 'icon-heart text-26', label: 'My Favorites' },
