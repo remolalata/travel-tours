@@ -2,6 +2,7 @@ import Image from 'next/image';
 
 import Stars from '@/components/common/Stars';
 import type { AdminListingItem } from '@/types/admin';
+import { formatNumber } from '@/utils/helpers/formatNumber';
 
 type AdminListingCardProps = {
   item: AdminListingItem;
@@ -54,7 +55,7 @@ export default function AdminListingCard({
             </div>
 
             <div>
-              {pricePrefix} <span className='text-16 fw-500'>${item.price}</span>
+              {pricePrefix} <span className='text-16 fw-500'>${formatNumber(item.price)}</span>
             </div>
           </div>
         </div>
@@ -65,13 +66,13 @@ export default function AdminListingCard({
   return (
     <div className='border-1 rounded-12 px-20 py-20'>
       <div className='row x-gap-20 y-gap-20 items-center'>
-        <div className='col-xxl-auto'>
+        <div className='col-12 col-xl-auto'>
           <Image
             width={421}
             height={301}
             src={item.imageSrc}
             alt={item.title}
-            className='size-200 w-1/1 object-cover rounded-12'
+            className='admin-listing-image object-cover rounded-12'
           />
         </div>
 
@@ -102,8 +103,8 @@ export default function AdminListingCard({
 
             <div className='col-auto'>
               <div className='text-right md:text-left'>
-                <div className='lh-14'>${item.price}</div>
-                {pricePrefix} <span className='text-20 fw-500'>${item.fromPrice}</span>
+                <div className='lh-14'>${formatNumber(item.price)}</div>
+                {pricePrefix} <span className='text-20 fw-500'>${formatNumber(item.fromPrice)}</span>
               </div>
             </div>
           </div>

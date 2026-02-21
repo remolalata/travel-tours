@@ -55,7 +55,7 @@ export const mobileMenuData: MobileMenuSection[] = [
     submenu: [
       { id: 31, label: 'Dashboard', href: '/admin/dashboard' },
       { id: 32, label: 'Booking', href: '/admin/booking' },
-      { id: 33, label: 'Listing', href: '/admin/listing' },
+      { id: 33, label: 'Tours', href: '/admin/tours' },
       { id: 34, label: 'Profile', href: '/admin/profile' },
     ],
   },

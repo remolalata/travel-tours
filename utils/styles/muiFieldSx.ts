@@ -27,4 +27,15 @@ export const muiFieldSx: SxProps<Theme> = {
   '& .MuiOutlinedInput-root.Mui-focused': {
     boxShadow: '0 0 0 3px rgba(235, 102, 43, 0.12)',
   },
+  '& .MuiFormHelperText-root': {
+    marginLeft: '2px',
+    marginTop: '8px',
+    fontSize: '12px',
+    lineHeight: 1.4,
+    color: 'rgba(5, 7, 60, 0.72)',
+  },
+  '& .MuiFormHelperText-root.Mui-error': {
+    color: '#b3261e',
+    fontWeight: 500,
+  },
 };

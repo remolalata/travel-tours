@@ -38,6 +38,7 @@ type BookingRow = {
   id: number;
   booking_reference: string;
   customer_user_id: string | null;
+  tour_id: number | null;
   package_title: string;
   booking_status: RawBookingStatus;
   payment_status: RawPaymentStatus;
@@ -54,6 +55,14 @@ type BookingRow = {
       }
     | Array<{
         name: string | null;
+      }>
+    | null;
+  tours:
+    | {
+        title: string;
+      }
+    | Array<{
+        title: string;
       }>
     | null;
 };
@@ -76,6 +85,16 @@ function getDestination(
   return destination;
 }
 
+function getTour(tour: BookingRow['tours']): { title: string } | null {
+  if (!tour) return null;
+
+  if (Array.isArray(tour)) {
+    return tour[0] ?? null;
+  }
+
+  return tour;
+}
+
 export async function fetchAdminBookings(
   supabase: SupabaseClient,
   input: FetchAdminBookingsInput,
@@ -90,6 +109,7 @@ export async function fetchAdminBookings(
       id,
       booking_reference,
       customer_user_id,
+      tour_id,
       package_title,
       booking_status,
       payment_status,
@@ -100,7 +120,8 @@ export async function fetchAdminBookings(
       travel_start_date,
       travel_end_date,
       booked_at,
-      destinations(name)
+      destinations(name),
+      tours(title)
     `,
       { count: 'exact' },
     )
@@ -135,12 +156,13 @@ export async function fetchAdminBookings(
 
   const rows = bookings.map((booking) => {
     const destination = getDestination(booking.destinations);
+    const tour = getTour(booking.tours);
     const profile = booking.customer_user_id ? profileByUserId.get(booking.customer_user_id) : null;
 
     return {
       id: booking.id,
       bookingReference: booking.booking_reference,
-      packageTitle: booking.package_title,
+      packageTitle: tour?.title ?? booking.package_title,
       destinationName: destination?.name ?? null,
       bookingStatus: booking.booking_status,
       paymentStatus: booking.payment_status,

@@ -4,14 +4,33 @@ import { useState } from 'react';
 
 interface PaginationProps {
   range?: number;
+  page?: number;
+  onPageChange?: (page: number) => void;
 }
 
-export default function Pagination({ range = 20 }: PaginationProps) {
-  const [activeIndex, setActiveIndex] = useState<number>(1);
+function clampPage(page: number, range: number): number {
+  return Math.max(1, Math.min(page, range));
+}
+
+export default function Pagination({ range = 20, page, onPageChange }: PaginationProps) {
+  const normalizedRange = Math.max(1, range);
+  const isControlled = typeof page === 'number' && typeof onPageChange === 'function';
+  const [internalPage, setInternalPage] = useState<number>(1);
+  const activeIndex = isControlled ? clampPage(page, normalizedRange) : clampPage(internalPage, normalizedRange);
+
+  const setPage = (nextPage: number) => {
+    const clampedPage = clampPage(nextPage, normalizedRange);
+    if (isControlled) {
+      onPageChange(clampedPage);
+      return;
+    }
+    setInternalPage(clampedPage);
+  };
+
   return (
     <div className='justify-center pagination'>
       <button
-        onClick={() => setActiveIndex((pre) => (pre > 1 ? pre - 1 : 1))}
+        onClick={() => setPage(activeIndex - 1)}
         className='mr-15 -accent-1 pagination__button customStylePaginationPre button -prev'
       >
         <i className='icon-arrow-left text-15'></i>
@@ -20,7 +39,7 @@ export default function Pagination({ range = 20 }: PaginationProps) {
       <div className='pagination__count'>
         <div
           style={{ cursor: 'pointer' }}
-          onClick={() => setActiveIndex(1)}
+          onClick={() => setPage(1)}
           className={activeIndex == 1 ? `is-active` : ''}
         >
           1
@@ -28,7 +47,7 @@ export default function Pagination({ range = 20 }: PaginationProps) {
         {range > 1 && (
           <div
             style={{ cursor: 'pointer' }}
-            onClick={() => setActiveIndex(2)}
+            onClick={() => setPage(2)}
             className={activeIndex == 2 ? `is-active` : ''}
           >
             2
@@ -37,7 +56,7 @@ export default function Pagination({ range = 20 }: PaginationProps) {
         {range > 2 && (
           <div
             style={{ cursor: 'pointer' }}
-            onClick={() => setActiveIndex(3)}
+            onClick={() => setPage(3)}
             className={activeIndex == 3 ? `is-active` : ''}
           >
             3
@@ -46,7 +65,7 @@ export default function Pagination({ range = 20 }: PaginationProps) {
         {range > 3 && (
           <div
             style={{ cursor: 'pointer' }}
-            onClick={() => setActiveIndex(4)}
+            onClick={() => setPage(4)}
             className={activeIndex == 4 ? `is-active` : ''}
           >
             4
@@ -56,7 +75,7 @@ export default function Pagination({ range = 20 }: PaginationProps) {
         {activeIndex == 5 && range != 5 && (
           <div
             style={{ cursor: 'pointer' }}
-            onClick={() => setActiveIndex(5)}
+            onClick={() => setPage(5)}
             className={activeIndex == 5 ? `is-active` : ''}
           >
             5
@@ -72,16 +91,16 @@ export default function Pagination({ range = 20 }: PaginationProps) {
         {range > 4 && (
           <div
             style={{ cursor: 'pointer' }}
-            onClick={() => setActiveIndex(range)}
-            className={activeIndex == range ? `is-active` : ''}
+            onClick={() => setPage(normalizedRange)}
+            className={activeIndex == normalizedRange ? `is-active` : ''}
           >
-            {range}
+            {normalizedRange}
           </div>
         )}
       </div>
 
       <button
-        onClick={() => setActiveIndex((pre) => (pre < range ? pre + 1 : pre))}
+        onClick={() => setPage(activeIndex + 1)}
         className='ml-15 -accent-1 pagination__button customStylePaginationNext button -next'
       >
         <i className='icon-arrow-right text-15'></i>

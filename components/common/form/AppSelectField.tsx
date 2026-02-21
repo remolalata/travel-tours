@@ -1,49 +1,55 @@
 'use client';
 
+import MenuItem from '@mui/material/MenuItem';
 import type { SxProps, Theme } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 
 import { muiFieldSx } from '@/utils/styles/muiFieldSx';
 
-type AppTextFieldProps = {
+type AppSelectOption = {
+  value: string;
+  label: string;
+};
+
+type AppSelectFieldProps = {
   label: string;
   value: string;
+  options: AppSelectOption[];
   onChange: (value: string) => void;
-  type?: 'text' | 'email' | 'password' | 'tel' | 'number' | 'url';
-  autoComplete?: string;
+  emptyOptionLabel: string;
   errorMessage?: string;
   disabled?: boolean;
-  multiline?: boolean;
-  rows?: number;
   sx?: SxProps<Theme>;
 };
 
-export default function AppTextField({
+export default function AppSelectField({
   label,
   value,
+  options,
   onChange,
-  type = 'text',
-  autoComplete,
+  emptyOptionLabel,
   errorMessage,
   disabled,
-  multiline,
-  rows,
   sx,
-}: AppTextFieldProps) {
+}: AppSelectFieldProps) {
   return (
     <TextField
       fullWidth
-      type={type}
+      select
       label={label}
       value={value}
       onChange={(event) => onChange(event.target.value)}
-      autoComplete={autoComplete}
       error={Boolean(errorMessage)}
       helperText={errorMessage}
       disabled={disabled}
-      multiline={multiline}
-      rows={rows}
       sx={sx ?? muiFieldSx}
-    />
+    >
+      <MenuItem value=''>{emptyOptionLabel}</MenuItem>
+      {options.map((option) => (
+        <MenuItem key={option.value} value={option.value}>
+          {option.label}
+        </MenuItem>
+      ))}
+    </TextField>
   );
 }

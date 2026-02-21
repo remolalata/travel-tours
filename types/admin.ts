@@ -167,9 +167,89 @@ export interface AdminListingItem {
 
 export interface AdminListingContent {
   intro: AdminSectionIntro;
+  addButtonLabel: string;
   pricePrefix: string;
-  cards: AdminListingItem[];
-  resultSummary: string;
+  messages: {
+    loading: string;
+    loadError: string;
+    empty: string;
+  };
+  summary: {
+    showing: string;
+    of: string;
+    itemSuffix: string;
+  };
+  createPage: {
+    intro: AdminSectionIntro;
+    sections: {
+      basic: AdminSectionIntro;
+      classification: AdminSectionIntro;
+      pricing: AdminSectionIntro;
+      media: AdminSectionIntro;
+      itinerary: AdminSectionIntro;
+      inclusions: AdminSectionIntro;
+    };
+    fields: {
+      title: string;
+      description: string;
+      location: string;
+      duration: string;
+      destinationId: string;
+      tourTypeId: string;
+      price: string;
+      originalPrice: string;
+      imageSrc: string;
+      isActive: string;
+      isFeatured: string;
+      isPopular: string;
+      isTopTrending: string;
+      itineraryDayNumber: string;
+      itineraryTitle: string;
+      itineraryContent: string;
+      itineraryIcon: string;
+      itinerarySummary: string;
+      inclusionType: string;
+      inclusionOrder: string;
+      inclusionContent: string;
+    };
+    helpers: {
+      title: string;
+      description: string;
+      location: string;
+      duration: string;
+      destinationId: string;
+      tourTypeId: string;
+      price: string;
+      originalPrice: string;
+      imageSrc: string;
+      isActive: string;
+      isFeatured: string;
+      isPopular: string;
+      isTopTrending: string;
+      itineraryDayNumber: string;
+      itineraryTitle: string;
+      itineraryContent: string;
+      itineraryIcon: string;
+      itinerarySummary: string;
+      inclusionType: string;
+      inclusionOrder: string;
+      inclusionContent: string;
+    };
+    actions: {
+      cancel: string;
+      create: string;
+      addItinerary: string;
+      removeItinerary: string;
+      addInclusion: string;
+      removeInclusion: string;
+    };
+    messages: {
+      selectEmpty: string;
+      referencesLoading: string;
+      referencesLoadError: string;
+    };
+    validationMessages: Record<string, string>;
+  };
 }
 
 export interface AdminGalleryItem {
@@ -235,4 +315,14 @@ export interface AdminPasswordFormState {
   oldPassword: string;
   newPassword: string;
   confirmPassword: string;
+}
+
+export interface AdminTourCreateValidationInput {
+  title: string;
+  description: string;
+  location: string;
+  duration: string;
+  destinationId: string;
+  tourTypeId: string;
+  price: string;
 }

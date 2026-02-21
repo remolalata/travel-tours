@@ -1,137 +1,5 @@
 -- Tours + single-page content tables + seed data
 
-create table if not exists public.tour_categories (
-  id bigserial primary key,
-  slug text not null unique,
-  name text not null unique,
-  is_active boolean not null default true,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
-);
-
-create index if not exists tour_categories_active_idx on public.tour_categories (is_active);
-
-alter table public.tour_categories enable row level security;
-
-do $$
-begin
-  if not exists (
-    select 1 from pg_policies
-    where schemaname = 'public' and tablename = 'tour_categories' and policyname = 'tour_categories_select_public'
-  ) then
-    create policy "tour_categories_select_public"
-    on public.tour_categories
-    for select
-    to anon, authenticated
-    using (is_active = true);
-  end if;
-
-  if not exists (
-    select 1 from pg_policies
-    where schemaname = 'public' and tablename = 'tour_categories' and policyname = 'tour_categories_write_admin_only'
-  ) then
-    create policy "tour_categories_write_admin_only"
-    on public.tour_categories
-    for all
-    to authenticated
-    using (
-      exists (
-        select 1 from public.users u
-        where u.user_id = auth.uid() and u.role = 'admin'
-      )
-    )
-    with check (
-      exists (
-        select 1 from public.users u
-        where u.user_id = auth.uid() and u.role = 'admin'
-      )
-    );
-  end if;
-end
-$$;
-
-create or replace function public.set_tour_categories_updated_at()
-returns trigger
-language plpgsql
-as $$
-begin
-  new.updated_at = now();
-  return new;
-end;
-$$;
-
-drop trigger if exists set_tour_categories_updated_at on public.tour_categories;
-create trigger set_tour_categories_updated_at
-before update on public.tour_categories
-for each row
-execute function public.set_tour_categories_updated_at();
-
-create table if not exists public.tour_paces (
-  id bigserial primary key,
-  slug text not null unique,
-  name text not null unique,
-  is_active boolean not null default true,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
-);
-
-create index if not exists tour_paces_active_idx on public.tour_paces (is_active);
-
-alter table public.tour_paces enable row level security;
-
-do $$
-begin
-  if not exists (
-    select 1 from pg_policies
-    where schemaname = 'public' and tablename = 'tour_paces' and policyname = 'tour_paces_select_public'
-  ) then
-    create policy "tour_paces_select_public"
-    on public.tour_paces
-    for select
-    to anon, authenticated
-    using (is_active = true);
-  end if;
-
-  if not exists (
-    select 1 from pg_policies
-    where schemaname = 'public' and tablename = 'tour_paces' and policyname = 'tour_paces_write_admin_only'
-  ) then
-    create policy "tour_paces_write_admin_only"
-    on public.tour_paces
-    for all
-    to authenticated
-    using (
-      exists (
-        select 1 from public.users u
-        where u.user_id = auth.uid() and u.role = 'admin'
-      )
-    )
-    with check (
-      exists (
-        select 1 from public.users u
-        where u.user_id = auth.uid() and u.role = 'admin'
-      )
-    );
-  end if;
-end
-$$;
-
-create or replace function public.set_tour_paces_updated_at()
-returns trigger
-language plpgsql
-as $$
-begin
-  new.updated_at = now();
-  return new;
-end;
-$$;
-
-drop trigger if exists set_tour_paces_updated_at on public.tour_paces;
-create trigger set_tour_paces_updated_at
-before update on public.tour_paces
-for each row
-execute function public.set_tour_paces_updated_at();
-
 create table if not exists public.tour_types (
   id bigserial primary key,
   slug text not null unique,
@@ -270,19 +138,17 @@ create table if not exists public.tours (
   id bigint primary key,
   slug text not null unique,
   destination_id bigint not null references public.destinations(id) on update cascade on delete restrict,
-  category_id bigint references public.tour_categories(id) on update cascade on delete set null,
-  pace_id bigint references public.tour_paces(id) on update cascade on delete set null,
   tour_type_id bigint references public.tour_types(id) on update cascade on delete set null,
   title text not null,
   location text not null,
   image_src text not null,
+  main_image_src text not null,
+  images text[] not null default '{}',
   duration_label text not null,
   price numeric(12,2) not null check (price >= 0),
   original_price numeric(12,2) check (original_price >= 0),
   description text,
   is_featured boolean not null default false,
-  latitude numeric(9,6),
-  longitude numeric(9,6),
   is_popular boolean not null default false,
   is_top_trending boolean not null default false,
   is_active boolean not null default true,
@@ -291,8 +157,6 @@ create table if not exists public.tours (
 );
 
 -- Reconcile schema if an earlier failed run created old columns.
-alter table public.tours add column if not exists category_id bigint;
-alter table public.tours add column if not exists pace_id bigint;
 alter table public.tours add column if not exists tour_type_id bigint;
 alter table public.tours add column if not exists is_featured boolean not null default false;
 alter table public.tours add column if not exists is_popular boolean not null default false;
@@ -300,39 +164,33 @@ alter table public.tours add column if not exists is_top_trending boolean not nu
 alter table public.tours add column if not exists is_active boolean not null default true;
 alter table public.tours add column if not exists created_at timestamptz not null default now();
 alter table public.tours add column if not exists updated_at timestamptz not null default now();
+alter table public.tours add column if not exists main_image_src text;
+alter table public.tours add column if not exists images text[] not null default '{}';
 
 alter table public.tours drop column if exists rating;
 alter table public.tours drop column if exists rating_count;
 alter table public.tours drop column if exists badge_text;
 alter table public.tours drop column if exists badge_class;
 alter table public.tours drop column if exists category;
+alter table public.tours drop column if exists category_id;
 alter table public.tours drop column if exists pace;
+alter table public.tours drop column if exists pace_id;
 alter table public.tours drop column if exists tour_type;
+alter table public.tours drop column if exists latitude;
+alter table public.tours drop column if exists longitude;
+
+update public.tours
+set main_image_src = image_src
+where main_image_src is null;
+
+update public.tours
+set images = array[coalesce(main_image_src, image_src)]::text[]
+where images is null or cardinality(images) = 0;
+
+alter table public.tours alter column main_image_src set not null;
 
 do $$
 begin
-  if not exists (
-    select 1 from pg_constraint
-    where conname = 'tours_category_id_fkey'
-      and conrelid = 'public.tours'::regclass
-  ) then
-    alter table public.tours
-    add constraint tours_category_id_fkey
-    foreign key (category_id) references public.tour_categories(id)
-    on update cascade on delete set null;
-  end if;
-
-  if not exists (
-    select 1 from pg_constraint
-    where conname = 'tours_pace_id_fkey'
-      and conrelid = 'public.tours'::regclass
-  ) then
-    alter table public.tours
-    add constraint tours_pace_id_fkey
-    foreign key (pace_id) references public.tour_paces(id)
-    on update cascade on delete set null;
-  end if;
-
   if not exists (
     select 1 from pg_constraint
     where conname = 'tours_tour_type_id_fkey'
@@ -347,8 +205,6 @@ end
 $$;
 
 create index if not exists tours_destination_idx on public.tours (destination_id);
-create index if not exists tours_category_idx on public.tours (category_id);
-create index if not exists tours_pace_idx on public.tours (pace_id);
 create index if not exists tours_tour_type_idx on public.tours (tour_type_id);
 create index if not exists tours_popular_idx on public.tours (is_popular) where is_popular = true;
 create index if not exists tours_top_trending_idx on public.tours (is_top_trending) where is_top_trending = true;
@@ -896,29 +752,6 @@ on public.reviews
 for each row
 execute function public.validate_review_booking();
 
-insert into public.tour_categories (slug, name)
-values
-  ('adventure', 'Adventure'),
-  ('nature', 'Nature'),
-  ('food', 'Food')
-on conflict (slug) do update
-set
-  name = excluded.name,
-  is_active = true,
-  updated_at = now();
-
-insert into public.tour_paces (slug, name)
-values
-  ('steady', 'Steady'),
-  ('grind', 'Grind'),
-  ('furious', 'Furious'),
-  ('fast', 'Fast')
-on conflict (slug) do update
-set
-  name = excluded.name,
-  is_active = true,
-  updated_at = now();
-
 insert into public.tour_types (slug, name)
 values
   ('island-hopping', 'Island Hopping'),
@@ -950,19 +783,17 @@ insert into public.tours (
   id,
   slug,
   destination_id,
-  category_id,
-  pace_id,
   tour_type_id,
   title,
   location,
   image_src,
+  main_image_src,
+  images,
   duration_label,
   price,
   original_price,
   description,
   is_featured,
-  latitude,
-  longitude,
   is_popular,
   is_top_trending,
   is_active
@@ -970,38 +801,36 @@ insert into public.tours (
 with tour_seed as (
   select * from (
     values
-      (1, 'boracay-island-hopping-and-white-beach-leisure-escape', 'boracay', 'adventure', 'steady', 'island-hopping', 'Boracay Island Hopping and White Beach Leisure Escape', 'Boracay, Philippines', '/img/tourCards/boracay.webp', '4 days', 10888.00::numeric, null::numeric, null::text, false, null::numeric, null::numeric, true, true, true),
-      (2, 'el-nido-lagoons-and-island-hopping-adventure', 'palawan', 'nature', 'grind', 'island-hopping', 'El Nido Lagoons and Island Hopping Adventure', 'Palawan, Philippines', '/img/tourCards/el-nido.webp', '4 days', 14500.00::numeric, null::numeric, null::text, false, null::numeric, null::numeric, true, true, true),
-      (3, 'cebu-city-heritage-tour-and-southern-coast-getaway', 'cebu', 'food', 'grind', 'cultural-heritage', 'Cebu City Heritage Tour and Southern Coast Getaway', 'Cebu, Philippines', '/img/tourCards/cebu-heritage.webp', '4 days', 12890.00::numeric, null::numeric, null::text, false, null::numeric, null::numeric, true, true, true),
-      (4, 'chocolate-hills-tarsier-sanctuary-and-loboc-river-cruise', 'bohol', 'adventure', 'furious', 'adventure-tour', 'Chocolate Hills, Tarsier Sanctuary and Loboc River Cruise', 'Bohol, Philippines', '/img/tourCards/chocolate-hills.webp', '4 days', 11990.00::numeric, null::numeric, null::text, false, null::numeric, null::numeric, true, true, true),
-      (5, 'siargao-surf-and-sohoton-cove-island-experience', 'siargao', 'food', 'furious', 'adventure-tour', 'Siargao Surf and Sohoton Cove Island Experience', 'Siargao, Philippines', '/img/tourCards/siargao-surf.webp', '4 days', 13950.00::numeric, null::numeric, null::text, false, null::numeric, null::numeric, true, true, true),
-      (6, 'baguio-highlands-escape-with-city-and-nature-sights', 'baguio', 'food', 'furious', 'city-tour', 'Baguio Highlands Escape with City and Nature Sights', 'Baguio, Philippines', '/img/tourCards/baguio-highlands.webp', '4 days', 8990.00::numeric, null::numeric, null::text, false, null::numeric, null::numeric, true, true, true),
-      (7, 'singapore-city-highlights-and-sentosa-fun-adventure', 'singapore', 'nature', 'steady', 'city-tour', 'Singapore City Highlights and Sentosa Fun Adventure', 'Singapore', '/img/tourCards/singapore-city.webp', '4 days', 23888.00::numeric, null::numeric, null::text, false, null::numeric, null::numeric, true, true, true),
-      (8, 'bangkok-city-tour-with-floating-market-and-railway-experience', 'bangkok', 'food', 'steady', 'city-tour', 'Bangkok City Tour with Floating Market and Railway Experience', 'Bangkok, Thailand', '/img/tourCards/bangkok-city.webp', '4 days', 25888.00::numeric, null::numeric, null::text, false, null::numeric, null::numeric, true, true, true),
-      (9, 'boracay-island-hopping-adventure-with-beachside-lunch', 'boracay', null::text, null::text, 'island-hopping', 'Boracay Island Hopping Adventure with Beachside Lunch', 'Boracay, Philippines', '/img/tourCards/3/1.png', '2 Days 1 Night', 9888.00::numeric, 12360.00::numeric, 'A must-try Boracay escape with island hopping, crystal-clear waters, and chill beach vibes.', false, null::numeric, null::numeric, false, false, true),
-      (10, 'el-nido-lagoons-and-island-stops-with-lunch-tour', 'palawan', null::text, null::text, 'island-hopping', 'El Nido Lagoons and Island Stops with Lunch Tour', 'Palawan, Philippines', '/img/tourCards/3/2.png', '2 Days 1 Night', 11200.00::numeric, 12800.00::numeric, 'Discover El Nido''s iconic lagoons and beaches in one unforgettable island-hopping experience.', false, null::numeric, null::numeric, false, false, true),
-      (11, 'bangkok-city-and-floating-market-day-tour-experience', 'bangkok', null::text, null::text, 'city-tour', 'Bangkok City and Floating Market Day Tour Experience', 'Bangkok, Thailand', '/img/tourCards/3/3.png', '2 Days 1 Night', 15888.00::numeric, 17950.00::numeric, 'Explore Bangkok''s city highlights and cultural markets with a smooth, guided tour plan.', true, null::numeric, null::numeric, false, false, true),
-      (12, 'singapore-city-highlights-and-marina-bay-experience', 'singapore', null::text, null::text, 'city-tour', 'Singapore City Highlights and Marina Bay Experience', 'Singapore', '/img/tourCards/3/4.png', '2 Days 1 Night', 18250.00::numeric, 19900.00::numeric, 'Enjoy modern city attractions, iconic skyline views, and curated stops across Singapore.', false, null::numeric, null::numeric, false, false, true),
-      (13, 'cebu-heritage-and-coastal-day-adventure-with-transfers', 'cebu', null::text, null::text, 'cultural-heritage', 'Cebu Heritage and Coastal Day Adventure with Transfers', 'Cebu, Philippines', '/img/tourCards/3/5.png', '2 Days 1 Night', 8600.00::numeric, 9800.00::numeric, 'Mix of culture, city sights, and coastal spots - perfect for quick but meaningful getaways.', false, null::numeric, null::numeric, false, false, true),
-      (14, 'bohol-countryside-tour-with-river-cruise-and-tarsier-stop', 'bohol', null::text, null::text, 'cultural-heritage', 'Bohol Countryside Tour with River Cruise and Tarsier Stop', 'Bohol, Philippines', '/img/tourCards/3/6.png', '2 Days 1 Night', 9250.00::numeric, 10600.00::numeric, 'Visit Bohol''s top attractions including countryside views, heritage sites, and relaxing cruise.', false, null::numeric, null::numeric, false, false, true),
-      (15, 'boracay-island-hopping-and-sunset-paraw-cruise', 'boracay', 'adventure', 'fast', 'island-hopping', 'Boracay Island Hopping and Sunset Paraw Cruise', 'Boracay, Philippines', '/img/tourCards/1/1.png', '4 days', 10888.00::numeric, null::numeric, null::text, false, 11.9674, 121.9248, false, false, true),
-      (16, 'white-beach-leisure-and-station-hopping-experience', 'boracay', 'food', 'fast', 'beach-getaway', 'White Beach Leisure and Station Hopping Experience', 'Boracay, Philippines', '/img/tourCards/1/2.png', '4 days', 9988.00::numeric, null::numeric, null::text, false, 11.9669, 121.9237, false, false, true),
-      (17, 'crystal-cove-and-snorkeling-adventure-day', 'boracay', 'adventure', 'steady', 'adventure-tour', 'Crystal Cove and Snorkeling Adventure Day', 'Boracay, Philippines', '/img/tourCards/1/3.png', '4 days', 11250.00::numeric, null::numeric, null::text, false, 11.9561, 121.9286, false, false, true),
-      (18, 'puka-beach-chill-and-scenic-coastal-tour', 'boracay', 'food', 'steady', 'beach-getaway', 'Puka Beach Chill and Scenic Coastal Tour', 'Boracay, Philippines', '/img/tourCards/1/4.png', '4 days', 9650.00::numeric, null::numeric, null::text, false, 11.9875, 121.9099, false, false, true),
-      (19, 'bulabog-beach-water-activities-and-fun-escape', 'boracay', 'adventure', 'fast', 'adventure-tour', 'Bulabog Beach Water Activities and Fun Escape', 'Boracay, Philippines', '/img/tourCards/1/5.png', '4 days', 11990.00::numeric, null::numeric, null::text, false, 11.9694, 121.9346, false, false, true),
-      (20, 'boracay-cafe-trail-and-sunset-viewpoints', 'boracay', 'adventure', 'grind', 'city-tour', 'Boracay Cafe Trail and Sunset Viewpoints', 'Boracay, Philippines', '/img/tourCards/1/6.png', '4 days', 8990.00::numeric, null::numeric, null::text, false, 11.9712, 121.9264, false, false, true),
-      (21, 'boracay-family-fun-with-beachfront-activities', 'boracay', 'adventure', 'grind', 'family-package', 'Boracay Family Fun with Beachfront Activities', 'Boracay, Philippines', '/img/tourCards/1/7.png', '4 days', 12500.00::numeric, null::numeric, null::text, false, null::numeric, null::numeric, false, false, true),
-      (22, 'boracay-inland-tour-and-local-culture-experience', 'boracay', 'nature', 'fast', 'city-tour', 'Boracay Inland Tour and Local Culture Experience', 'Boracay, Philippines', '/img/tourCards/1/8.png', '4 days', 9300.00::numeric, null::numeric, null::text, false, null::numeric, null::numeric, false, false, true),
-      (23, 'boracay-nightlife-and-dinner-by-the-beach', 'boracay', 'adventure', 'grind', 'city-tour', 'Boracay Nightlife and Dinner by the Beach', 'Boracay, Philippines', '/img/tourCards/1/9.png', '4 days', 10450.00::numeric, null::numeric, null::text, false, null::numeric, null::numeric, false, false, true),
-      (24, 'ariels-point-day-trip-and-cliff-jump-adventure', 'boracay', 'nature', 'fast', 'adventure-tour', 'Ariel''s Point Day Trip and Cliff Jump Adventure', 'Boracay, Philippines', '/img/tourCards/1/10.png', '4 days', 13400.00::numeric, null::numeric, null::text, false, null::numeric, null::numeric, false, false, true),
-      (25, 'boracay-couple-escape-with-romantic-sunset-cruise', 'boracay', 'adventure', 'furious', 'honeymoon-package', 'Boracay Couple Escape with Romantic Sunset Cruise', 'Boracay, Philippines', '/img/tourCards/1/11.png', '4 days', 11888.00::numeric, null::numeric, null::text, false, null::numeric, null::numeric, false, false, true),
-      (26, 'all-in-boracay-best-of-island-experience', 'boracay', 'nature', 'furious', 'adventure-tour', 'All-In Boracay Best of Island Experience', 'Boracay, Philippines', '/img/tourCards/1/12.png', '4 days', 13888.00::numeric, null::numeric, null::text, false, null::numeric, null::numeric, false, false, true)
+      (1, 'boracay-island-hopping-and-white-beach-leisure-escape', 'boracay', 'island-hopping', 'Boracay Island Hopping and White Beach Leisure Escape', 'Boracay, Philippines', '/img/tourCards/boracay.webp', '4 days', 10888.00::numeric, null::numeric, null::text, false, true, true, true),
+      (2, 'el-nido-lagoons-and-island-hopping-adventure', 'palawan', 'island-hopping', 'El Nido Lagoons and Island Hopping Adventure', 'Palawan, Philippines', '/img/tourCards/el-nido.webp', '4 days', 14500.00::numeric, null::numeric, null::text, false, true, true, true),
+      (3, 'cebu-city-heritage-tour-and-southern-coast-getaway', 'cebu', 'cultural-heritage', 'Cebu City Heritage Tour and Southern Coast Getaway', 'Cebu, Philippines', '/img/tourCards/cebu-heritage.webp', '4 days', 12890.00::numeric, null::numeric, null::text, false, true, true, true),
+      (4, 'chocolate-hills-tarsier-sanctuary-and-loboc-river-cruise', 'bohol', 'adventure-tour', 'Chocolate Hills, Tarsier Sanctuary and Loboc River Cruise', 'Bohol, Philippines', '/img/tourCards/chocolate-hills.webp', '4 days', 11990.00::numeric, null::numeric, null::text, false, true, true, true),
+      (5, 'siargao-surf-and-sohoton-cove-island-experience', 'siargao', 'adventure-tour', 'Siargao Surf and Sohoton Cove Island Experience', 'Siargao, Philippines', '/img/tourCards/siargao-surf.webp', '4 days', 13950.00::numeric, null::numeric, null::text, false, true, true, true),
+      (6, 'baguio-highlands-escape-with-city-and-nature-sights', 'baguio', 'city-tour', 'Baguio Highlands Escape with City and Nature Sights', 'Baguio, Philippines', '/img/tourCards/baguio-highlands.webp', '4 days', 8990.00::numeric, null::numeric, null::text, false, true, true, true),
+      (7, 'singapore-city-highlights-and-sentosa-fun-adventure', 'singapore', 'city-tour', 'Singapore City Highlights and Sentosa Fun Adventure', 'Singapore', '/img/tourCards/singapore-city.webp', '4 days', 23888.00::numeric, null::numeric, null::text, false, true, true, true),
+      (8, 'bangkok-city-tour-with-floating-market-and-railway-experience', 'bangkok', 'city-tour', 'Bangkok City Tour with Floating Market and Railway Experience', 'Bangkok, Thailand', '/img/tourCards/bangkok-city.webp', '4 days', 25888.00::numeric, null::numeric, null::text, false, true, true, true),
+      (9, 'boracay-island-hopping-adventure-with-beachside-lunch', 'boracay', 'island-hopping', 'Boracay Island Hopping Adventure with Beachside Lunch', 'Boracay, Philippines', '/img/tourCards/3/1.png', '2 Days 1 Night', 9888.00::numeric, 12360.00::numeric, 'A must-try Boracay escape with island hopping, crystal-clear waters, and chill beach vibes.', false, false, false, true),
+      (10, 'el-nido-lagoons-and-island-stops-with-lunch-tour', 'palawan', 'island-hopping', 'El Nido Lagoons and Island Stops with Lunch Tour', 'Palawan, Philippines', '/img/tourCards/3/2.png', '2 Days 1 Night', 11200.00::numeric, 12800.00::numeric, 'Discover El Nido''s iconic lagoons and beaches in one unforgettable island-hopping experience.', false, false, false, true),
+      (11, 'bangkok-city-and-floating-market-day-tour-experience', 'bangkok', 'city-tour', 'Bangkok City and Floating Market Day Tour Experience', 'Bangkok, Thailand', '/img/tourCards/3/3.png', '2 Days 1 Night', 15888.00::numeric, 17950.00::numeric, 'Explore Bangkok''s city highlights and cultural markets with a smooth, guided tour plan.', true, false, false, true),
+      (12, 'singapore-city-highlights-and-marina-bay-experience', 'singapore', 'city-tour', 'Singapore City Highlights and Marina Bay Experience', 'Singapore', '/img/tourCards/3/4.png', '2 Days 1 Night', 18250.00::numeric, 19900.00::numeric, 'Enjoy modern city attractions, iconic skyline views, and curated stops across Singapore.', false, false, false, true),
+      (13, 'cebu-heritage-and-coastal-day-adventure-with-transfers', 'cebu', 'cultural-heritage', 'Cebu Heritage and Coastal Day Adventure with Transfers', 'Cebu, Philippines', '/img/tourCards/3/5.png', '2 Days 1 Night', 8600.00::numeric, 9800.00::numeric, 'Mix of culture, city sights, and coastal spots - perfect for quick but meaningful getaways.', false, false, false, true),
+      (14, 'bohol-countryside-tour-with-river-cruise-and-tarsier-stop', 'bohol', 'cultural-heritage', 'Bohol Countryside Tour with River Cruise and Tarsier Stop', 'Bohol, Philippines', '/img/tourCards/3/6.png', '2 Days 1 Night', 9250.00::numeric, 10600.00::numeric, 'Visit Bohol''s top attractions including countryside views, heritage sites, and relaxing cruise.', false, false, false, true),
+      (15, 'boracay-island-hopping-and-sunset-paraw-cruise', 'boracay', 'island-hopping', 'Boracay Island Hopping and Sunset Paraw Cruise', 'Boracay, Philippines', '/img/tourCards/1/1.png', '4 days', 10888.00::numeric, null::numeric, null::text, false, false, false, true),
+      (16, 'white-beach-leisure-and-station-hopping-experience', 'boracay', 'beach-getaway', 'White Beach Leisure and Station Hopping Experience', 'Boracay, Philippines', '/img/tourCards/1/2.png', '4 days', 9988.00::numeric, null::numeric, null::text, false, false, false, true),
+      (17, 'crystal-cove-and-snorkeling-adventure-day', 'boracay', 'adventure-tour', 'Crystal Cove and Snorkeling Adventure Day', 'Boracay, Philippines', '/img/tourCards/1/3.png', '4 days', 11250.00::numeric, null::numeric, null::text, false, false, false, true),
+      (18, 'puka-beach-chill-and-scenic-coastal-tour', 'boracay', 'beach-getaway', 'Puka Beach Chill and Scenic Coastal Tour', 'Boracay, Philippines', '/img/tourCards/1/4.png', '4 days', 9650.00::numeric, null::numeric, null::text, false, false, false, true),
+      (19, 'bulabog-beach-water-activities-and-fun-escape', 'boracay', 'adventure-tour', 'Bulabog Beach Water Activities and Fun Escape', 'Boracay, Philippines', '/img/tourCards/1/5.png', '4 days', 11990.00::numeric, null::numeric, null::text, false, false, false, true),
+      (20, 'boracay-cafe-trail-and-sunset-viewpoints', 'boracay', 'city-tour', 'Boracay Cafe Trail and Sunset Viewpoints', 'Boracay, Philippines', '/img/tourCards/1/6.png', '4 days', 8990.00::numeric, null::numeric, null::text, false, false, false, true),
+      (21, 'boracay-family-fun-with-beachfront-activities', 'boracay', 'family-package', 'Boracay Family Fun with Beachfront Activities', 'Boracay, Philippines', '/img/tourCards/1/7.png', '4 days', 12500.00::numeric, null::numeric, null::text, false, false, false, true),
+      (22, 'boracay-inland-tour-and-local-culture-experience', 'boracay', 'city-tour', 'Boracay Inland Tour and Local Culture Experience', 'Boracay, Philippines', '/img/tourCards/1/8.png', '4 days', 9300.00::numeric, null::numeric, null::text, false, false, false, true),
+      (23, 'boracay-nightlife-and-dinner-by-the-beach', 'boracay', 'city-tour', 'Boracay Nightlife and Dinner by the Beach', 'Boracay, Philippines', '/img/tourCards/1/9.png', '4 days', 10450.00::numeric, null::numeric, null::text, false, false, false, true),
+      (24, 'ariels-point-day-trip-and-cliff-jump-adventure', 'boracay', 'adventure-tour', 'Ariel''s Point Day Trip and Cliff Jump Adventure', 'Boracay, Philippines', '/img/tourCards/1/10.png', '4 days', 13400.00::numeric, null::numeric, null::text, false, false, false, true),
+      (25, 'boracay-couple-escape-with-romantic-sunset-cruise', 'boracay', 'honeymoon-package', 'Boracay Couple Escape with Romantic Sunset Cruise', 'Boracay, Philippines', '/img/tourCards/1/11.png', '4 days', 11888.00::numeric, null::numeric, null::text, false, false, false, true),
+      (26, 'all-in-boracay-best-of-island-experience', 'boracay', 'adventure-tour', 'All-In Boracay Best of Island Experience', 'Boracay, Philippines', '/img/tourCards/1/12.png', '4 days', 13888.00::numeric, null::numeric, null::text, false, false, false, true)
   ) as s(
     id,
     slug,
     destination_slug,
-    category_slug,
-    pace_slug,
     tour_type_slug,
     title,
     location,
@@ -1011,8 +840,6 @@ with tour_seed as (
     original_price,
     description,
     is_featured,
-    latitude,
-    longitude,
     is_popular,
     is_top_trending,
     is_active
@@ -1022,44 +849,44 @@ select
   s.id,
   s.slug,
   d.id as destination_id,
-  c.id as category_id,
-  p.id as pace_id,
   tt.id as tour_type_id,
   s.title,
   s.location,
   s.image_src,
+  s.image_src as main_image_src,
+  array[
+    s.image_src,
+    '/img/tourSingle/1/1.png',
+    '/img/tourSingle/1/2.png',
+    '/img/tourSingle/1/3.png',
+    '/img/tourSingle/1/4.png'
+  ]::text[] as images,
   s.duration_label,
   s.price,
   s.original_price,
   s.description,
   s.is_featured,
-  s.latitude,
-  s.longitude,
   s.is_popular,
   s.is_top_trending,
   s.is_active
 from tour_seed s
 join public.destinations d on d.slug = s.destination_slug
-left join public.tour_categories c on c.slug = s.category_slug
-left join public.tour_paces p on p.slug = s.pace_slug
 left join public.tour_types tt on tt.slug = s.tour_type_slug
 on conflict (id) do update
 set
   slug = excluded.slug,
   destination_id = excluded.destination_id,
-  category_id = excluded.category_id,
-  pace_id = excluded.pace_id,
   tour_type_id = excluded.tour_type_id,
   title = excluded.title,
   location = excluded.location,
   image_src = excluded.image_src,
+  main_image_src = excluded.main_image_src,
+  images = excluded.images,
   duration_label = excluded.duration_label,
   price = excluded.price,
   original_price = excluded.original_price,
   description = excluded.description,
   is_featured = excluded.is_featured,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
   is_popular = excluded.is_popular,
   is_top_trending = excluded.is_top_trending,
   is_active = excluded.is_active,

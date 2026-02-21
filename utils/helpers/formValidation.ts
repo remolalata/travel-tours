@@ -1,4 +1,8 @@
-import type { AdminPasswordFormState, AdminProfileFormState } from '@/types/admin';
+import type {
+  AdminPasswordFormState,
+  AdminProfileFormState,
+  AdminTourCreateValidationInput,
+} from '@/types/admin';
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phonePattern = /^[+]?[\d\s\-()]{7,20}$/;
@@ -40,6 +44,22 @@ export function validateAdminPasswordForm(
   if (!errors.newPassword && input.newPassword === input.oldPassword) {
     errors.newPassword = 'same_as_old_password';
   }
+
+  return errors;
+}
+
+export function validateAdminTourCreateForm(
+  input: AdminTourCreateValidationInput,
+): ValidationErrors<AdminTourCreateValidationInput> {
+  const errors: ValidationErrors<AdminTourCreateValidationInput> = {};
+
+  if (!input.title.trim()) errors.title = 'required_title';
+  if (!input.description.trim()) errors.description = 'required_description';
+  if (!input.location.trim()) errors.location = 'required_location';
+  if (!input.duration.trim()) errors.duration = 'required_duration';
+  if (!input.destinationId.trim()) errors.destinationId = 'required_destination_id';
+  if (!input.tourTypeId.trim()) errors.tourTypeId = 'required_tour_type_id';
+  if (!input.price.trim()) errors.price = 'required_price';
 
   return errors;
 }

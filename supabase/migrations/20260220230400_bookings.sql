@@ -209,17 +209,17 @@ select
     else 0::numeric
   end as refunded_amount,
   (((row_id % 4) + 1)::int) as number_of_travelers,
-  (date '2026-03-01' + (((row_id * 3) % 180)::int)) as travel_start_date,
-  (date '2026-03-01' + (((row_id * 3) % 180)::int) + (((row_id % 6) + 2)::int)) as travel_end_date,
-  (timestamptz '2026-01-01 09:00:00+00' + ((row_id * 19) || ' hours')::interval) as booked_at,
+  (date '2025-08-01' + (((row_id * 3) % 170)::int)) as travel_start_date,
+  (date '2025-08-01' + (((row_id * 3) % 170)::int) + (((row_id % 6) + 2)::int)) as travel_end_date,
+  (timestamptz '2025-10-01 09:00:00+00' + ((row_id * 19) || ' hours')::interval) as booked_at,
   case
     when status_rank <= 80
-      then (timestamptz '2026-01-01 09:00:00+00' + ((row_id * 19 + 6) || ' hours')::interval)
+      then (timestamptz '2025-10-01 09:00:00+00' + ((row_id * 19 + 6) || ' hours')::interval)
     else null
   end as approved_at,
   case
     when status_rank > 95
-      then (timestamptz '2026-01-01 09:00:00+00' + ((row_id * 19 + 8) || ' hours')::interval)
+      then (timestamptz '2025-10-01 09:00:00+00' + ((row_id * 19 + 8) || ' hours')::interval)
     else null
   end as cancelled_at,
   case
