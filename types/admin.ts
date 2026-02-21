@@ -3,9 +3,6 @@ export type AdminPageKey =
   | 'destinations'
   | 'booking'
   | 'listing'
-  | 'addTour'
-  | 'favorites'
-  | 'messages'
   | 'profile';
 
 export interface AdminMetadata {
@@ -175,74 +172,10 @@ export interface AdminListingContent {
   resultSummary: string;
 }
 
-export interface AdminAddTourField {
-  id: string;
-  label: string;
-  kind: 'input' | 'textarea';
-}
-
-export interface AdminAddTourTab {
-  id: string;
-  label: string;
-  fields: AdminAddTourField[];
-}
-
 export interface AdminGalleryItem {
   id: string;
   src: string;
   alt: string;
-}
-
-export interface AdminAddTourContent {
-  intro: AdminSectionIntro;
-  tabs: AdminAddTourTab[];
-  galleryTitle: string;
-  uploadLabel: string;
-  uploadHint: string;
-  saveLabel: string;
-  gallery: AdminGalleryItem[];
-}
-
-export interface AdminFavoritesContent {
-  intro: AdminSectionIntro;
-  cards: AdminListingItem[];
-  resultSummary: string;
-  pricePrefix: string;
-}
-
-export interface AdminMessageSender {
-  id: number;
-  image: string;
-  badgeColor?: string;
-  badgeText?: string;
-  name: string;
-  role: string;
-  time: string;
-}
-
-export interface AdminMessageThreadItem {
-  id: number;
-  senderName: string;
-  senderImage: string;
-  senderStatus?: string;
-  time: string;
-  message: string;
-  align: 'left' | 'right';
-}
-
-export interface AdminMessagesContent {
-  intro: AdminSectionIntro;
-  searchPlaceholder: string;
-  deleteConversationLabel: string;
-  sendPlaceholder: string;
-  sendButtonLabel: string;
-  senders: AdminMessageSender[];
-  activeConversation: {
-    name: string;
-    image: string;
-    status: string;
-  };
-  thread: AdminMessageThreadItem[];
 }
 
 export interface AdminProfileField {
@@ -282,9 +215,6 @@ export interface AdminPageContentMap {
   destinations: AdminDestinationsContent;
   booking: AdminBookingContent;
   listing: AdminListingContent;
-  addTour: AdminAddTourContent;
-  favorites: AdminFavoritesContent;
-  messages: AdminMessagesContent;
   profile: AdminProfileContent;
 }
 

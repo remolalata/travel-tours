@@ -73,7 +73,7 @@ export const adminContent: AdminContent = {
   metadata: {
     main: {
       title: 'Admin | Travel & Tours',
-      description: 'Manage bookings, listings, messages, and profile settings.',
+      description: 'Manage bookings, listings, destinations, and profile settings.',
     },
     destinations: {
       title: 'Destinations | Travel & Tours',
@@ -86,18 +86,6 @@ export const adminContent: AdminContent = {
     listing: {
       title: 'My Listings | Travel & Tours',
       description: 'View and manage your listed travel packages.',
-    },
-    addTour: {
-      title: 'Add Tour | Travel & Tours',
-      description: 'Create a new tour listing for your dashboard.',
-    },
-    favorites: {
-      title: 'My Favorites | Travel & Tours',
-      description: 'Access your favorite travel package list.',
-    },
-    messages: {
-      title: 'Messages | Travel & Tours',
-      description: 'Read and reply to your inbox messages.',
     },
     profile: {
       title: 'My Profile | Travel & Tours',
@@ -113,11 +101,8 @@ export const adminContent: AdminContent = {
       { id: 2, href: '/admin/destinations', iconClass: 'icon-pin text-26', label: 'Destinations' },
       { id: 3, href: '/admin/booking', iconClass: 'icon-calendar text-26', label: 'Bookings' },
       { id: 4, href: '/admin/listing', iconClass: 'icon-menu text-26', label: 'My Listings' },
-      { id: 5, href: '/admin/add-tour', iconClass: 'icon-clipboard text-26', label: 'Add Tour' },
-      { id: 6, href: '/admin/favorites', iconClass: 'icon-heart text-26', label: 'My Favorites' },
-      { id: 7, href: '/admin/messages', iconClass: 'icon-message text-26', label: 'Messages' },
-      { id: 8, href: '/admin/profile', iconClass: 'icon-account text-26', label: 'My Profile' },
-      { id: 9, href: '/logout', iconClass: 'icon-logout text-26', label: 'Logout' },
+      { id: 5, href: '/admin/profile', iconClass: 'icon-account text-26', label: 'My Profile' },
+      { id: 6, href: '/logout', iconClass: 'icon-logout text-26', label: 'Logout' },
     ],
     topActions: [
       { id: 1, iconClass: 'icon-mail text-20', label: 'Notifications' },
@@ -327,146 +312,6 @@ export const adminContent: AdminContent = {
       pricePrefix: 'From',
       cards: [...listingCards],
       resultSummary: 'Showing results 1-30 of 1,415',
-    },
-    addTour: {
-      intro: {
-        title: 'Add Tour',
-        description: 'Create and configure a new tour offer from your dashboard.',
-      },
-      tabs: [
-        {
-          id: 'content',
-          label: 'Content',
-          fields: [
-            { id: 'tour-title', label: 'Tour Title', kind: 'input' },
-            { id: 'category', label: 'Category', kind: 'input' },
-            { id: 'keywords', label: 'Keywords', kind: 'input' },
-            { id: 'tour-content', label: 'Tour Content', kind: 'textarea' },
-          ],
-        },
-        {
-          id: 'location',
-          label: 'Location',
-          fields: [
-            { id: 'country', label: 'Country', kind: 'input' },
-            { id: 'city', label: 'City', kind: 'input' },
-            { id: 'address', label: 'Address', kind: 'input' },
-          ],
-        },
-        {
-          id: 'pricing',
-          label: 'Pricing',
-          fields: [
-            { id: 'base-price', label: 'Base Price', kind: 'input' },
-            { id: 'promo-price', label: 'Promo Price', kind: 'input' },
-            { id: 'max-guests', label: 'Max Guests', kind: 'input' },
-          ],
-        },
-        {
-          id: 'included',
-          label: 'Included',
-          fields: [
-            { id: 'inclusions', label: 'Inclusions', kind: 'textarea' },
-            { id: 'exclusions', label: 'Exclusions', kind: 'textarea' },
-          ],
-        },
-      ],
-      galleryTitle: 'Gallery',
-      uploadLabel: 'Upload Images',
-      uploadHint: 'PNG or JPG no bigger than 800px wide and tall.',
-      saveLabel: 'Save Changes',
-      gallery: [
-        { id: 'image-1', src: '', alt: 'Gallery image upload slot 1' },
-        { id: 'image-2', src: '/img/dashboard/addtour/1.jpg', alt: 'Gallery image 2' },
-        { id: 'image-3', src: '/img/dashboard/addtour/2.jpg', alt: 'Gallery image 3' },
-        { id: 'image-4', src: '/img/dashboard/addtour/3.jpg', alt: 'Gallery image 4' },
-      ],
-    },
-    favorites: {
-      intro: {
-        title: 'My Favorites',
-        description: 'Quickly access saved tours you are tracking.',
-      },
-      cards: [...listingCards, ...listingCards.slice(0, 2).map((card) => ({ ...card, id: card.id + 100 }))],
-      resultSummary: 'Showing results 1-30 of 1,415',
-      pricePrefix: 'From',
-    },
-    messages: {
-      intro: {
-        title: 'Messages',
-        description: 'Read and reply to traveler and team conversations.',
-      },
-      searchPlaceholder: 'Search',
-      deleteConversationLabel: 'Delete Conversation',
-      sendPlaceholder: 'Type a message',
-      sendButtonLabel: 'Send Message',
-      senders: [
-        {
-          id: 1,
-          image: '/img/dashboard/messages/sidebar/1.png',
-          badgeText: '2',
-          name: 'Darlene Robertson',
-          role: 'Head of Development',
-          time: '35 mins',
-        },
-        {
-          id: 2,
-          image: '/img/dashboard/messages/sidebar/2.png',
-          badgeColor: 'bg-accent-2',
-          badgeText: '2',
-          name: 'Arlene McCoy',
-          role: 'Customer Support',
-          time: '52 mins',
-        },
-        {
-          id: 3,
-          image: '/img/dashboard/messages/sidebar/3.png',
-          badgeColor: 'bg-green-3',
-          badgeText: '1',
-          name: 'Leslie Alexander',
-          role: 'Sales Associate',
-          time: '1 hour',
-        },
-        {
-          id: 4,
-          image: '/img/dashboard/messages/sidebar/4.png',
-          name: 'Wade Warren',
-          role: 'Operations',
-          time: '2 hours',
-        },
-      ],
-      activeConversation: {
-        name: 'Arlene McCoy',
-        image: '/img/dashboard/messages/main/4.png',
-        status: 'Active',
-      },
-      thread: [
-        {
-          id: 1,
-          senderName: 'Arlene McCoy',
-          senderImage: '/img/dashboard/messages/main/1.png',
-          senderStatus: 'Active',
-          time: '10:10 AM',
-          message: 'Can you share the updated itinerary for the group tour package?',
-          align: 'left',
-        },
-        {
-          id: 2,
-          senderName: 'You',
-          senderImage: '/img/dashboard/header/1.png',
-          time: '10:13 AM',
-          message: 'Yes, I just uploaded it. Please check your email and dashboard attachments.',
-          align: 'right',
-        },
-        {
-          id: 3,
-          senderName: 'Arlene McCoy',
-          senderImage: '/img/dashboard/messages/main/3.png',
-          time: '10:15 AM',
-          message: 'Received, thank you. I will review and get back to you shortly.',
-          align: 'left',
-        },
-      ],
     },
     profile: {
       intro: {
