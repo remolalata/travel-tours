@@ -2,8 +2,10 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useRef,useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
+import useToursListQuery from '@/api/tours/hooks/useToursListQuery';
+import type { PaginatedToursList } from '@/api/tours/mutations/tourApi';
 import Pagination from '@/components/common/Pagination';
 import Stars from '@/components/common/Stars';
 import { speedFeatures } from '@/data/tourFilteringOptions';
@@ -12,11 +14,37 @@ import { formatNumber } from '@/utils/helpers/formatNumber';
 
 import Sidebar from './Sidebar';
 
-export default function TourList1() {
+type TourList1Props = {
+  initialToursPage: PaginatedToursList;
+};
+
+export default function TourList1({ initialToursPage }: TourList1Props) {
   const [sortOption, setSortOption] = useState<string>('');
   const [ddActives, setDdActives] = useState(false);
   const [sidebarActive, setSidebarActive] = useState(false);
+  const [page, setPage] = useState(0);
   const dropDownContainer = useRef<HTMLDivElement | null>(null);
+  const toursQuery = useToursListQuery(
+    { page, pageSize: initialToursPage.pageSize || 8 },
+    { initialData: page === 0 ? initialToursPage : undefined },
+  );
+  const pageSize = toursQuery.data?.pageSize ?? initialToursPage.pageSize ?? 8;
+  const totalResults = toursQuery.data?.total ?? initialToursPage.total ?? 0;
+  const totalPages = Math.max(1, Math.ceil(totalResults / pageSize));
+  const currentPage = page + 1;
+  const tours = useMemo(() => {
+    if ((toursQuery.data?.rows?.length ?? 0) > 0) {
+      return toursQuery.data!.rows;
+    }
+
+    if (page === 0) {
+      return tourDataTwo;
+    }
+
+    return [];
+  }, [page, toursQuery.data]);
+  const showingStart = totalResults === 0 ? 0 : page * pageSize + 1;
+  const showingEnd = Math.min(totalResults, page * pageSize + tours.length);
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
@@ -70,7 +98,7 @@ export default function TourList1() {
           <div className='col-xl-9 col-lg-8'>
             <div className='justify-between y-gap-5 row'>
               <div className='col-auto'>
-                <div>1362 results</div>
+                <div>{totalResults} results</div>
               </div>
 
               <div ref={dropDownContainer} className='col-auto'>
@@ -109,8 +137,8 @@ export default function TourList1() {
             </div>
 
             <div className='y-gap-30 pt-30 row'>
-              {tourDataTwo.map((elm, i) => (
-                <div className='col-12' key={i}>
+              {tours.map((elm, i) => (
+                <div className='col-12' key={elm.id ?? i}>
                   <div className='tourCard -type-2'>
                     <div className='tourCard__image'>
                       <Image width={420} height={390} src={elm.imageSrc} alt='image' />
@@ -143,8 +171,8 @@ export default function TourList1() {
                     </div>
 
                     <div className='tourCard__content'>
-                      <div className='tourCard__location'>
-                        <i className='icon-pin'></i>
+                      <div className='tourCard__location d-flex items-center text-13 text-light-2'>
+                        <i className='icon-pin d-flex text-16 text-light-2 mr-5'></i>
                         {elm.location}
                       </div>
 
@@ -184,17 +212,25 @@ export default function TourList1() {
                         </div>
 
                         <div className='tourCard__price'>
-                          <div>₱{formatNumber(elm.fromPrice)}</div>
+                          {elm.fromPrice > elm.price ? (
+                            <>
+                              <div className='tourCard__priceOld'>₱{formatNumber(elm.fromPrice)}</div>
 
-                          <div className='d-flex items-center'>
-                            From{' '}
-                            <span className='ml-5 text-20 fw-500'>₱{formatNumber(elm.price)}</span>
-                          </div>
+                              <div className='d-flex items-center tourCard__priceCurrent'>
+                                From{' '}
+                                <span className='ml-5 text-20 fw-500'>₱{formatNumber(elm.price)}</span>
+                              </div>
+                            </>
+                          ) : (
+                            <div className='tourCard__priceCurrentOnly'>
+                              <span className='text-20 fw-500'>₱{formatNumber(elm.price)}</span>
+                            </div>
+                          )}
                         </div>
                       </div>
 
                       <Link
-                        href={`/tour/${elm.id}`}
+                        href={`/tour/${'slug' in elm && elm.slug ? elm.slug : elm.id}`}
                         className='-outline-accent-1 text-accent-1 button'
                       >
                         View Details
@@ -207,9 +243,17 @@ export default function TourList1() {
             </div>
 
             <div className='d-flex flex-column justify-center mt-60'>
-              <Pagination />
+              <Pagination
+                range={totalPages}
+                page={currentPage}
+                onPageChange={(nextPage) => {
+                  setPage(nextPage - 1);
+                }}
+              />
 
-              <div className='mt-20 text-14 text-center'>Showing results 1-30 of 1,415</div>
+              <div className='mt-20 text-14 text-center'>
+                Showing results {showingStart}-{showingEnd} of {totalResults}
+              </div>
             </div>
           </div>
         </div>

@@ -41,7 +41,6 @@ export default function AdminListingPage() {
           tours={tours}
           pricePrefix={content.pricePrefix}
           isLoading={toursQuery.isLoading}
-          loadingMessage={content.messages.loading}
           errorMessage={hasError ? content.messages.loadError : null}
           emptyMessage={content.messages.empty}
         />

@@ -128,13 +128,6 @@ with seeded_customers as (
   join public.users u
     on u.user_id = au.id
   where u.role = 'customer'
-    and au.email in (
-      'ava.santos@example.com', 'liam.reyes@example.com', 'noah.cruz@example.com', 'mia.garcia@example.com',
-      'ethan.mendoza@example.com', 'sophia.lopez@example.com', 'lucas.torres@example.com', 'emma.navarro@example.com',
-      'elijah.ramos@example.com', 'olivia.villanueva@example.com', 'james.castillo@example.com', 'amelia.aquino@example.com',
-      'benjamin.rivera@example.com', 'isabella.fernandez@example.com', 'henry.diaz@example.com', 'charlotte.gonzales@example.com',
-      'jack.domingo@example.com', 'harper.delacruz@example.com', 'leo.bautista@example.com', 'grace.perez@example.com'
-    )
 ),
 destination_map as (
   select * from (
@@ -146,9 +139,7 @@ destination_map as (
       (5, 'siargao', 'Siargao Surf and Sohoton Cove Island Experience'),
       (6, 'baguio', 'Baguio Highlands Escape with City and Nature Sights'),
       (7, 'singapore', 'Singapore City Highlights and Sentosa Fun Adventure'),
-      (8, 'bangkok', 'Bangkok City Tour with Floating Market and Railway Experience'),
-      (9, 'bali', 'Bali Temple Trail and Ubud Nature Escape'),
-      (10, 'phuket', 'Phuket Island Explorer with Coastal Activities')
+      (8, 'bangkok', 'Bangkok City Tour with Floating Market and Railway Experience')
   ) as t(destination_index, slug, package_title)
 ),
 seeded_rows_base as (
@@ -169,10 +160,10 @@ seeded_rows_base as (
     ) as status_bucket
   from seeded_customers c
   cross join lateral (
-    select generate_series(1, 5) as trip_no
+    select generate_series(1, 15) as trip_no
   ) n
   join destination_map d
-    on d.destination_index = (((c.customer_index - 1) * 5 + n.trip_no - 1) % 10) + 1
+    on d.destination_index = (((c.customer_index - 1) * 15 + n.trip_no - 1) % 8) + 1
 ),
 seeded_rows as (
   select
@@ -211,15 +202,24 @@ select
   (((row_id % 4) + 1)::int) as number_of_travelers,
   (date '2025-08-01' + (((row_id * 3) % 170)::int)) as travel_start_date,
   (date '2025-08-01' + (((row_id * 3) % 170)::int) + (((row_id % 6) + 2)::int)) as travel_end_date,
-  (timestamptz '2025-10-01 09:00:00+00' + ((row_id * 19) || ' hours')::interval) as booked_at,
+  (
+    timestamptz '2025-08-01 09:00:00+00'
+    + ((((row_id * 19) % (24 * 183)))::text || ' hours')::interval
+  ) as booked_at,
   case
     when status_rank <= 80
-      then (timestamptz '2025-10-01 09:00:00+00' + ((row_id * 19 + 6) || ' hours')::interval)
+      then (
+        timestamptz '2025-08-01 09:00:00+00'
+        + ((((row_id * 19) % (24 * 183)) + 6)::text || ' hours')::interval
+      )
     else null
   end as approved_at,
   case
     when status_rank > 95
-      then (timestamptz '2025-10-01 09:00:00+00' + ((row_id * 19 + 8) || ' hours')::interval)
+      then (
+        timestamptz '2025-08-01 09:00:00+00'
+        + ((((row_id * 19) % (24 * 183)) + 8)::text || ' hours')::interval
+      )
     else null
   end as cancelled_at,
   case

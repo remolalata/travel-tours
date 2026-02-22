@@ -47,18 +47,15 @@ execute function public.set_destinations_updated_at();
 
 insert into public.destinations (slug, name, image_src)
 values
-  ('boracay', 'Boracay', '/img/destinationCards/boracay.webp'),
-  ('palawan', 'Palawan', '/img/destinationCards/palawan.webp'),
-  ('cebu', 'Cebu', '/img/destinationCards/cebu.webp'),
-  ('bohol', 'Bohol', '/img/destinationCards/bohol.webp'),
-  ('siargao', 'Siargao', '/img/destinationCards/siargao.webp'),
-  ('baguio', 'Baguio', '/img/destinationCards/baguio.webp'),
-  ('singapore', 'Singapore', '/img/destinationCards/singapore.webp'),
-  ('bangkok', 'Bangkok', '/img/destinationCards/bangkok.webp'),
-  ('bali', 'Bali', '/img/destinationCards/bali.webp'),
-  ('phuket', 'Phuket', '/img/destinationCards/phuket.webp')
+  ('boracay', 'Boracay', '/img/destinations/boracay.webp'),
+  ('palawan', 'Palawan', '/img/destinations/palawan.webp'),
+  ('cebu', 'Cebu', '/img/destinations/cebu.webp'),
+  ('bohol', 'Bohol', '/img/destinations/bohol.webp'),
+  ('siargao', 'Siargao', '/img/destinations/siargao.webp'),
+  ('baguio', 'Baguio', '/img/destinations/baguio.webp'),
+  ('singapore', 'Singapore', '/img/destinations/singapore.webp'),
+  ('bangkok', 'Bangkok', '/img/destinations/bangkok.webp')
 on conflict (slug) do update
 set
   name = excluded.name,
   image_src = excluded.image_src;
-

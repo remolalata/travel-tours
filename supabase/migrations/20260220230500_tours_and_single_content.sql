@@ -142,7 +142,6 @@ create table if not exists public.tours (
   title text not null,
   location text not null,
   image_src text not null,
-  main_image_src text not null,
   images text[] not null default '{}',
   duration_label text not null,
   price numeric(12,2) not null check (price >= 0),
@@ -164,7 +163,6 @@ alter table public.tours add column if not exists is_top_trending boolean not nu
 alter table public.tours add column if not exists is_active boolean not null default true;
 alter table public.tours add column if not exists created_at timestamptz not null default now();
 alter table public.tours add column if not exists updated_at timestamptz not null default now();
-alter table public.tours add column if not exists main_image_src text;
 alter table public.tours add column if not exists images text[] not null default '{}';
 
 alter table public.tours drop column if exists rating;
@@ -178,16 +176,12 @@ alter table public.tours drop column if exists pace_id;
 alter table public.tours drop column if exists tour_type;
 alter table public.tours drop column if exists latitude;
 alter table public.tours drop column if exists longitude;
+alter table public.tours drop column if exists main_image_src;
 
 update public.tours
-set main_image_src = image_src
-where main_image_src is null;
-
-update public.tours
-set images = array[coalesce(main_image_src, image_src)]::text[]
+set images = array[image_src]::text[]
 where images is null or cardinality(images) = 0;
 
-alter table public.tours alter column main_image_src set not null;
 
 do $$
 begin
@@ -787,7 +781,6 @@ insert into public.tours (
   title,
   location,
   image_src,
-  main_image_src,
   images,
   duration_label,
   price,
@@ -819,14 +812,14 @@ with tour_seed as (
       (16, 'white-beach-leisure-and-station-hopping-experience', 'boracay', 'beach-getaway', 'White Beach Leisure and Station Hopping Experience', 'Boracay, Philippines', '/img/tourCards/1/2.png', '4 days', 9988.00::numeric, null::numeric, null::text, false, false, false, true),
       (17, 'crystal-cove-and-snorkeling-adventure-day', 'boracay', 'adventure-tour', 'Crystal Cove and Snorkeling Adventure Day', 'Boracay, Philippines', '/img/tourCards/1/3.png', '4 days', 11250.00::numeric, null::numeric, null::text, false, false, false, true),
       (18, 'puka-beach-chill-and-scenic-coastal-tour', 'boracay', 'beach-getaway', 'Puka Beach Chill and Scenic Coastal Tour', 'Boracay, Philippines', '/img/tourCards/1/4.png', '4 days', 9650.00::numeric, null::numeric, null::text, false, false, false, true),
-      (19, 'bulabog-beach-water-activities-and-fun-escape', 'boracay', 'adventure-tour', 'Bulabog Beach Water Activities and Fun Escape', 'Boracay, Philippines', '/img/tourCards/1/5.png', '4 days', 11990.00::numeric, null::numeric, null::text, false, false, false, true),
-      (20, 'boracay-cafe-trail-and-sunset-viewpoints', 'boracay', 'city-tour', 'Boracay Cafe Trail and Sunset Viewpoints', 'Boracay, Philippines', '/img/tourCards/1/6.png', '4 days', 8990.00::numeric, null::numeric, null::text, false, false, false, true),
-      (21, 'boracay-family-fun-with-beachfront-activities', 'boracay', 'family-package', 'Boracay Family Fun with Beachfront Activities', 'Boracay, Philippines', '/img/tourCards/1/7.png', '4 days', 12500.00::numeric, null::numeric, null::text, false, false, false, true),
-      (22, 'boracay-inland-tour-and-local-culture-experience', 'boracay', 'city-tour', 'Boracay Inland Tour and Local Culture Experience', 'Boracay, Philippines', '/img/tourCards/1/8.png', '4 days', 9300.00::numeric, null::numeric, null::text, false, false, false, true),
-      (23, 'boracay-nightlife-and-dinner-by-the-beach', 'boracay', 'city-tour', 'Boracay Nightlife and Dinner by the Beach', 'Boracay, Philippines', '/img/tourCards/1/9.png', '4 days', 10450.00::numeric, null::numeric, null::text, false, false, false, true),
-      (24, 'ariels-point-day-trip-and-cliff-jump-adventure', 'boracay', 'adventure-tour', 'Ariel''s Point Day Trip and Cliff Jump Adventure', 'Boracay, Philippines', '/img/tourCards/1/10.png', '4 days', 13400.00::numeric, null::numeric, null::text, false, false, false, true),
-      (25, 'boracay-couple-escape-with-romantic-sunset-cruise', 'boracay', 'honeymoon-package', 'Boracay Couple Escape with Romantic Sunset Cruise', 'Boracay, Philippines', '/img/tourCards/1/11.png', '4 days', 11888.00::numeric, null::numeric, null::text, false, false, false, true),
-      (26, 'all-in-boracay-best-of-island-experience', 'boracay', 'adventure-tour', 'All-In Boracay Best of Island Experience', 'Boracay, Philippines', '/img/tourCards/1/12.png', '4 days', 13888.00::numeric, null::numeric, null::text, false, false, false, true)
+      (19, 'bulabog-beach-water-activities-and-fun-escape', 'boracay', 'adventure-tour', 'Bulabog Beach Water Activities and Fun Escape', 'Boracay, Philippines', '/img/tourCards/1/5.png', '4 days', 11990.00::numeric, 14990.00::numeric, null::text, false, false, false, true),
+      (20, 'boracay-cafe-trail-and-sunset-viewpoints', 'boracay', 'city-tour', 'Boracay Cafe Trail and Sunset Viewpoints', 'Boracay, Philippines', '/img/tourCards/1/6.png', '4 days', 8990.00::numeric, 10990.00::numeric, null::text, false, false, false, true),
+      (21, 'boracay-family-fun-with-beachfront-activities', 'boracay', 'family-package', 'Boracay Family Fun with Beachfront Activities', 'Boracay, Philippines', '/img/tourCards/1/7.png', '4 days', 12500.00::numeric, 15400.00::numeric, null::text, false, false, false, true),
+      (22, 'boracay-inland-tour-and-local-culture-experience', 'boracay', 'city-tour', 'Boracay Inland Tour and Local Culture Experience', 'Boracay, Philippines', '/img/tourCards/1/8.png', '4 days', 9300.00::numeric, 11800.00::numeric, null::text, false, false, false, true),
+      (23, 'boracay-nightlife-and-dinner-by-the-beach', 'boracay', 'city-tour', 'Boracay Nightlife and Dinner by the Beach', 'Boracay, Philippines', '/img/tourCards/1/9.png', '4 days', 10450.00::numeric, 12950.00::numeric, null::text, false, false, false, true),
+      (24, 'ariels-point-day-trip-and-cliff-jump-adventure', 'boracay', 'adventure-tour', 'Ariel''s Point Day Trip and Cliff Jump Adventure', 'Boracay, Philippines', '/img/tourCards/1/10.png', '4 days', 13400.00::numeric, 16750.00::numeric, null::text, false, false, false, true),
+      (25, 'boracay-couple-escape-with-romantic-sunset-cruise', 'boracay', 'honeymoon-package', 'Boracay Couple Escape with Romantic Sunset Cruise', 'Boracay, Philippines', '/img/tourCards/1/11.png', '4 days', 11888.00::numeric, 14988.00::numeric, null::text, false, false, false, true),
+      (26, 'all-in-boracay-best-of-island-experience', 'boracay', 'adventure-tour', 'All-In Boracay Best of Island Experience', 'Boracay, Philippines', '/img/tourCards/1/12.png', '4 days', 13888.00::numeric, 17288.00::numeric, null::text, false, false, false, true)
   ) as s(
     id,
     slug,
@@ -852,19 +845,34 @@ select
   tt.id as tour_type_id,
   s.title,
   s.location,
-  s.image_src,
-  s.image_src as main_image_src,
+  case s.destination_slug
+    when 'boracay' then '/img/tours/boracay.webp'
+    when 'palawan' then '/img/tours/el-nido.webp'
+    when 'cebu' then '/img/tours/cebu-heritage.webp'
+    when 'bohol' then '/img/tours/chocolate-hills.webp'
+    when 'siargao' then '/img/tours/siargao-surf.webp'
+    when 'baguio' then '/img/tours/baguio-highlands.webp'
+    when 'singapore' then '/img/tours/singapore-city.webp'
+    when 'bangkok' then '/img/tours/bangkok-city.webp'
+    else '/img/tours/boracay.webp'
+  end as image_src,
   array[
-    s.image_src,
-    '/img/tourSingle/1/1.png',
-    '/img/tourSingle/1/2.png',
-    '/img/tourSingle/1/3.png',
-    '/img/tourSingle/1/4.png'
+    '/img/tours/baguio-highlands.webp',
+    '/img/tours/bangkok-city.webp',
+    '/img/tours/boracay.webp',
+    '/img/tours/cebu-heritage.webp',
+    '/img/tours/chocolate-hills.webp',
+    '/img/tours/el-nido.webp',
+    '/img/tours/siargao-surf.webp',
+    '/img/tours/singapore-city.webp'
   ]::text[] as images,
   s.duration_label,
   s.price,
   s.original_price,
-  s.description,
+  coalesce(
+    s.description,
+    format('%s package with guided highlights, smooth transfers, and balanced free time.', s.title)
+  ) as description,
   s.is_featured,
   s.is_popular,
   s.is_top_trending,
@@ -880,7 +888,6 @@ set
   title = excluded.title,
   location = excluded.location,
   image_src = excluded.image_src,
-  main_image_src = excluded.main_image_src,
   images = excluded.images,
   duration_label = excluded.duration_label,
   price = excluded.price,
@@ -903,26 +910,55 @@ where t.id = 9
 on conflict (tour_id, promotion_id) do nothing;
 
 insert into public.tour_inclusions (tour_id, item_type, item_order, content)
-with inclusion_templates as (
+with seeded_tours as (
+  select
+    t.id,
+    t.title,
+    t.location,
+    coalesce(nullif(split_part(t.location, ',', 1), ''), t.location) as destination_name
+  from public.tours t
+),
+inclusion_templates as (
   select * from (
     values
-      ('included', 1, 'Roundtrip airfare, baggage allowance, and terminal fees'),
-      ('included', 2, 'Local taxes and environmental fees'),
-      ('included', 3, 'Hotel pick-up and drop-off via air-conditioned van'),
-      ('included', 4, 'Travel insurance and transfer to private pier'),
-      ('included', 5, 'Daily breakfast and bottled water during tours'),
-      ('included', 6, 'DOT-accredited tour guide'),
-      ('excluded', 1, 'Personal expenses and souvenirs'),
-      ('excluded', 2, 'Tips and gratuities'),
-      ('excluded', 3, 'Alcoholic beverages')
-  ) as t(item_type, item_order, content)
+      ('included', 1),
+      ('included', 2),
+      ('included', 3),
+      ('included', 4),
+      ('included', 5),
+      ('included', 6),
+      ('excluded', 1),
+      ('excluded', 2),
+      ('excluded', 3)
+  ) as t(item_type, item_order)
 )
 select
   tr.id as tour_id,
   it.item_type,
   it.item_order,
-  it.content
-from public.tours tr
+  case
+    when it.item_type = 'included' and it.item_order = 1 then
+      format('Coordinated transfers and arrival assistance within %s.', tr.destination_name)
+    when it.item_type = 'included' and it.item_order = 2 then
+      format('Selected guided activities and destination highlights in %s.', tr.destination_name)
+    when it.item_type = 'included' and it.item_order = 3 then
+      'Tour coordination support and day-by-day itinerary briefing'
+    when it.item_type = 'included' and it.item_order = 4 then
+      'Applicable local taxes and standard service handling fees'
+    when it.item_type = 'included' and it.item_order = 5 then
+      'Bottled water during guided activities (where available)'
+    when it.item_type = 'included' and it.item_order = 6 then
+      format('Travel & Tours support for the package: %s', tr.title)
+    when it.item_type = 'excluded' and it.item_order = 1 then
+      'Personal expenses, shopping, and optional add-on activities'
+    when it.item_type = 'excluded' and it.item_order = 2 then
+      'Tips and gratuities for guides, drivers, and hotel staff'
+    when it.item_type = 'excluded' and it.item_order = 3 then
+      format('Items not explicitly listed in the inclusions for the %s package', tr.destination_name)
+    else
+      'Refer to final booking confirmation for complete package coverage'
+  end as content
+from seeded_tours tr
 cross join inclusion_templates it
 on conflict (tour_id, item_type, item_order) do update
 set
@@ -930,7 +966,15 @@ set
   updated_at = now();
 
 insert into public.tour_itinerary_steps (tour_id, is_summary, day_number, title, content, icon)
-with itinerary_templates as (
+with seeded_tours as (
+  select
+    t.id,
+    t.title,
+    t.location,
+    coalesce(nullif(split_part(t.location, ',', 1), ''), t.location) as destination_name
+  from public.tours t
+),
+itinerary_templates as (
   select * from (
     values
       (true, 1, 'Day 1: Airport Pick-Up and Hotel Check-In', null::text, 'icon-pin'),
@@ -953,10 +997,59 @@ select
   tr.id as tour_id,
   it.is_summary,
   it.day_number,
-  it.title,
-  it.content,
+  case
+    when it.day_number = 1 then format('Day 1: Arrival in %s and Check-In', tr.destination_name)
+    when it.day_number = 2 and it.is_summary then format('Day 2: %s Highlights and Guided Tour', tr.destination_name)
+    when it.day_number = 3 and it.is_summary then format('Day 3: Explore %s and Signature Activities', tr.destination_name)
+    when it.day_number = 7 then format('Day 7: Check-Out and Departure from %s', tr.destination_name)
+    else it.title
+  end as title,
+  case
+    when it.content is null then null::text
+    when it.is_summary and it.day_number = 2 then
+      format(
+        'Enjoy a guided day around %s with curated stops, local experiences, and free time for photos and shopping.',
+        tr.destination_name
+      )
+    when not it.is_summary and it.day_number = 1 then
+      format(
+        'Welcome to %s! Our team will assist with arrival coordination and transfer arrangements so you can settle in comfortably before the activities begin.',
+        tr.destination_name
+      )
+    when not it.is_summary and it.day_number = 2 then
+      format(
+        'Start your day with a guided experience across %s featuring key highlights, local favorites, and time to explore at your own pace.',
+        tr.destination_name
+      )
+    when not it.is_summary and it.day_number = 3 then
+      format(
+        'Today focuses on signature activities in %s, with scenic stops and a balanced schedule for sightseeing, photos, and relaxation.',
+        tr.destination_name
+      )
+    when not it.is_summary and it.day_number = 4 then
+      format(
+        'Discover more of %s through nature, culture, or leisure activities depending on your package schedule and local availability.',
+        tr.destination_name
+      )
+    when not it.is_summary and it.day_number = 5 then
+      format(
+        'Use this flexible day to enjoy optional add-ons, rest at your accommodation, or revisit favorite spots in %s.',
+        tr.destination_name
+      )
+    when not it.is_summary and it.day_number = 6 then
+      format(
+        'Spend your final full day in %s at your own pace before preparing for departure the next day.',
+        tr.destination_name
+      )
+    when not it.is_summary and it.day_number = 7 then
+      format(
+        'After check-out, our team will assist with departure coordination from %s based on your confirmed travel schedule.',
+        tr.destination_name
+      )
+    else it.content
+  end as content,
   it.icon
-from public.tours tr
+from seeded_tours tr
 cross join itinerary_templates it
 on conflict (tour_id, is_summary, day_number) do update
 set

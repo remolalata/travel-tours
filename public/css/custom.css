@@ -47,11 +47,14 @@
 }
 .roadMap2 .roadmap__content {
   transition: 0.4s;
+  margin-top: 0;
+  padding-top: 0;
   max-height: 0px !important;
   overflow: hidden !important;
 }
 .roadMap2 .roadmap__content.active {
-  max-height: 200px !important;
+  padding-top: 20px;
+  max-height: 240px !important;
 }
 .roadMap2 .roadmap__title {
   cursor: pointer;
@@ -1246,4 +1249,9 @@ body.promoModal-open {
     display: none;
   }
 
+}
+.tourCard.-type-2 .tourCard__price > .tourCard__priceCurrentOnly {
+  -webkit-text-decoration-line: none;
+  text-decoration-line: none;
+  color: inherit;
 }
