@@ -1,20 +1,25 @@
 'use client';
 
 import Box from '@mui/material/Box';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import useAdminTourReferencesQuery from '@/api/admin/tours/hooks/useAdminTourReferencesQuery';
+import AdminRichTextEditor from '@/components/admin/help-center/AdminRichTextEditor';
+import AdminInclusionBlocksManager from '@/components/admin/tours/AdminInclusionBlocksManager';
+import AdminItineraryBlocksManager from '@/components/admin/tours/AdminItineraryBlocksManager';
 import AppButton from '@/components/common/button/AppButton';
 import AppFieldHelper from '@/components/common/form/AppFieldHelper';
+import AppImageGalleryPicker from '@/components/common/form/AppImageGalleryPicker';
 import AppSelectField from '@/components/common/form/AppSelectField';
+import AppSingleImagePicker from '@/components/common/form/AppSingleImagePicker';
 import AppTextField from '@/components/common/form/AppTextField';
 import AppSideTabs from '@/components/common/navigation/AppSideTabs';
 import { adminContent } from '@/content/features/admin';
 import type { AdminTourCreateValidationInput } from '@/types/admin';
+import type { AppGalleryPickerItem } from '@/types/gallery';
 import { validateAdminTourCreateForm } from '@/utils/helpers/formValidation';
+import useAdminTextBlocksManager from '@/utils/hooks/admin/useAdminTextBlocksManager';
 
 type TourItineraryFormItem = {
   id: string;
@@ -42,6 +47,8 @@ type TourCreateFormState = {
   price: string;
   originalPrice: string;
   imageSrc: string;
+  mainImage: AppGalleryPickerItem | null;
+  images: AppGalleryPickerItem[];
   isActive: boolean;
   isFeatured: boolean;
   isPopular: boolean;
@@ -53,6 +60,35 @@ type TourCreateFormState = {
 type TourCreateSectionKey = 'basic' | 'classification' | 'pricing' | 'media' | 'itinerary' | 'inclusions';
 type TourCreateValidatableField = keyof AdminTourCreateValidationInput;
 
+function normalizeItineraryItems(items: TourItineraryFormItem[]): TourItineraryFormItem[] {
+  const lastIndex = items.length - 1;
+
+  return items.map((item, index) => {
+    const normalizedContent = item.content.trim();
+    let icon = '';
+
+    if (index === 0) {
+      icon = 'icon-pin';
+    } else if (index === lastIndex) {
+      icon = 'icon-flag';
+    }
+
+    return {
+      ...item,
+      dayNumber: String(index + 1),
+      isSummary: normalizedContent.length === 0,
+      icon,
+    };
+  });
+}
+
+function normalizeInclusionItems(items: TourInclusionFormItem[]): TourInclusionFormItem[] {
+  return items.map((item, index) => ({
+    ...item,
+    itemOrder: String(index + 1),
+  }));
+}
+
 const initialState: TourCreateFormState = {
   title: '',
   description: '',
@@ -63,6 +99,8 @@ const initialState: TourCreateFormState = {
   price: '',
   originalPrice: '',
   imageSrc: '',
+  mainImage: null,
+  images: [],
   isActive: true,
   isFeatured: false,
   isPopular: false,
@@ -187,99 +225,29 @@ export default function AdminTourCreateForm() {
     setFieldErrors({});
   }
 
-  function addItineraryItem() {
-    setFormState((previousValue) => ({
-      ...previousValue,
-      itineraries: [
-        ...previousValue.itineraries,
-        {
-          id: `itinerary-${Date.now()}`,
-          dayNumber: String(previousValue.itineraries.length + 1),
-          title: '',
-          content: '',
-          icon: '',
-          isSummary: false,
-        },
-      ],
-    }));
-  }
+  const itineraryBlocksManager = useAdminTextBlocksManager<TourItineraryFormItem>({
+    items: formState.itineraries,
+    onChange: (nextItems) => setField('itineraries', normalizeItineraryItems(nextItems)),
+    createItem: () => ({
+      id: `itinerary-${Date.now()}`,
+      dayNumber: '',
+      title: '',
+      content: '',
+      icon: '',
+      isSummary: true,
+    }),
+  });
 
-  function updateItineraryItem(
-    itineraryId: string,
-    key: keyof Omit<TourItineraryFormItem, 'id'>,
-    value: string | boolean,
-  ) {
-    setFormState((previousValue) => ({
-      ...previousValue,
-      itineraries: previousValue.itineraries.map((item) =>
-        item.id === itineraryId
-          ? {
-              ...item,
-              [key]: value,
-            }
-          : item,
-      ),
-    }));
-  }
-
-  function removeItineraryItem(itineraryId: string) {
-    setFormState((previousValue) => {
-      if (previousValue.itineraries.length <= 1) {
-        return previousValue;
-      }
-
-      return {
-        ...previousValue,
-        itineraries: previousValue.itineraries.filter((item) => item.id !== itineraryId),
-      };
-    });
-  }
-
-  function addInclusionItem() {
-    setFormState((previousValue) => ({
-      ...previousValue,
-      inclusions: [
-        ...previousValue.inclusions,
-        {
-          id: `inclusion-${Date.now()}`,
-          itemType: 'included',
-          itemOrder: String(previousValue.inclusions.length + 1),
-          content: '',
-        },
-      ],
-    }));
-  }
-
-  function updateInclusionItem(
-    inclusionId: string,
-    key: keyof Omit<TourInclusionFormItem, 'id'>,
-    value: string,
-  ) {
-    setFormState((previousValue) => ({
-      ...previousValue,
-      inclusions: previousValue.inclusions.map((item) =>
-        item.id === inclusionId
-          ? {
-              ...item,
-              [key]: value,
-            }
-          : item,
-      ),
-    }));
-  }
-
-  function removeInclusionItem(inclusionId: string) {
-    setFormState((previousValue) => {
-      if (previousValue.inclusions.length <= 1) {
-        return previousValue;
-      }
-
-      return {
-        ...previousValue,
-        inclusions: previousValue.inclusions.filter((item) => item.id !== inclusionId),
-      };
-    });
-  }
+  const inclusionBlocksManager = useAdminTextBlocksManager<TourInclusionFormItem>({
+    items: formState.inclusions,
+    onChange: (nextItems) => setField('inclusions', normalizeInclusionItems(nextItems)),
+    createItem: () => ({
+      id: `inclusion-${Date.now()}`,
+      itemType: 'included',
+      itemOrder: '',
+      content: '',
+    }),
+  });
 
   return (
     <div className='toursCreateForm rounded-12 bg-white shadow-2 px-40 pt-40 pb-30 md:px-20 md:pt-20 md:pb-20 mt-60 md:mt-30'>
@@ -308,14 +276,18 @@ export default function AdminTourCreateForm() {
                   {!fieldErrors.title ? <AppFieldHelper text={content.helpers.title} /> : null}
                 </Box>
                 <Box className='toursCreateField' sx={{ gridColumn: { xs: '1 / -1', md: '1 / -1' } }}>
-                  <AppTextField
-                    label={content.fields.description}
+                  <div className='mb-10 text-14 fw-500'>{content.fields.description}</div>
+                  <AdminRichTextEditor
                     value={formState.description}
                     onChange={(value) => setValidatedField('description', value)}
-                    errorMessage={fieldErrors.description}
-                    multiline
-                    rows={4}
+                    toolbarLabels={content.richTextToolbar}
+                    ariaLabel={content.fields.description}
                   />
+                  {fieldErrors.description ? (
+                    <div className='text-13 mt-5' style={{ color: '#b3261e', fontWeight: 500 }}>
+                      {fieldErrors.description}
+                    </div>
+                  ) : null}
                   {!fieldErrors.description ? <AppFieldHelper text={content.helpers.description} /> : null}
                 </Box>
                 <Box className='toursCreateField'>
@@ -424,71 +396,47 @@ export default function AdminTourCreateForm() {
                 <h4 className='text-18 fw-500'>{content.sections.media.title}</h4>
                 <p className='text-14 text-light-1 mt-5'>{content.sections.media.description}</p>
               </div>
-              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: 2.5 }}>
-                <Box className='toursCreateField'>
-                  <AppTextField
-                    label={content.fields.imageSrc}
-                    value={formState.imageSrc}
-                    onChange={(value) => setField('imageSrc', value)}
-                    type='url'
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr',
+                  gap: 2,
+                }}
+              >
+                <Box
+                  sx={{
+                    border: '1px solid #e8edf5',
+                    borderRadius: '14px',
+                    p: 2,
+                    background: 'linear-gradient(180deg, #ffffff 0%, #fbfcff 100%)',
+                    boxShadow: '0 10px 24px rgba(5, 7, 60, 0.04)',
+                  }}
+                >
+                  <AppSingleImagePicker
+                    item={formState.mainImage}
+                    onChange={(nextItem) => {
+                      setField('mainImage', nextItem);
+                      setField('imageSrc', nextItem?.src ?? '');
+                    }}
+                    labels={content.mediaPickers.mainImage}
                   />
-                  <AppFieldHelper text={content.helpers.imageSrc} />
+                  <AppFieldHelper text={content.helpers.imageSrc} className='mt-10' />
                 </Box>
-                <Box className='toursCreateField toursCreateSwitchField'>
-                  <div className='row y-gap-10'>
-                    <div className='col-12 col-md-6'>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            checked={formState.isActive}
-                            onChange={(_, checked) => setField('isActive', checked)}
-                            color='primary'
-                          />
-                        }
-                        label={content.fields.isActive}
-                      />
-                      <AppFieldHelper text={content.helpers.isActive} />
-                    </div>
-                    <div className='col-12 col-md-6'>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            checked={formState.isFeatured}
-                            onChange={(_, checked) => setField('isFeatured', checked)}
-                            color='primary'
-                          />
-                        }
-                        label={content.fields.isFeatured}
-                      />
-                      <AppFieldHelper text={content.helpers.isFeatured} />
-                    </div>
-                    <div className='col-12 col-md-6'>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            checked={formState.isPopular}
-                            onChange={(_, checked) => setField('isPopular', checked)}
-                            color='primary'
-                          />
-                        }
-                        label={content.fields.isPopular}
-                      />
-                      <AppFieldHelper text={content.helpers.isPopular} />
-                    </div>
-                    <div className='col-12 col-md-6'>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            checked={formState.isTopTrending}
-                            onChange={(_, checked) => setField('isTopTrending', checked)}
-                            color='primary'
-                          />
-                        }
-                        label={content.fields.isTopTrending}
-                      />
-                      <AppFieldHelper text={content.helpers.isTopTrending} />
-                    </div>
-                  </div>
+
+                <Box
+                  sx={{
+                    border: '1px solid #e8edf5',
+                    borderRadius: '14px',
+                    p: 2,
+                    background: '#fff',
+                    boxShadow: '0 10px 24px rgba(5, 7, 60, 0.04)',
+                  }}
+                >
+                  <AppImageGalleryPicker
+                    items={formState.images}
+                    onChange={(nextItems) => setField('images', nextItems)}
+                    labels={content.mediaPickers.galleryImages}
+                  />
                 </Box>
               </Box>
             </div>
@@ -496,151 +444,45 @@ export default function AdminTourCreateForm() {
 
           {activeSection === 'itinerary' ? (
             <div className='toursCreateSection border-1 rounded-12 px-20 py-20'>
-              <div className='toursCreateSection__header d-flex justify-between items-center'>
-                <div>
-                  <h4 className='text-18 fw-500'>{content.sections.itinerary.title}</h4>
-                  <p className='text-14 text-light-1 mt-5'>{content.sections.itinerary.description}</p>
-                </div>
-                <AppButton type='button' size='sm' variant='outline' onClick={addItineraryItem}>
-                  {content.actions.addItinerary}
-                </AppButton>
-              </div>
-
-              <div className='d-flex flex-column y-gap-15'>
-                {formState.itineraries.map((itinerary, index) => (
-                  <div key={itinerary.id} className='toursCreateItineraryCard border-1 rounded-12 p-15'>
-                    <div className='d-flex justify-between items-center mb-15'>
-                      <h5 className='text-16 fw-500'>
-                        {content.sections.itinerary.title} {index + 1}
-                      </h5>
-                      <AppButton
-                        type='button'
-                        size='sm'
-                        variant='outline'
-                        onClick={() => removeItineraryItem(itinerary.id)}
-                        disabled={formState.itineraries.length <= 1}
-                      >
-                        {content.actions.removeItinerary}
-                      </AppButton>
-                    </div>
-                    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2.5 }}>
-                      <Box className='toursCreateField'>
-                        <AppTextField
-                          label={content.fields.itineraryDayNumber}
-                          value={itinerary.dayNumber}
-                          onChange={(value) => updateItineraryItem(itinerary.id, 'dayNumber', value)}
-                          type='number'
-                        />
-                        <AppFieldHelper text={content.helpers.itineraryDayNumber} />
-                      </Box>
-                      <Box className='toursCreateField toursCreateSwitchField'>
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              checked={itinerary.isSummary}
-                              onChange={(_, checked) => updateItineraryItem(itinerary.id, 'isSummary', checked)}
-                              color='primary'
-                            />
-                          }
-                          label={content.fields.itinerarySummary}
-                        />
-                        <AppFieldHelper text={content.helpers.itinerarySummary} />
-                      </Box>
-                      <Box className='toursCreateField' sx={{ gridColumn: { xs: '1 / -1', md: '1 / -1' } }}>
-                        <AppTextField
-                          label={content.fields.itineraryTitle}
-                          value={itinerary.title}
-                          onChange={(value) => updateItineraryItem(itinerary.id, 'title', value)}
-                        />
-                        <AppFieldHelper text={content.helpers.itineraryTitle} />
-                      </Box>
-                      <Box className='toursCreateField' sx={{ gridColumn: { xs: '1 / -1', md: '1 / -1' } }}>
-                        <AppTextField
-                          label={content.fields.itineraryIcon}
-                          value={itinerary.icon}
-                          onChange={(value) => updateItineraryItem(itinerary.id, 'icon', value)}
-                        />
-                        <AppFieldHelper text={content.helpers.itineraryIcon} />
-                      </Box>
-                      <Box className='toursCreateField' sx={{ gridColumn: { xs: '1 / -1', md: '1 / -1' } }}>
-                        <AppTextField
-                          label={content.fields.itineraryContent}
-                          value={itinerary.content}
-                          onChange={(value) => updateItineraryItem(itinerary.id, 'content', value)}
-                          multiline
-                          rows={4}
-                        />
-                        <AppFieldHelper text={content.helpers.itineraryContent} />
-                      </Box>
-                    </Box>
-                  </div>
-                ))}
-              </div>
+              <AdminItineraryBlocksManager
+                items={formState.itineraries}
+                onAddItem={itineraryBlocksManager.addItem}
+                onRemoveItem={itineraryBlocksManager.removeItem}
+                onUpdateItem={(id, key, value) =>
+                  setFormState((previousValue) => ({
+                    ...previousValue,
+                    itineraries: normalizeItineraryItems(
+                      previousValue.itineraries.map((item) =>
+                        item.id === id ? { ...item, [key]: value } : item,
+                      ),
+                    ),
+                  }))
+                }
+                onDragEnd={itineraryBlocksManager.handleDragEnd}
+                content={content}
+              />
             </div>
           ) : null}
 
           {activeSection === 'inclusions' ? (
             <div className='toursCreateSection border-1 rounded-12 px-20 py-20'>
-              <div className='toursCreateSection__header d-flex justify-between items-center'>
-                <div>
-                  <h4 className='text-18 fw-500'>{content.sections.inclusions.title}</h4>
-                  <p className='text-14 text-light-1 mt-5'>{content.sections.inclusions.description}</p>
-                </div>
-                <AppButton type='button' size='sm' variant='outline' onClick={addInclusionItem}>
-                  {content.actions.addInclusion}
-                </AppButton>
-              </div>
-
-              <div className='d-flex flex-column y-gap-15'>
-                {formState.inclusions.map((inclusion, index) => (
-                  <div key={inclusion.id} className='toursCreateItineraryCard border-1 rounded-12 p-15'>
-                    <div className='d-flex justify-between items-center mb-15'>
-                      <h5 className='text-16 fw-500'>
-                        {content.sections.inclusions.title} {index + 1}
-                      </h5>
-                      <AppButton
-                        type='button'
-                        size='sm'
-                        variant='outline'
-                        onClick={() => removeInclusionItem(inclusion.id)}
-                        disabled={formState.inclusions.length <= 1}
-                      >
-                        {content.actions.removeInclusion}
-                      </AppButton>
-                    </div>
-
-                    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2.5 }}>
-                      <Box className='toursCreateField'>
-                        <AppTextField
-                          label={content.fields.inclusionType}
-                          value={inclusion.itemType}
-                          onChange={(value) => updateInclusionItem(inclusion.id, 'itemType', value)}
-                        />
-                        <AppFieldHelper text={content.helpers.inclusionType} />
-                      </Box>
-                      <Box className='toursCreateField'>
-                        <AppTextField
-                          label={content.fields.inclusionOrder}
-                          value={inclusion.itemOrder}
-                          onChange={(value) => updateInclusionItem(inclusion.id, 'itemOrder', value)}
-                          type='number'
-                        />
-                        <AppFieldHelper text={content.helpers.inclusionOrder} />
-                      </Box>
-                      <Box className='toursCreateField' sx={{ gridColumn: { xs: '1 / -1', md: '1 / -1' } }}>
-                        <AppTextField
-                          label={content.fields.inclusionContent}
-                          value={inclusion.content}
-                          onChange={(value) => updateInclusionItem(inclusion.id, 'content', value)}
-                          multiline
-                          rows={3}
-                        />
-                        <AppFieldHelper text={content.helpers.inclusionContent} />
-                      </Box>
-                    </Box>
-                  </div>
-                ))}
-              </div>
+              <AdminInclusionBlocksManager
+                items={formState.inclusions}
+                onAddItem={inclusionBlocksManager.addItem}
+                onRemoveItem={inclusionBlocksManager.removeItem}
+                onUpdateItem={(id, key, value) =>
+                  setFormState((previousValue) => ({
+                    ...previousValue,
+                    inclusions: normalizeInclusionItems(
+                      previousValue.inclusions.map((item) =>
+                        item.id === id ? { ...item, [key]: value } : item,
+                      ),
+                    ),
+                  }))
+                }
+                onDragEnd={inclusionBlocksManager.handleDragEnd}
+                content={content}
+              />
             </div>
           ) : null}
         </div>

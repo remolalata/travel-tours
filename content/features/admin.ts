@@ -404,6 +404,79 @@ export const adminContent: AdminContent = {
           referencesLoading: 'Loading options...',
           referencesLoadError: 'Failed to load reference options. Please refresh and try again.',
         },
+        richTextToolbar: {
+          paragraph: 'Paragraph',
+          bold: 'Bold',
+          italic: 'Italic',
+          bulletList: 'Bullet List',
+          orderedList: 'Numbered List',
+        },
+        itineraryBlocks: {
+          title: 'Itinerary Blocks',
+          description: 'Add ordered rich-text blocks for the itinerary content.',
+          fields: {
+            block: 'Itinerary Block',
+          },
+          helpers: {
+            block: 'Write one itinerary content block. Reorder items by dragging the handle.',
+          },
+          actions: {
+            addItem: 'Add Block',
+            removeItem: 'Remove',
+          },
+          item: {
+            titlePrefix: 'Block',
+            dragHandleAriaLabel: 'Drag to reorder itinerary block',
+            expandIconAriaLabel: 'Toggle itinerary block',
+          },
+        },
+        inclusionBlocks: {
+          title: 'Inclusion Blocks',
+          description: 'Add ordered inclusion and exclusion items for this tour.',
+          fields: {
+            itemType: 'Inclusion Type',
+            content: 'Content',
+          },
+          helpers: {
+            itemType: 'Choose whether this item is included or excluded.',
+            content: 'Write the inclusion or exclusion text shown to customers.',
+          },
+          actions: {
+            addItem: 'Add Block',
+            removeItem: 'Remove',
+          },
+          item: {
+            titlePrefix: 'Item',
+            dragHandleAriaLabel: 'Drag to reorder inclusion item',
+            expandIconAriaLabel: 'Toggle inclusion item',
+          },
+          typeOptions: [
+            { value: 'included', label: 'Included' },
+            { value: 'excluded', label: 'Excluded' },
+          ],
+        },
+        mediaPickers: {
+          mainImage: {
+            title: 'Main Image',
+            dropzoneLabel: 'Drop main image here',
+            dropzoneHint: 'This image is used for tour cards and listing tiles.',
+            select: 'Select Image',
+            replace: 'Replace Image',
+            remove: 'Remove',
+            empty: 'No main image selected yet.',
+            previewAltFallback: 'Main image preview',
+          },
+          galleryImages: {
+            title: 'Gallery Images',
+            dropzoneLabel: 'Drop gallery images here',
+            dropzoneHint: 'These images are used in the single tour gallery.',
+            addMore: 'Add Images',
+            remove: 'Remove',
+            empty: 'No gallery images selected yet.',
+            dragHandleAriaLabel: 'Drag gallery image item',
+            itemAltFallback: 'Gallery image',
+          },
+        },
         validationMessages: {
           required_title: 'Title is required.',
           required_description: 'Description is required.',

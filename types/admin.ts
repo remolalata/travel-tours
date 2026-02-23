@@ -299,6 +299,79 @@ export interface AdminListingContent {
       referencesLoading: string;
       referencesLoadError: string;
     };
+    richTextToolbar: {
+      paragraph: string;
+      bold: string;
+      italic: string;
+      bulletList: string;
+      orderedList: string;
+    };
+    itineraryBlocks: {
+      title: string;
+      description: string;
+      fields: {
+        block: string;
+      };
+      helpers: {
+        block: string;
+      };
+      actions: {
+        addItem: string;
+        removeItem: string;
+      };
+      item: {
+        titlePrefix: string;
+        dragHandleAriaLabel: string;
+        expandIconAriaLabel: string;
+      };
+    };
+    inclusionBlocks: {
+      title: string;
+      description: string;
+      fields: {
+        itemType: string;
+        content: string;
+      };
+      helpers: {
+        itemType: string;
+        content: string;
+      };
+      actions: {
+        addItem: string;
+        removeItem: string;
+      };
+      item: {
+        titlePrefix: string;
+        dragHandleAriaLabel: string;
+        expandIconAriaLabel: string;
+      };
+      typeOptions: Array<{
+        value: string;
+        label: string;
+      }>;
+    };
+    mediaPickers: {
+      mainImage: {
+        title: string;
+        dropzoneLabel: string;
+        dropzoneHint: string;
+        select: string;
+        replace: string;
+        remove: string;
+        empty: string;
+        previewAltFallback: string;
+      };
+      galleryImages: {
+        title: string;
+        dropzoneLabel: string;
+        dropzoneHint: string;
+        addMore: string;
+        remove: string;
+        empty: string;
+        dragHandleAriaLabel: string;
+        itemAltFallback: string;
+      };
+    };
     validationMessages: Record<string, string>;
   };
 }
