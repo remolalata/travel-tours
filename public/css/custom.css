@@ -1255,3 +1255,24 @@ body.promoModal-open {
   text-decoration-line: none;
   color: inherit;
 }
+
+.admin-rich-text-editor__content p {
+  margin: 0;
+}
+
+.admin-rich-text-editor__content p + p {
+  margin-top: 10px;
+}
+
+.admin-rich-text-editor__content ul,
+.admin-rich-text-editor__content ol {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.admin-rich-text-editor__content ul + p,
+.admin-rich-text-editor__content ol + p,
+.admin-rich-text-editor__content p + ul,
+.admin-rich-text-editor__content p + ol {
+  margin-top: 10px;
+}

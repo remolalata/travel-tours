@@ -3,6 +3,7 @@ export type AdminPageKey =
   | 'destinations'
   | 'booking'
   | 'listing'
+  | 'helpCenter'
   | 'profile';
 
 export interface AdminMetadata {
@@ -12,9 +13,10 @@ export interface AdminMetadata {
 
 export interface AdminNavItem {
   id: number;
-  href: string;
+  href?: string;
   iconClass: string;
   label: string;
+  children?: AdminNavItem[];
 }
 
 export interface AdminTopAction {
@@ -301,6 +303,53 @@ export interface AdminListingContent {
   };
 }
 
+export interface AdminHelpCenterContent {
+  intro: AdminSectionIntro;
+  faqManager: {
+    title: string;
+    description: string;
+    actions: {
+      addItem: string;
+      expandAll: string;
+      collapseAll: string;
+      save: string;
+      saving: string;
+      reset: string;
+    };
+    fields: {
+      question: string;
+      answer: string;
+    };
+    placeholders: {
+      question: string;
+      emptyQuestion: string;
+    };
+    toolbar: {
+      paragraph: string;
+      bold: string;
+      italic: string;
+      bulletList: string;
+      orderedList: string;
+    };
+    item: {
+      untitledPrefix: string;
+      dragHandleAriaLabel: string;
+      removeLabel: string;
+      expandIconAriaLabel: string;
+    };
+    messages: {
+      loading: string;
+      loadError: string;
+      empty: string;
+      localOnlyNotice: string;
+      saveSuccess: string;
+      saveFailedPrefix: string;
+      validationQuestionPrefix: string;
+      validationAnswerPrefix: string;
+    };
+  };
+}
+
 export interface AdminGalleryItem {
   id: string;
   src: string;
@@ -344,6 +393,7 @@ export interface AdminPageContentMap {
   destinations: AdminDestinationsContent;
   booking: AdminBookingContent;
   listing: AdminListingContent;
+  helpCenter: AdminHelpCenterContent;
   profile: AdminProfileContent;
 }
 

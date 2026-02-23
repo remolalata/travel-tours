@@ -18,6 +18,10 @@ export const adminContent: AdminContent = {
       title: 'Tours | Travel & Tours',
       description: 'View and manage tour packages.',
     },
+    helpCenter: {
+      title: 'Help Center | Travel & Tours',
+      description: 'Manage help center content and settings.',
+    },
     profile: {
       title: 'My Profile | Travel & Tours',
       description: 'Update your profile details and password.',
@@ -32,7 +36,15 @@ export const adminContent: AdminContent = {
       { id: 2, href: '/admin/destinations', iconClass: 'icon-pin text-26', label: 'Destinations' },
       { id: 3, href: '/admin/booking', iconClass: 'icon-calendar text-26', label: 'Bookings' },
       { id: 4, href: '/admin/tours', iconClass: 'icon-menu text-26', label: 'Tours' },
-      { id: 5, href: '/admin/profile', iconClass: 'icon-account text-26', label: 'My Profile' },
+      {
+        id: 5,
+        iconClass: 'icon-application text-26',
+        label: 'Settings',
+        children: [
+          { id: 51, href: '/admin/help-center', iconClass: 'icon-headphone text-26', label: 'Help Center' },
+          { id: 52, href: '/admin/profile', iconClass: 'icon-account text-26', label: 'My Profile' },
+        ],
+      },
       { id: 6, href: '/logout', iconClass: 'icon-logout text-26', label: 'Logout' },
     ],
     topActions: [
@@ -400,6 +412,55 @@ export const adminContent: AdminContent = {
           required_destination_id: 'Destination is required.',
           required_tour_type_id: 'Tour type is required.',
           required_price: 'Price is required.',
+        },
+      },
+    },
+    helpCenter: {
+      intro: {
+        title: 'Help Center',
+        description: 'Manage help center content from your dashboard.',
+      },
+      faqManager: {
+        title: 'FAQ Manager',
+        description: 'Create, edit, and reorder frequently asked questions for the app.',
+        actions: {
+          addItem: 'Add FAQ Item',
+          expandAll: 'Expand All',
+          collapseAll: 'Collapse All',
+          save: 'Save Changes',
+          saving: 'Saving...',
+          reset: 'Reset',
+        },
+        fields: {
+          question: 'Question',
+          answer: 'Answer',
+        },
+        placeholders: {
+          question: 'Enter a question',
+          emptyQuestion: 'Untitled FAQ',
+        },
+        toolbar: {
+          paragraph: 'Paragraph',
+          bold: 'Bold',
+          italic: 'Italic',
+          bulletList: 'Bullet List',
+          orderedList: 'Numbered List',
+        },
+        item: {
+          untitledPrefix: 'FAQ',
+          dragHandleAriaLabel: 'Drag to reorder FAQ item',
+          removeLabel: 'Remove',
+          expandIconAriaLabel: 'Toggle FAQ item',
+        },
+        messages: {
+          loading: 'Loading FAQ items...',
+          loadError: 'Failed to load FAQ items. Please refresh and try again.',
+          empty: 'No FAQ items yet. Add your first FAQ item to start building the help content.',
+          localOnlyNotice: 'Changes are local until you click Save Changes.',
+          saveSuccess: 'FAQ items saved successfully.',
+          saveFailedPrefix: 'Failed to save FAQ items',
+          validationQuestionPrefix: 'Question is required for',
+          validationAnswerPrefix: 'Answer is required for',
         },
       },
     },

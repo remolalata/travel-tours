@@ -9,6 +9,10 @@ export type FetchFaqItemsInput = {
   limit?: number;
 };
 
+export type SaveFaqItemsInput = {
+  items: FaqItem[];
+};
+
 export async function fetchFaqItems(
   supabase: SupabaseClient,
   input: FetchFaqItemsInput = {},
@@ -33,4 +37,32 @@ export async function fetchFaqItems(
   }
 
   return mapFaqRows((data ?? []) as FaqRow[]);
+}
+
+export async function saveFaqItems(
+  supabase: SupabaseClient,
+  input: SaveFaqItemsInput,
+): Promise<void> {
+  const payload = input.items.map((item, index) => ({
+    item_order: index + 1,
+    question: item.question.trim(),
+    answer: item.answer.trim(),
+    is_active: true,
+  }));
+
+  const { error: deleteError } = await supabase.from('faq_items').delete().gte('item_order', 1);
+
+  if (deleteError) {
+    throw new Error(`FAQ_ITEMS_DELETE_FAILED:${deleteError.message}`);
+  }
+
+  if (payload.length === 0) {
+    return;
+  }
+
+  const { error: insertError } = await supabase.from('faq_items').insert(payload);
+
+  if (insertError) {
+    throw new Error(`FAQ_ITEMS_SAVE_FAILED:${insertError.message}`);
+  }
 }

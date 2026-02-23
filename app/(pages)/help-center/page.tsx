@@ -14,7 +14,7 @@ export default async function Page() {
 
   try {
     const supabase = await createClient();
-    faqItems = await fetchFaqItems(supabase, { isActive: true, limit: 4 });
+    faqItems = await fetchFaqItems(supabase, { isActive: true });
   } catch {
     faqItems = [];
   }

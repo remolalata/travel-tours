@@ -61,7 +61,7 @@ export default function AppFaqAccordion({ items }: AppFaqAccordionProps) {
                   contentRefs.current[index] = node;
                 }}
               >
-                <p>{item.answer}</p>
+                <div dangerouslySetInnerHTML={{ __html: item.answer }} />
               </div>
             </div>
           </div>
