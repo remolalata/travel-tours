@@ -8,13 +8,18 @@ export default function HelpCenterHero() {
   return (
     <section className='pageHeader -type-2'>
       <div className='pageHeader__bg'>
-        <Image width={1800} height={350} src={hero.backgroundImageSrc} alt='Help center header background' />
+        <Image
+          width={1800}
+          height={350}
+          src={hero.backgroundImageSrc}
+          alt={hero.backgroundImageAlt}
+        />
         <Image
           width={1800}
           height={40}
           style={{ height: 'auto' }}
           src={hero.shapeImageSrc}
-          alt='Help center header shape'
+          alt={hero.shapeImageAlt}
         />
       </div>
 
@@ -27,8 +32,12 @@ export default function HelpCenterHero() {
               <p className='pageHeader__text'>{hero.description}</p>
 
               <div className='pageHeader__search'>
-                <input type='text' placeholder={hero.searchPlaceholder} />
-                <button type='button'>
+                <input
+                  type='text'
+                  placeholder={hero.searchPlaceholder}
+                  aria-label={hero.searchPlaceholder}
+                />
+                <button type='button' aria-label={hero.searchButtonAriaLabel}>
                   <i className='icon-search text-15 text-white'></i>
                 </button>
               </div>

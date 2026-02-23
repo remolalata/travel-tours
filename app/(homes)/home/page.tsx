@@ -1,8 +1,8 @@
+import { fetchFaqItems } from '@/api/faqs/mutations/faqApi';
 import FadeIn from '@/components/common/motion/FadeIn';
 import SiteFooter from '@/components/layout/footers/SiteFooter';
 import SiteHeader from '@/components/layout/header/SiteHeader';
 import { homeContent } from '@/content/features/home';
-import { defaultTourContent } from '@/data/tourSingleContent';
 import AppPromoBanner from '@/features/home/components/banners/AppPromoBanner';
 import FeaturedDealsBanner from '@/features/home/components/banners/FeaturedDealsBanner';
 import TrendingDestinations from '@/features/home/components/destinations/TrendingDestinations';
@@ -13,8 +13,19 @@ import PopularToursSection from '@/features/home/components/tours/PopularToursSe
 import TrendingToursCarousel from '@/features/home/components/tours/TrendingToursCarousel';
 import PopularThingsToDoSection from '@/features/home/components/tourTypes/PopularThingsToDoSection';
 import Faq from '@/features/tour-single/components/sections/Faq';
+import type { FaqItem } from '@/types/tourContent';
+import { createClient } from '@/utils/supabase/server';
 
-export default function Home() {
+export default async function Home() {
+  let faqItems: FaqItem[] = [];
+
+  try {
+    const supabase = await createClient();
+    faqItems = await fetchFaqItems(supabase, { isActive: true, limit: 4 });
+  } catch {
+    faqItems = [];
+  }
+
   return (
     <main>
       <SiteHeader />
@@ -39,7 +50,7 @@ export default function Home() {
           <div className='row justify-center pt-40 sm:pt-20'>
             <div className='col-xl-8 col-lg-10'>
               <div className='accordion -simple row y-gap-20 mt-30 js-accordion'>
-                <Faq tourContent={defaultTourContent} />
+                <Faq items={faqItems} />
               </div>
             </div>
           </div>

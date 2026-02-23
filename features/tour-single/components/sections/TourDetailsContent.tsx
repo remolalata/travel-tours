@@ -3,6 +3,7 @@ import type { Tour } from '@/data/tours';
 import type { TourContent } from '@/data/tourSingleContent';
 import TourPhotoGallery from '@/features/tour-single/components/Galleries/TourPhotoGallery';
 import type { Review } from '@/types/review';
+import type { FaqItem } from '@/types/tourContent';
 
 import Faq from './Faq';
 import Included from './Included';
@@ -19,6 +20,7 @@ interface TourDetailsContentProps {
   reviews?: Review[];
   galleryImageUrls?: string[];
   overviewDescription?: string | null;
+  faqItems?: FaqItem[];
 }
 
 export default function TourDetailsContent({
@@ -27,6 +29,7 @@ export default function TourDetailsContent({
   reviews,
   galleryImageUrls,
   overviewDescription,
+  faqItems,
 }: TourDetailsContentProps) {
   const detailsContent = tourSinglePageContent.details;
 
@@ -68,7 +71,7 @@ export default function TourDetailsContent({
               <h2 className='text-30'>{detailsContent.faqTitle}</h2>
 
               <div className='y-gap-20 mt-30 accordion -simple row js-accordion'>
-                <Faq tourContent={tourContent} />
+                <Faq tourContent={tourContent} items={faqItems} />
               </div>
 
               <div className='mt-60 mb-60 line'></div>
