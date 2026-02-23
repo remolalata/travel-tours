@@ -132,15 +132,40 @@ with seeded_customers as (
 destination_map as (
   select * from (
     values
-      (1, 'boracay', 'Boracay Island Hopping and White Beach Leisure Escape'),
-      (2, 'palawan', 'El Nido Lagoons and Island Hopping Adventure'),
-      (3, 'cebu', 'Cebu City Heritage Tour and Southern Coast Getaway'),
-      (4, 'bohol', 'Chocolate Hills, Tarsier Sanctuary and Loboc River Cruise'),
-      (5, 'siargao', 'Siargao Surf and Sohoton Cove Island Experience'),
-      (6, 'baguio', 'Baguio Highlands Escape with City and Nature Sights'),
-      (7, 'singapore', 'Singapore City Highlights and Sentosa Fun Adventure'),
-      (8, 'bangkok', 'Bangkok City Tour with Floating Market and Railway Experience')
+      (1, 'boracay', 'Boracay Tour Package'),
+      (2, 'palawan', 'Palawan Tour Package'),
+      (3, 'cebu', 'Cebu Tour Package'),
+      (4, 'bohol', 'Bohol Tour Package'),
+      (5, 'siargao', 'Siargao Tour Package'),
+      (6, 'baguio', 'Baguio Tour Package'),
+      (7, 'singapore', 'Singapore Tour Package'),
+      (8, 'bangkok', 'Bangkok Tour Package')
   ) as t(destination_index, slug, package_title)
+),
+destination_weight_slots as (
+  select * from (
+    values
+      (1, 1),
+      (2, 1),
+      (3, 1),
+      (4, 1),
+      (5, 2),
+      (6, 2),
+      (7, 3),
+      (8, 3),
+      (9, 4),
+      (10, 4),
+      (11, 5),
+      (12, 6),
+      (13, 1),
+      (14, 1),
+      (15, 7),
+      (16, 8),
+      (17, 1),
+      (18, 2),
+      (19, 4),
+      (20, 3)
+  ) as t(slot_index, destination_index)
 ),
 seeded_rows_base as (
   select
@@ -162,8 +187,10 @@ seeded_rows_base as (
   cross join lateral (
     select generate_series(1, 15) as trip_no
   ) n
+  join destination_weight_slots ws
+    on ws.slot_index = (((c.customer_index - 1) * 15 + n.trip_no - 1) % 20) + 1
   join destination_map d
-    on d.destination_index = (((c.customer_index - 1) * 15 + n.trip_no - 1) % 8) + 1
+    on d.destination_index = ws.destination_index
 ),
 seeded_rows as (
   select

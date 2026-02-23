@@ -71,6 +71,55 @@ export interface AdminMainContent {
   statCards: AdminStatCard[];
   activities: AdminActivityItem[];
   chartTabs: AdminChartTab[];
+  dashboard: {
+    filters: {
+      rangeLabel: string;
+      options: Array<{
+        id: '90d' | '180d' | 'all';
+        label: string;
+      }>;
+    };
+    messages: {
+      loading: string;
+      loadError: string;
+      emptyTopTours: string;
+      emptyChart: string;
+      retry: string;
+    };
+    charts: {
+      revenueTrend: {
+        title: string;
+        subtitle: string;
+        revenueLegend: string;
+        bookingsLegend: string;
+      };
+      bookingStatus: {
+        title: string;
+        subtitle: string;
+        totalLabel: string;
+      };
+      topDestinations: {
+        title: string;
+        subtitle: string;
+        bookingsSuffix: string;
+      };
+      ratings: {
+        title: string;
+        subtitle: string;
+        averageLabel: string;
+      };
+      topTours: {
+        title: string;
+        subtitle: string;
+        columns: {
+          tour: string;
+          destination: string;
+          bookings: string;
+          revenue: string;
+        };
+      };
+    };
+  };
 }
 
 export type BookingStatus = 'Approved' | 'Pending' | 'Cancelled' | 'Completed';

@@ -21,21 +21,35 @@ $$;
 
 create index if not exists bookings_tour_id_idx on public.bookings (tour_id);
 
-with ranked_matches as (
+with destination_tours as (
+  select
+    t.id,
+    t.destination_id,
+    t.title,
+    row_number() over (partition by t.destination_id order by t.id) as destination_tour_rank,
+    count(*) over (partition by t.destination_id) as destination_tour_count
+  from public.tours t
+  where t.is_active = true
+),
+ranked_matches as (
   select
     b.id as booking_id,
-    t.id as tour_id,
-    t.title as tour_title,
+    dt.id as tour_id,
+    dt.title as tour_title,
     row_number() over (
       partition by b.id
       order by
-        case when lower(t.title) = lower(b.package_title) then 0 else 1 end,
-        t.id
+        case when lower(dt.title) = lower(b.package_title) then 0 else 1 end,
+        case
+          when dt.destination_tour_rank = (((b.id - 1) % dt.destination_tour_count) + 1) then 0
+          else 1
+        end,
+        dt.destination_tour_rank,
+        dt.id
     ) as match_rank
   from public.bookings b
-  join public.tours t
-    on t.destination_id = b.destination_id
-   and t.is_active = true
+  join destination_tours dt
+    on dt.destination_id = b.destination_id
 )
 update public.bookings b
 set

@@ -152,6 +152,56 @@ export const adminContent: AdminContent = {
           ],
         },
       ],
+      dashboard: {
+        filters: {
+          rangeLabel: 'Range',
+          options: [
+            { id: '90d', label: 'Last 90 days' },
+            { id: '180d', label: 'Last 180 days' },
+            { id: 'all', label: 'All time' },
+          ],
+        },
+        messages: {
+          loading: 'Loading dashboard data...',
+          loadError: 'Failed to load dashboard analytics. Please try again.',
+          emptyTopTours: 'No tour performance data for the selected range.',
+          emptyChart: 'No data available for the selected range.',
+          retry: 'Retry',
+        },
+        charts: {
+          revenueTrend: {
+            title: 'Revenue Trend',
+            subtitle: 'Net revenue and bookings by month',
+            revenueLegend: 'Net Revenue',
+            bookingsLegend: 'Bookings',
+          },
+          bookingStatus: {
+            title: 'Booking Status',
+            subtitle: 'Booking distribution for the selected range',
+            totalLabel: 'Total bookings',
+          },
+          topDestinations: {
+            title: 'Top Destinations',
+            subtitle: 'Most booked destinations and their revenue contribution',
+            bookingsSuffix: 'bookings',
+          },
+          ratings: {
+            title: 'Review Ratings',
+            subtitle: 'Published review distribution',
+            averageLabel: 'Average rating',
+          },
+          topTours: {
+            title: 'Top Tours',
+            subtitle: 'Top-performing tours by bookings and revenue',
+            columns: {
+              tour: 'Tour',
+              destination: 'Destination',
+              bookings: 'Bookings',
+              revenue: 'Revenue',
+            },
+          },
+        },
+      },
     },
     destinations: {
       intro: {
