@@ -4,38 +4,16 @@ import { useRouter } from 'next/navigation';
 import { type FormEvent, useMemo, useState } from 'react';
 
 import { authContent } from '@/content/features/auth';
+import {
+  getEmailValidationMessage,
+  getPasswordValidationMessage,
+} from '@/utils/helpers/auth/authValidation';
 import { createClient } from '@/utils/supabase/client';
 
 type LoginFieldErrors = {
   email: string;
   password: string;
 };
-
-function isValidEmail(value: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-}
-
-function getEmailValidationMessage(email: string) {
-  const trimmedEmail = email.trim();
-
-  if (!trimmedEmail) {
-    return authContent.login.messages.emailRequired;
-  }
-
-  if (!isValidEmail(trimmedEmail)) {
-    return authContent.login.messages.emailInvalid;
-  }
-
-  return '';
-}
-
-function getPasswordValidationMessage(password: string) {
-  if (!password.trim()) {
-    return authContent.login.messages.passwordRequired;
-  }
-
-  return '';
-}
 
 export default function useLoginForm() {
   const router = useRouter();
