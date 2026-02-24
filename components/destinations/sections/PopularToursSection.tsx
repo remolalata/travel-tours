@@ -27,10 +27,19 @@ export default function PopularToursSection() {
         <div className='row y-gap-30 pt-40 sm:pt-20'>
           {popularTours.items.map((item) => (
             <div key={item.id} className='col-lg-4 col-md-6'>
-              <Link href={item.href} className='tourCard -type-1 py-10 px-10 border-1 rounded-12 bg-white -hover-shadow'>
+              <Link
+                href={item.href}
+                className='tourCard -type-1 py-10 px-10 border-1 rounded-12 bg-white -hover-shadow'
+              >
                 <div className='tourCard__header'>
                   <div className='tourCard__image ratio ratio-28:20'>
-                    <Image width={421} height={301} src={item.imageSrc} alt={item.title} className='img-ratio rounded-12' />
+                    <Image
+                      width={421}
+                      height={301}
+                      src={item.imageSrc}
+                      alt={item.title}
+                      className='img-ratio rounded-12'
+                    />
                   </div>
                 </div>
 
@@ -51,7 +60,8 @@ export default function PopularToursSection() {
                     </div>
 
                     <div>
-                      {popularTours.pricePrefix} <span className='text-16 fw-500'>${item.price}</span>
+                      {popularTours.pricePrefix}{' '}
+                      <span className='text-16 fw-500'>${item.price}</span>
                     </div>
                   </div>
                 </div>

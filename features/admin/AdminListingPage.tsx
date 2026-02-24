@@ -17,7 +17,10 @@ export default function AdminListingPage() {
   const router = useRouter();
   const [page, setPage] = useState(0);
   const toursQuery = useAdminToursQuery({ page, pageSize: toursPageSize });
-  const totalPages = useMemo(() => Math.max(1, Math.ceil((toursQuery.data?.total ?? 0) / toursPageSize)), [toursQuery.data?.total]);
+  const totalPages = useMemo(
+    () => Math.max(1, Math.ceil((toursQuery.data?.total ?? 0) / toursPageSize)),
+    [toursQuery.data?.total],
+  );
   const currentPage = page + 1;
   const tours = toursQuery.data?.rows ?? [];
   const hasError = toursQuery.isError;

@@ -55,15 +55,18 @@ export default function useAdminFaqManager({
     [items],
   );
 
-  const toggleExpanded = useCallback((id: string) => {
-    setDraftExpandedIds((previousValue) => {
-      const nextBase = previousValue ?? (items[0] ? [items[0].id] : []);
+  const toggleExpanded = useCallback(
+    (id: string) => {
+      setDraftExpandedIds((previousValue) => {
+        const nextBase = previousValue ?? (items[0] ? [items[0].id] : []);
 
-      return nextBase.includes(id)
-        ? nextBase.filter((currentId) => currentId !== id)
-        : [...nextBase, id];
-    });
-  }, [items]);
+        return nextBase.includes(id)
+          ? nextBase.filter((currentId) => currentId !== id)
+          : [...nextBase, id];
+      });
+    },
+    [items],
+  );
 
   const resetDraft = useCallback(() => {
     setDraftItems(null);
@@ -84,41 +87,57 @@ export default function useAdminFaqManager({
     });
   }, [mappedSourceItems]);
 
-  const removeItem = useCallback((id: string) => {
-    setDraftItems((previousValue) => {
-      const nextBase = previousValue ?? mappedSourceItems;
-      return nextBase.filter((item) => item.id !== id);
-    });
-    setDraftExpandedIds((previousValue) => {
-      const nextBase = previousValue ?? defaultExpandedIds;
-      return nextBase.filter((expandedId) => expandedId !== id);
-    });
-  }, [defaultExpandedIds, mappedSourceItems]);
+  const removeItem = useCallback(
+    (id: string) => {
+      setDraftItems((previousValue) => {
+        const nextBase = previousValue ?? mappedSourceItems;
+        return nextBase.filter((item) => item.id !== id);
+      });
+      setDraftExpandedIds((previousValue) => {
+        const nextBase = previousValue ?? defaultExpandedIds;
+        return nextBase.filter((expandedId) => expandedId !== id);
+      });
+    },
+    [defaultExpandedIds, mappedSourceItems],
+  );
 
-  const updateQuestion = useCallback((id: string, value: string) => {
-    setDraftItems((previousValue) =>
-      (previousValue ?? mappedSourceItems).map((item) => (item.id === id ? { ...item, question: value } : item)),
-    );
-  }, [mappedSourceItems]);
+  const updateQuestion = useCallback(
+    (id: string, value: string) => {
+      setDraftItems((previousValue) =>
+        (previousValue ?? mappedSourceItems).map((item) =>
+          item.id === id ? { ...item, question: value } : item,
+        ),
+      );
+    },
+    [mappedSourceItems],
+  );
 
-  const updateAnswer = useCallback((id: string, value: string) => {
-    setDraftItems((previousValue) =>
-      (previousValue ?? mappedSourceItems).map((item) => (item.id === id ? { ...item, answerHtml: value } : item)),
-    );
-  }, [mappedSourceItems]);
+  const updateAnswer = useCallback(
+    (id: string, value: string) => {
+      setDraftItems((previousValue) =>
+        (previousValue ?? mappedSourceItems).map((item) =>
+          item.id === id ? { ...item, answerHtml: value } : item,
+        ),
+      );
+    },
+    [mappedSourceItems],
+  );
 
-  const handleDragEnd = useCallback((event: DragEndEvent) => {
-    const { active, over } = event;
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event;
 
-    if (!over || active.id === over.id) {
-      return;
-    }
+      if (!over || active.id === over.id) {
+        return;
+      }
 
-    setDraftItems((previousValue) => {
-      const nextBase = previousValue ?? mappedSourceItems;
-      return reorderFaqManagerItems(nextBase, String(active.id), String(over.id));
-    });
-  }, [mappedSourceItems]);
+      setDraftItems((previousValue) => {
+        const nextBase = previousValue ?? mappedSourceItems;
+        return reorderFaqManagerItems(nextBase, String(active.id), String(over.id));
+      });
+    },
+    [mappedSourceItems],
+  );
 
   return {
     items,

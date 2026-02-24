@@ -91,7 +91,12 @@ export default function BlogSingleSection({ post }: BlogSingleSectionProps) {
 
             <div className='row y-gap-20'>
               <div className='col-auto'>
-                <Image width={70} height={70} src={article.author.imageSrc} alt={article.author.name} />
+                <Image
+                  width={70}
+                  height={70}
+                  src={article.author.imageSrc}
+                  alt={article.author.name}
+                />
               </div>
 
               <div className='col'>
@@ -117,7 +122,10 @@ export default function BlogSingleSection({ post }: BlogSingleSectionProps) {
               </div>
 
               <div className='col-md-auto'>
-                <Link href={`/blog/${article.navigation.next.slug}`} className='d-flex text-right md:text-left'>
+                <Link
+                  href={`/blog/${article.navigation.next.slug}`}
+                  className='d-flex text-right md:text-left'
+                >
                   <div className='mr-20'>
                     <div className='text-18 fw-500'>{article.navigation.next.label}</div>
                     <div className='mt-5'>{article.navigation.next.title}</div>
@@ -160,21 +168,27 @@ export default function BlogSingleSection({ post }: BlogSingleSectionProps) {
                 <div className='col-md-6'>
                   <div className='form-input'>
                     <input type='text' required />
-                    <label className='lh-1 text-16 text-light-1'>{article.commentForm.nameLabel}</label>
+                    <label className='lh-1 text-16 text-light-1'>
+                      {article.commentForm.nameLabel}
+                    </label>
                   </div>
                 </div>
 
                 <div className='col-md-6'>
                   <div className='form-input'>
                     <input type='text' required />
-                    <label className='lh-1 text-16 text-light-1'>{article.commentForm.emailLabel}</label>
+                    <label className='lh-1 text-16 text-light-1'>
+                      {article.commentForm.emailLabel}
+                    </label>
                   </div>
                 </div>
 
                 <div className='col-12'>
                   <div className='form-input'>
                     <textarea required rows={8}></textarea>
-                    <label className='lh-1 text-16 text-light-1'>{article.commentForm.commentLabel}</label>
+                    <label className='lh-1 text-16 text-light-1'>
+                      {article.commentForm.commentLabel}
+                    </label>
                   </div>
                 </div>
 

@@ -84,14 +84,20 @@ function DashboardLoadingState() {
           <div className='bg-white shadow-2 px-25 py-20' style={{ borderRadius: 20 }}>
             <div className='rounded-8 bg-light-2' style={{ height: 14, width: 220 }} />
             <div className='rounded-8 bg-light-2 mt-10' style={{ height: 10, width: 280 }} />
-            <div className='bg-light-2 mt-20' style={{ height: 360, width: '100%', borderRadius: 16 }} />
+            <div
+              className='bg-light-2 mt-20'
+              style={{ height: 360, width: '100%', borderRadius: 16 }}
+            />
           </div>
         </div>
         <div className='col-xl-4 col-lg-12'>
           <div className='bg-white shadow-2 px-25 py-20' style={{ borderRadius: 20 }}>
             <div className='rounded-8 bg-light-2' style={{ height: 14, width: 180 }} />
             <div className='rounded-8 bg-light-2 mt-10' style={{ height: 10, width: 220 }} />
-            <div className='rounded-full bg-light-2 mt-25 mx-auto' style={{ height: 220, width: 220 }} />
+            <div
+              className='rounded-full bg-light-2 mt-25 mx-auto'
+              style={{ height: 220, width: 220 }}
+            />
           </div>
         </div>
       </div>
@@ -123,10 +129,7 @@ export default function AdminMainPage() {
             </div>
           </div>
 
-          <div
-            className='d-flex items-center flex-wrap'
-            style={{ columnGap: 10, rowGap: 10 }}
-          >
+          <div className='d-flex items-center flex-wrap' style={{ columnGap: 10, rowGap: 10 }}>
             {dashboardContent.filters.options.map((option) => {
               const active = option.id === range;
 
@@ -174,7 +177,10 @@ export default function AdminMainPage() {
             {dashboardView.kpis.map((item, index) => (
               <div key={item.id} className='col-xl-4 col-md-6'>
                 <FadeIn delay={index * 0.03}>
-                  <AdminDashboardKpiCard item={item} valueLabel={formatKpiValue(item.value, item.format)} />
+                  <AdminDashboardKpiCard
+                    item={item}
+                    valueLabel={formatKpiValue(item.value, item.format)}
+                  />
                 </FadeIn>
               </div>
             ))}
@@ -198,7 +204,12 @@ export default function AdminMainPage() {
                             </linearGradient>
                           </defs>
                           <CartesianGrid stroke='#F2F2F2' vertical={false} />
-                          <XAxis dataKey='label' tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
+                          <XAxis
+                            dataKey='label'
+                            tick={{ fontSize: 12 }}
+                            tickLine={false}
+                            axisLine={false}
+                          />
                           <YAxis
                             yAxisId='left'
                             tick={{ fontSize: 12 }}
@@ -217,7 +228,10 @@ export default function AdminMainPage() {
                           <Tooltip
                             formatter={(value: number, name: string) => {
                               if (name === 'revenue') {
-                                return [formatCurrency(value), dashboardContent.charts.revenueTrend.revenueLegend];
+                                return [
+                                  formatCurrency(value),
+                                  dashboardContent.charts.revenueTrend.revenueLegend,
+                                ];
                               }
 
                               return [value, dashboardContent.charts.revenueTrend.bookingsLegend];
@@ -289,7 +303,12 @@ export default function AdminMainPage() {
                                 <Cell key={entry.key} fill={entry.color} />
                               ))}
                             </Pie>
-                            <Tooltip formatter={(value: number) => [value, dashboardContent.charts.bookingStatus.totalLabel]} />
+                            <Tooltip
+                              formatter={(value: number) => [
+                                value,
+                                dashboardContent.charts.bookingStatus.totalLabel,
+                              ]}
+                            />
                           </PieChart>
                         </ResponsiveContainer>
                       </div>
@@ -359,7 +378,10 @@ export default function AdminMainPage() {
                           <Tooltip
                             formatter={(value: number, name: string) =>
                               name === 'revenue'
-                                ? [formatCurrency(value), dashboardContent.charts.topTours.columns.revenue]
+                                ? [
+                                    formatCurrency(value),
+                                    dashboardContent.charts.topTours.columns.revenue,
+                                  ]
                                 : [value, dashboardContent.charts.topTours.columns.bookings]
                             }
                           />
@@ -399,7 +421,9 @@ export default function AdminMainPage() {
                         {dashboardContent.charts.ratings.averageLabel}
                       </div>
                       <div className='text-18 fw-600'>
-                        {dashboardView.averageRating > 0 ? dashboardView.averageRating.toFixed(1) : '0.0'}
+                        {dashboardView.averageRating > 0
+                          ? dashboardView.averageRating.toFixed(1)
+                          : '0.0'}
                       </div>
                     </div>
                   }
@@ -409,8 +433,18 @@ export default function AdminMainPage() {
                       <ResponsiveContainer width='100%' height='100%'>
                         <BarChart data={dashboardView.ratingDistribution}>
                           <CartesianGrid stroke='#F2F2F2' vertical={false} />
-                          <XAxis dataKey='label' tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />
-                          <YAxis allowDecimals={false} tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />
+                          <XAxis
+                            dataKey='label'
+                            tickLine={false}
+                            axisLine={false}
+                            tick={{ fontSize: 12 }}
+                          />
+                          <YAxis
+                            allowDecimals={false}
+                            tickLine={false}
+                            axisLine={false}
+                            tick={{ fontSize: 12 }}
+                          />
                           <Tooltip formatter={(value: number) => [value, 'Reviews']} />
                           <Bar
                             dataKey='count'
@@ -419,7 +453,16 @@ export default function AdminMainPage() {
                             animationDuration={800}
                           >
                             {dashboardView.ratingDistribution.map((item) => (
-                              <Cell key={item.label} fill={item.rating >= 4 ? '#27AE60' : item.rating === 3 ? '#F2994A' : '#EB5757'} />
+                              <Cell
+                                key={item.label}
+                                fill={
+                                  item.rating >= 4
+                                    ? '#27AE60'
+                                    : item.rating === 3
+                                      ? '#F2994A'
+                                      : '#EB5757'
+                                }
+                              />
                             ))}
                           </Bar>
                         </BarChart>
@@ -442,10 +485,7 @@ export default function AdminMainPage() {
                   title={dashboardContent.charts.topTours.title}
                   subtitle={dashboardContent.charts.topTours.subtitle}
                   rightSlot={
-                    <div
-                      className='d-flex items-center'
-                      style={{ columnGap: 8 }}
-                    >
+                    <div className='d-flex items-center' style={{ columnGap: 8 }}>
                       {(['bookings', 'revenue'] as const).map((metric) => {
                         const active = topToursMetric === metric;
                         const label = dashboardContent.charts.topTours.columns[metric];
@@ -525,7 +565,9 @@ export default function AdminMainPage() {
                     </div>
                   )}
 
-                  {dashboardView.topTours.length > 0 ? <div className='mt-20 mb-5 line'></div> : null}
+                  {dashboardView.topTours.length > 0 ? (
+                    <div className='mt-20 mb-5 line'></div>
+                  ) : null}
 
                   <AdminTopToursTable
                     rows={dashboardView.topTours}

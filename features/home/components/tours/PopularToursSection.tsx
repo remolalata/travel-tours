@@ -50,7 +50,11 @@ export default async function PopularToursSection() {
         >
           {tours.map((tour) => (
             <div key={tour.id} className='col-lg-3 col-md-6'>
-              <HomeTourCard item={tour} favoriteLabel={popularTours.favoriteLabel} pricePrefix={popularTours.pricePrefix} />
+              <HomeTourCard
+                item={tour}
+                favoriteLabel={popularTours.favoriteLabel}
+                pricePrefix={popularTours.pricePrefix}
+              />
             </div>
           ))}
         </FadeIn>

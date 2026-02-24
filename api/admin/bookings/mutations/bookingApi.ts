@@ -73,9 +73,7 @@ type ProfileRow = {
   last_name: string | null;
 };
 
-function getDestination(
-  destination: BookingRow['destinations'],
-): { name: string | null } | null {
+function getDestination(destination: BookingRow['destinations']): { name: string | null } | null {
   if (!destination) return null;
 
   if (Array.isArray(destination)) {
@@ -139,7 +137,9 @@ export async function fetchAdminBookings(
   }
 
   const bookings = (data ?? []) as BookingRow[];
-  const customerUserIds = [...new Set(bookings.map((booking) => booking.customer_user_id).filter(Boolean))];
+  const customerUserIds = [
+    ...new Set(bookings.map((booking) => booking.customer_user_id).filter(Boolean)),
+  ];
 
   const profileByUserId = new Map<string, ProfileRow>();
 

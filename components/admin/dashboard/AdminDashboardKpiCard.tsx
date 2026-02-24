@@ -5,10 +5,7 @@ type AdminDashboardKpiCardProps = {
   valueLabel: string;
 };
 
-export default function AdminDashboardKpiCard({
-  item,
-  valueLabel,
-}: AdminDashboardKpiCardProps) {
+export default function AdminDashboardKpiCard({ item, valueLabel }: AdminDashboardKpiCardProps) {
   return (
     <div
       className='h-full px-20 py-20 bg-white shadow-2 position-relative overflow-hidden'
@@ -25,10 +22,7 @@ export default function AdminDashboardKpiCard({
           </div>
         </div>
 
-        <div
-          className='flex-center size-48'
-          style={{ borderRadius: 14, color: item.accentColor }}
-        >
+        <div className='flex-center size-48' style={{ borderRadius: 14, color: item.accentColor }}>
           <i className={`${item.iconClass} text-20`}></i>
         </div>
       </div>

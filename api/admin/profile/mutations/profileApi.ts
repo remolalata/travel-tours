@@ -35,7 +35,9 @@ function getProfilePhotoStoragePathFromPublicUrl(url: string | null): string | n
   }
 }
 
-export async function fetchCurrentAdminProfile(supabase: SupabaseClient): Promise<AdminProfileData> {
+export async function fetchCurrentAdminProfile(
+  supabase: SupabaseClient,
+): Promise<AdminProfileData> {
   const {
     data: { user },
   } = await supabase.auth.getUser();

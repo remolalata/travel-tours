@@ -8,7 +8,12 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -54,7 +59,9 @@ function ItineraryAccordionItem({
   onUpdateItem: (key: keyof Omit<ItineraryItem, 'id'>, value: string | boolean) => void;
   content: AdminListingContent['createPage'];
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: item.id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: item.id,
+  });
   const [expanded, setExpanded] = useState(index === 0);
 
   return (
@@ -116,7 +123,9 @@ function ItineraryAccordionItem({
         </AccordionSummary>
 
         <AccordionDetails sx={{ px: 2, pb: 2 }}>
-          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2.5 }}>
+          <Box
+            sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2.5 }}
+          >
             <Box sx={{ gridColumn: { xs: '1 / -1', md: '1 / -1' } }}>
               <AppTextField
                 label={content.fields.itineraryTitle}
@@ -135,7 +144,13 @@ function ItineraryAccordionItem({
               />
               <AppFieldHelper text={content.helpers.itineraryContent} />
             </Box>
-            <Box sx={{ gridColumn: { xs: '1 / -1', md: '1 / -1' }, display: 'flex', justifyContent: 'flex-end' }}>
+            <Box
+              sx={{
+                gridColumn: { xs: '1 / -1', md: '1 / -1' },
+                display: 'flex',
+                justifyContent: 'flex-end',
+              }}
+            >
               <AppButton
                 type='button'
                 size='sm'
@@ -179,7 +194,10 @@ export default function AdminItineraryBlocksManager({
       </div>
 
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
-        <SortableContext items={items.map((item) => item.id)} strategy={verticalListSortingStrategy}>
+        <SortableContext
+          items={items.map((item) => item.id)}
+          strategy={verticalListSortingStrategy}
+        >
           <div className='d-flex flex-column y-gap-15'>
             {items.map((item, index) => (
               <ItineraryAccordionItem

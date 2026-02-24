@@ -140,10 +140,7 @@ export default async function Page(props: TourPageProps) {
           overviewDescription={overviewDescription}
           faqItems={faqItems}
         />
-        <TourSlider
-          destinationId={routeContext.destinationId}
-          currentTourId={routeContext.id}
-        />
+        <TourSlider destinationId={routeContext.destinationId} currentTourId={routeContext.id} />
         <SiteFooter />
       </main>
     </>

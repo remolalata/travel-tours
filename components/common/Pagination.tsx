@@ -16,7 +16,9 @@ export default function Pagination({ range = 20, page, onPageChange }: Paginatio
   const normalizedRange = Math.max(1, range);
   const isControlled = typeof page === 'number' && typeof onPageChange === 'function';
   const [internalPage, setInternalPage] = useState<number>(1);
-  const activeIndex = isControlled ? clampPage(page, normalizedRange) : clampPage(internalPage, normalizedRange);
+  const activeIndex = isControlled
+    ? clampPage(page, normalizedRange)
+    : clampPage(internalPage, normalizedRange);
 
   const setPage = (nextPage: number) => {
     const clampedPage = clampPage(nextPage, normalizedRange);

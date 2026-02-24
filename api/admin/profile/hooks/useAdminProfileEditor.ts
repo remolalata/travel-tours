@@ -33,7 +33,10 @@ type FormActionResult = {
   message: string;
 };
 
-export default function useAdminProfileEditor({ onUnauthorized, initialData }: UseAdminProfileEditorOptions) {
+export default function useAdminProfileEditor({
+  onUnauthorized,
+  initialData,
+}: UseAdminProfileEditorOptions) {
   const supabase = useMemo(() => createClient(), []);
   const queryClient = useQueryClient();
   const profileContent = adminContent.pages.profile;
@@ -45,9 +48,9 @@ export default function useAdminProfileEditor({ onUnauthorized, initialData }: U
     phone: initialData.phone,
     email: initialData.email,
   });
-  const [profileFieldErrors, setProfileFieldErrors] = useState<Partial<Record<keyof AdminProfileFormState, string>>>(
-    {},
-  );
+  const [profileFieldErrors, setProfileFieldErrors] = useState<
+    Partial<Record<keyof AdminProfileFormState, string>>
+  >({});
   const [avatarPreview, setAvatarPreview] = useState(initialData.avatarUrl ?? '');
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [removeAvatar, setRemoveAvatar] = useState(false);
@@ -66,7 +69,7 @@ export default function useAdminProfileEditor({ onUnauthorized, initialData }: U
   });
 
   const mapErrorCode = (code: string | undefined) =>
-    code ? profileContent.validationMessages[code] ?? code : undefined;
+    code ? (profileContent.validationMessages[code] ?? code) : undefined;
 
   const setProfileField = (field: keyof AdminProfileFormState, value: string) => {
     setProfileForm((previousValue) => ({ ...previousValue, [field]: value }));

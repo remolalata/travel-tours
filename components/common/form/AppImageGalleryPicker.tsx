@@ -37,10 +37,7 @@ function GalleryItem({
   labels: AppImageGalleryPickerLabels;
 }) {
   return (
-    <div
-      className='rounded-12 border-1 bg-white p-10'
-      style={{ position: 'relative' }}
-    >
+    <div className='rounded-12 border-1 bg-white p-10' style={{ position: 'relative' }}>
       <button
         type='button'
         aria-label={labels.remove}
@@ -93,7 +90,8 @@ export default function AppImageGalleryPicker({
   accept = { 'image/*': [] },
 }: AppImageGalleryPickerProps) {
   const canAddMore = typeof maxFiles !== 'number' || items.length < maxFiles;
-  const remainingSlots = typeof maxFiles === 'number' ? Math.max(maxFiles - items.length, 0) : undefined;
+  const remainingSlots =
+    typeof maxFiles === 'number' ? Math.max(maxFiles - items.length, 0) : undefined;
 
   const onDrop = useMemo(
     () => (acceptedFiles: File[]) => {

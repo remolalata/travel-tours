@@ -82,7 +82,13 @@ export default function BlogListTwoSection() {
                   {sidebar.recentPosts.map((post) => (
                     <Link key={post.id} href={`/blog/${post.slug}`} className='d-flex align-center'>
                       <div className='size-70 overflow-hidden rounded-12'>
-                        <Image width={616} height={451} src={post.image} alt={post.title} className='img-cover' />
+                        <Image
+                          width={616}
+                          height={451}
+                          src={post.image}
+                          alt={post.title}
+                          className='img-cover'
+                        />
                       </div>
 
                       <div className='ml-20'>

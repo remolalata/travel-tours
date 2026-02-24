@@ -43,13 +43,8 @@ function AdminProfilePageContent({ initialData, onUnauthorized }: AdminProfilePa
     saveProfile,
   } = useAdminProfileEditor({ onUnauthorized, initialData });
 
-  const {
-    passwordForm,
-    passwordFieldErrors,
-    isSavingPassword,
-    setPasswordField,
-    savePassword,
-  } = useAdminPasswordEditor({ onUnauthorized });
+  const { passwordForm, passwordFieldErrors, isSavingPassword, setPasswordField, savePassword } =
+    useAdminPasswordEditor({ onUnauthorized });
 
   const primaryPhoto = content.photos[0];
 
@@ -125,7 +120,11 @@ function AdminProfilePageContent({ initialData, onUnauthorized }: AdminProfilePa
                       className='size-200 rounded-12 object-cover'
                       unoptimized={avatarPreview.startsWith('blob:')}
                     />
-                    <button onClick={clearAvatar} className='absoluteIcon1 button -dark-1' type='button'>
+                    <button
+                      onClick={clearAvatar}
+                      className='absoluteIcon1 button -dark-1'
+                      type='button'
+                    >
                       <i className='icon-delete text-18'></i>
                     </button>
                   </div>
@@ -136,7 +135,12 @@ function AdminProfilePageContent({ initialData, onUnauthorized }: AdminProfilePa
                     htmlFor={primaryPhoto?.id ?? 'profile-photo'}
                     className='size-200 rounded-12 border-dash-1 bg-accent-1-05 flex-center flex-column'
                   >
-                    <Image width={40} height={40} alt={primaryPhoto?.alt ?? content.uploadLabel} src='/img/dashboard/upload.svg' />
+                    <Image
+                      width={40}
+                      height={40}
+                      alt={primaryPhoto?.alt ?? content.uploadLabel}
+                      src='/img/dashboard/upload.svg'
+                    />
                     <div className='text-16 fw-500 text-accent-1 mt-10'>{content.uploadLabel}</div>
                   </label>
                   <input
@@ -150,7 +154,11 @@ function AdminProfilePageContent({ initialData, onUnauthorized }: AdminProfilePa
               )}
             </div>
 
-            <button className='button -md -dark-1 bg-accent-1 text-white mt-30' type='submit' disabled={isSavingProfile}>
+            <button
+              className='button -md -dark-1 bg-accent-1 text-white mt-30'
+              type='submit'
+              disabled={isSavingProfile}
+            >
               {isSavingProfile ? content.savingLabel : content.profileSaveLabel}
               <i className='icon-arrow-top-right text-16 ml-10'></i>
             </button>
@@ -195,7 +203,11 @@ function AdminProfilePageContent({ initialData, onUnauthorized }: AdminProfilePa
 
           <div className='row'>
             <div className='col-12'>
-              <button className='button -md -dark-1 bg-accent-1 text-white' type='submit' disabled={isSavingPassword}>
+              <button
+                className='button -md -dark-1 bg-accent-1 text-white'
+                type='submit'
+                disabled={isSavingPassword}
+              >
                 {isSavingPassword ? content.savingLabel : content.passwordSaveLabel}
                 <i className='icon-arrow-top-right text-16 ml-10'></i>
               </button>
@@ -231,7 +243,9 @@ export default function AdminProfilePage() {
   if (profileQuery.isLoading || !profileQuery.data) {
     return (
       <AdminShell title={content.intro.title} description={content.intro.description}>
-        <div className='rounded-12 bg-white shadow-2 px-40 pt-40 pb-30 mt-60'>{content.loadingLabel}</div>
+        <div className='rounded-12 bg-white shadow-2 px-40 pt-40 pb-30 mt-60'>
+          {content.loadingLabel}
+        </div>
       </AdminShell>
     );
   }

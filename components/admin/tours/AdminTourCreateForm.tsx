@@ -57,7 +57,13 @@ type TourCreateFormState = {
   inclusions: TourInclusionFormItem[];
 };
 
-type TourCreateSectionKey = 'basic' | 'classification' | 'pricing' | 'media' | 'itinerary' | 'inclusions';
+type TourCreateSectionKey =
+  | 'basic'
+  | 'classification'
+  | 'pricing'
+  | 'media'
+  | 'itinerary'
+  | 'inclusions';
 type TourCreateValidatableField = keyof AdminTourCreateValidationInput;
 
 function normalizeItineraryItems(items: TourItineraryFormItem[]): TourItineraryFormItem[] {
@@ -130,7 +136,9 @@ export default function AdminTourCreateForm() {
   const content = adminContent.pages.listing.createPage;
   const [activeSection, setActiveSection] = useState<TourCreateSectionKey>('basic');
   const [formState, setFormState] = useState<TourCreateFormState>(initialState);
-  const [fieldErrors, setFieldErrors] = useState<Partial<Record<TourCreateValidatableField, string>>>({});
+  const [fieldErrors, setFieldErrors] = useState<
+    Partial<Record<TourCreateValidatableField, string>>
+  >({});
   const referencesQuery = useAdminTourReferencesQuery();
 
   const sectionItems: Array<{
@@ -170,20 +178,26 @@ export default function AdminTourCreateForm() {
     },
   ];
 
-  function setField<Key extends keyof TourCreateFormState>(key: Key, value: TourCreateFormState[Key]) {
+  function setField<Key extends keyof TourCreateFormState>(
+    key: Key,
+    value: TourCreateFormState[Key],
+  ) {
     setFormState((previousValue) => ({
       ...previousValue,
       [key]: value,
     }));
   }
 
-  function setValidatedField<Key extends TourCreateValidatableField>(key: Key, value: TourCreateFormState[Key]) {
+  function setValidatedField<Key extends TourCreateValidatableField>(
+    key: Key,
+    value: TourCreateFormState[Key],
+  ) {
     setField(key, value);
     setFieldErrors((previousValue) => ({ ...previousValue, [key]: undefined }));
   }
 
   function mapValidationError(code: string | undefined) {
-    return code ? content.validationMessages[code] ?? code : undefined;
+    return code ? (content.validationMessages[code] ?? code) : undefined;
   }
 
   function handleCreate() {
@@ -209,12 +223,14 @@ export default function AdminTourCreateForm() {
       };
       setFieldErrors(nextErrors);
 
-      if (nextErrors.title || nextErrors.description || nextErrors.location || nextErrors.duration) {
-        setActiveSection('basic');
-      } else if (
-        nextErrors.destinationId ||
-        nextErrors.tourTypeId
+      if (
+        nextErrors.title ||
+        nextErrors.description ||
+        nextErrors.location ||
+        nextErrors.duration
       ) {
+        setActiveSection('basic');
+      } else if (nextErrors.destinationId || nextErrors.tourTypeId) {
         setActiveSection('classification');
       } else {
         setActiveSection('pricing');
@@ -254,7 +270,11 @@ export default function AdminTourCreateForm() {
       <div className='row y-gap-20'>
         <div className='col-12 col-lg-3'>
           <div className='toursCreateNavWrap'>
-            <AppSideTabs items={sectionItems} activeKey={activeSection} onChange={setActiveSection} />
+            <AppSideTabs
+              items={sectionItems}
+              activeKey={activeSection}
+              onChange={setActiveSection}
+            />
           </div>
         </div>
 
@@ -265,7 +285,13 @@ export default function AdminTourCreateForm() {
                 <h4 className='text-18 fw-500'>{content.sections.basic.title}</h4>
                 <p className='text-14 text-light-1 mt-5'>{content.sections.basic.description}</p>
               </div>
-              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2.5 }}>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+                  gap: 2.5,
+                }}
+              >
                 <Box className='toursCreateField'>
                   <AppTextField
                     label={content.fields.title}
@@ -275,7 +301,10 @@ export default function AdminTourCreateForm() {
                   />
                   {!fieldErrors.title ? <AppFieldHelper text={content.helpers.title} /> : null}
                 </Box>
-                <Box className='toursCreateField' sx={{ gridColumn: { xs: '1 / -1', md: '1 / -1' } }}>
+                <Box
+                  className='toursCreateField'
+                  sx={{ gridColumn: { xs: '1 / -1', md: '1 / -1' } }}
+                >
                   <div className='mb-10 text-14 fw-500'>{content.fields.description}</div>
                   <AdminRichTextEditor
                     value={formState.description}
@@ -288,7 +317,9 @@ export default function AdminTourCreateForm() {
                       {fieldErrors.description}
                     </div>
                   ) : null}
-                  {!fieldErrors.description ? <AppFieldHelper text={content.helpers.description} /> : null}
+                  {!fieldErrors.description ? (
+                    <AppFieldHelper text={content.helpers.description} />
+                  ) : null}
                 </Box>
                 <Box className='toursCreateField'>
                   <AppTextField
@@ -297,7 +328,9 @@ export default function AdminTourCreateForm() {
                     onChange={(value) => setValidatedField('location', value)}
                     errorMessage={fieldErrors.location}
                   />
-                  {!fieldErrors.location ? <AppFieldHelper text={content.helpers.location} /> : null}
+                  {!fieldErrors.location ? (
+                    <AppFieldHelper text={content.helpers.location} />
+                  ) : null}
                 </Box>
                 <Box className='toursCreateField'>
                   <AppTextField
@@ -306,7 +339,9 @@ export default function AdminTourCreateForm() {
                     onChange={(value) => setValidatedField('duration', value)}
                     errorMessage={fieldErrors.duration}
                   />
-                  {!fieldErrors.duration ? <AppFieldHelper text={content.helpers.duration} /> : null}
+                  {!fieldErrors.duration ? (
+                    <AppFieldHelper text={content.helpers.duration} />
+                  ) : null}
                 </Box>
               </Box>
             </div>
@@ -316,14 +351,25 @@ export default function AdminTourCreateForm() {
             <div className='toursCreateSection border-1 rounded-12 px-20 py-20'>
               <div className='toursCreateSection__header'>
                 <h4 className='text-18 fw-500'>{content.sections.classification.title}</h4>
-                <p className='text-14 text-light-1 mt-5'>{content.sections.classification.description}</p>
+                <p className='text-14 text-light-1 mt-5'>
+                  {content.sections.classification.description}
+                </p>
               </div>
               {referencesQuery.isError ? (
                 <div className='mb-15'>
-                  <AppFieldHelper text={content.messages.referencesLoadError} className='text-red-1 mt-0' />
+                  <AppFieldHelper
+                    text={content.messages.referencesLoadError}
+                    className='text-red-1 mt-0'
+                  />
                 </div>
               ) : null}
-              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2.5 }}>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+                  gap: 2.5,
+                }}
+              >
                 <Box className='toursCreateField'>
                   <AppSelectField
                     label={content.fields.destinationId}
@@ -336,7 +382,11 @@ export default function AdminTourCreateForm() {
                   />
                   {!fieldErrors.destinationId ? (
                     <AppFieldHelper
-                      text={referencesQuery.isLoading ? content.messages.referencesLoading : content.helpers.destinationId}
+                      text={
+                        referencesQuery.isLoading
+                          ? content.messages.referencesLoading
+                          : content.helpers.destinationId
+                      }
                     />
                   ) : null}
                 </Box>
@@ -352,7 +402,11 @@ export default function AdminTourCreateForm() {
                   />
                   {!fieldErrors.tourTypeId ? (
                     <AppFieldHelper
-                      text={referencesQuery.isLoading ? content.messages.referencesLoading : content.helpers.tourTypeId}
+                      text={
+                        referencesQuery.isLoading
+                          ? content.messages.referencesLoading
+                          : content.helpers.tourTypeId
+                      }
                     />
                   ) : null}
                 </Box>
@@ -366,7 +420,13 @@ export default function AdminTourCreateForm() {
                 <h4 className='text-18 fw-500'>{content.sections.pricing.title}</h4>
                 <p className='text-14 text-light-1 mt-5'>{content.sections.pricing.description}</p>
               </div>
-              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2.5 }}>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+                  gap: 2.5,
+                }}
+              >
                 <Box className='toursCreateField'>
                   <AppTextField
                     label={content.fields.price}
@@ -500,7 +560,12 @@ export default function AdminTourCreateForm() {
           {content.actions.cancel}
         </AppButton>
 
-        <AppButton type='button' size='sm' className='toursCreateSubmitButton' onClick={handleCreate}>
+        <AppButton
+          type='button'
+          size='sm'
+          className='toursCreateSubmitButton'
+          onClick={handleCreate}
+        >
           {content.actions.create}
         </AppButton>
       </div>

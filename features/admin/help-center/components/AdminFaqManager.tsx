@@ -8,7 +8,11 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import Alert from '@mui/material/Alert';
 import Skeleton from '@mui/material/Skeleton';
 import { useState } from 'react';
@@ -113,9 +117,13 @@ export default function AdminFaqManager() {
             <AppButton
               size='sm'
               onClick={handleSave}
-              disabled={!faqManager.hasChanges || faqQuery.isLoading || saveFaqItemsMutation.isPending}
+              disabled={
+                !faqManager.hasChanges || faqQuery.isLoading || saveFaqItemsMutation.isPending
+              }
             >
-              {saveFaqItemsMutation.isPending ? faqManagerContent.actions.saving : faqManagerContent.actions.save}
+              {saveFaqItemsMutation.isPending
+                ? faqManagerContent.actions.saving
+                : faqManagerContent.actions.save}
             </AppButton>
           </div>
         </div>

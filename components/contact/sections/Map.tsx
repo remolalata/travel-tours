@@ -14,7 +14,6 @@ const center = {
   lng: -38.523,
 };
 
-
 function MyComponent() {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',

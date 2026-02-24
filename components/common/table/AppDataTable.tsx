@@ -2,7 +2,12 @@
 
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
-import type { GridColDef, GridPaginationModel, GridRowId, GridValidRowModel } from '@mui/x-data-grid';
+import type {
+  GridColDef,
+  GridPaginationModel,
+  GridRowId,
+  GridValidRowModel,
+} from '@mui/x-data-grid';
 import { DataGrid } from '@mui/x-data-grid';
 
 export type DataTableColumn<T extends GridValidRowModel> = GridColDef<T>;
@@ -46,7 +51,11 @@ export default function AppDataTable<T extends GridValidRowModel>({
 
   return (
     <Box sx={{ width: '100%' }}>
-      {errorMessage ? <Alert severity='error' sx={{ mb: 2 }}>{errorMessage}</Alert> : null}
+      {errorMessage ? (
+        <Alert severity='error' sx={{ mb: 2 }}>
+          {errorMessage}
+        </Alert>
+      ) : null}
 
       <DataGrid
         columns={columns}

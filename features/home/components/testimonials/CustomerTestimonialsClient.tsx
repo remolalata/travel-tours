@@ -20,7 +20,12 @@ export default function CustomerTestimonialsClient({ reviews }: CustomerTestimon
   return (
     <section className='relative layout-pt-xl layout-pb-xl'>
       <div className='sectionBg md:d-none'>
-        <Image width={1920} height={871} src='/img/testimonials/1/1.png' alt={testimonials.backgroundImageAlt} />
+        <Image
+          width={1920}
+          height={871}
+          src='/img/testimonials/1/1.png'
+          alt={testimonials.backgroundImageAlt}
+        />
       </div>
 
       <div className='container'>

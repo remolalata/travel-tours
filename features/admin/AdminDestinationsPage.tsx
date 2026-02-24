@@ -185,7 +185,9 @@ export default function AdminDestinationsPage() {
       }
 
       const failedPrefix =
-        modalMode === 'edit' ? content.editModal.messages.updateFailedPrefix : content.addModal.messages.createFailedPrefix;
+        modalMode === 'edit'
+          ? content.editModal.messages.updateFailedPrefix
+          : content.addModal.messages.createFailedPrefix;
 
       setFormErrorMessage(`${failedPrefix}: ${message}`);
     }
@@ -244,7 +246,11 @@ export default function AdminDestinationsPage() {
       renderCell: (params: GridRenderCellParams<Destination, boolean>) => (
         <Chip
           size='small'
-          label={params.row.isActive ? content.table.statusLabels.active : content.table.statusLabels.inactive}
+          label={
+            params.row.isActive
+              ? content.table.statusLabels.active
+              : content.table.statusLabels.inactive
+          }
           color={params.row.isActive ? 'success' : 'default'}
           variant={params.row.isActive ? 'filled' : 'outlined'}
         />
@@ -259,7 +265,15 @@ export default function AdminDestinationsPage() {
       align: 'center',
       headerAlign: 'center',
       renderCell: (params: GridRenderCellParams<Destination>) => (
-        <Box sx={{ height: '100%', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Box
+          sx={{
+            height: '100%',
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
           <Tooltip title={content.table.actions.editLabel}>
             <span>
               <IconButton
@@ -316,7 +330,13 @@ export default function AdminDestinationsPage() {
         size='small'
         actions={
           <>
-            <AppButton type='button' size='sm' variant='outline' onClick={handleCloseModal} disabled={isSaving}>
+            <AppButton
+              type='button'
+              size='sm'
+              variant='outline'
+              onClick={handleCloseModal}
+              disabled={isSaving}
+            >
               {modalContent.actions.cancel}
             </AppButton>
             <AppButton type='button' size='sm' onClick={handleSaveDestination} disabled={isSaving}>
@@ -370,8 +390,15 @@ export default function AdminDestinationsPage() {
                     display: 'flex',
                   }}
                 >
-                  <Image width={40} height={40} alt={modalContent.image.uploadLabel} src='/img/dashboard/upload.svg' />
-                  <div className='text-16 fw-500 text-accent-1 mt-10'>{modalContent.image.uploadLabel}</div>
+                  <Image
+                    width={40}
+                    height={40}
+                    alt={modalContent.image.uploadLabel}
+                    src='/img/dashboard/upload.svg'
+                  />
+                  <div className='text-16 fw-500 text-accent-1 mt-10'>
+                    {modalContent.image.uploadLabel}
+                  </div>
                 </label>
               )}
               <input

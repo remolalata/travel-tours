@@ -8,4 +8,3 @@ export const tourTypeOptions = [
   'International Tour',
   'Adventure Tour',
 ] as const;
-

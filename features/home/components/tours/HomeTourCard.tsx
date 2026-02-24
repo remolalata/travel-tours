@@ -33,10 +33,21 @@ export default function HomeTourCard({
     >
       <div className='tourCard__header'>
         <div className='tourCard__image ratio ratio-28:20'>
-          <Image width={421} height={301} src={item.imageSrc} alt={item.title} className='rounded-12 img-ratio' />
+          <Image
+            width={421}
+            height={301}
+            src={item.imageSrc}
+            alt={item.title}
+            className='rounded-12 img-ratio'
+          />
         </div>
 
-        <button className='tourCard__favorite' aria-label={favoriteLabel} title={favoriteLabel} type='button'>
+        <button
+          className='tourCard__favorite'
+          aria-label={favoriteLabel}
+          title={favoriteLabel}
+          type='button'
+        >
           <i className='icon-heart'></i>
         </button>
       </div>

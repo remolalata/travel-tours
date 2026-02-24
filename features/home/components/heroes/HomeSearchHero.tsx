@@ -3,7 +3,7 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useEffect, useId,useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 
 import Calender from '@/components/common/dropdownSearch/Calender';
 import Location from '@/components/common/dropdownSearch/Location';

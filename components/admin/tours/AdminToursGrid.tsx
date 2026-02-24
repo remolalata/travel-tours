@@ -44,9 +44,24 @@ export default function AdminToursGrid({
                     <Skeleton variant='text' animation='wave' width='80%' height={32} />
                     <Skeleton variant='text' animation='wave' width='55%' height={24} />
 
-                    <Box sx={{ mt: 1, display: 'flex', justifyContent: 'space-between', gap: 2, flexWrap: 'wrap' }}>
+                    <Box
+                      sx={{
+                        mt: 1,
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        gap: 2,
+                        flexWrap: 'wrap',
+                      }}
+                    >
                       <Skeleton variant='text' animation='wave' width={100} height={24} />
-                      <Box sx={{ minWidth: 120, display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                      <Box
+                        sx={{
+                          minWidth: 120,
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'flex-end',
+                        }}
+                      >
                         <Skeleton variant='text' animation='wave' width={70} height={22} />
                         <Skeleton variant='text' animation='wave' width={110} height={28} />
                       </Box>

@@ -29,7 +29,9 @@ export default function AppMultiSelectChips<T extends string>({
           value={value}
           onChange={(event: SelectChangeEvent<T[]>) => {
             const selectedValue = event.target.value;
-            onChange((typeof selectedValue === 'string' ? selectedValue.split(',') : selectedValue) as T[]);
+            onChange(
+              (typeof selectedValue === 'string' ? selectedValue.split(',') : selectedValue) as T[],
+            );
           }}
           renderValue={(selected) => (
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>

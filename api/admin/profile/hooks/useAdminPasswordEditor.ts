@@ -27,7 +27,8 @@ type FormActionResult = {
 export default function useAdminPasswordEditor({ onUnauthorized }: UseAdminPasswordEditorOptions) {
   const supabase = useMemo(() => createClient(), []);
   const profileContent = adminContent.pages.profile;
-  const [passwordForm, setPasswordForm] = useState<AdminPasswordFormState>(initialPasswordFormState);
+  const [passwordForm, setPasswordForm] =
+    useState<AdminPasswordFormState>(initialPasswordFormState);
   const [passwordFieldErrors, setPasswordFieldErrors] = useState<
     Partial<Record<keyof AdminPasswordFormState, string>>
   >({});
@@ -37,7 +38,7 @@ export default function useAdminPasswordEditor({ onUnauthorized }: UseAdminPassw
   });
 
   const mapErrorCode = (code: string | undefined) =>
-    code ? profileContent.validationMessages[code] ?? code : undefined;
+    code ? (profileContent.validationMessages[code] ?? code) : undefined;
 
   const setPasswordField = (field: keyof AdminPasswordFormState, value: string) => {
     setPasswordForm((previousValue) => ({ ...previousValue, [field]: value }));

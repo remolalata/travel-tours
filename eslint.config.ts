@@ -17,7 +17,8 @@ const config = [
           patterns: [
             {
               group: ['../*', '../../*', '../../../*', '../../../../*', '../../../../../*'],
-              message: 'Use the `@/` alias for cross-directory imports instead of parent-relative paths.',
+              message:
+                'Use the `@/` alias for cross-directory imports instead of parent-relative paths.',
             },
           ],
         },

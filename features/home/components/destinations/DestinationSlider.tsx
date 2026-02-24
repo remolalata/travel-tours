@@ -13,7 +13,10 @@ interface DestinationSliderProps {
   paginationClass: string;
 }
 
-export default function DestinationSlider({ destinations, paginationClass }: DestinationSliderProps) {
+export default function DestinationSlider({
+  destinations,
+  paginationClass,
+}: DestinationSliderProps) {
   const { trendingDestinations } = homeContent;
 
   return (

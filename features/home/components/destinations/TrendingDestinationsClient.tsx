@@ -43,7 +43,10 @@ export default function TrendingDestinationsClient({
           </div>
         </div>
 
-        <DestinationSlider destinations={destinations} paginationClass='pbutton-trending-locations' />
+        <DestinationSlider
+          destinations={destinations}
+          paginationClass='pbutton-trending-locations'
+        />
       </div>
     </section>
   );

@@ -13,7 +13,9 @@ export default function Page() {
   return (
     <main>
       <SiteHeader />
-      <Suspense fallback={<div className='layout-pt-lg layout-pb-lg container'>Loading form...</div>}>
+      <Suspense
+        fallback={<div className='layout-pt-lg layout-pb-lg container'>Loading form...</div>}
+      >
         <GetQuoteFormSection />
       </Suspense>
       <SiteFooter />

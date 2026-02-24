@@ -96,7 +96,9 @@ export async function createDestination(
       throw new Error(`DESTINATION_UPLOAD_FAILED:${uploadError.message}`);
     }
 
-    const { data: publicUrlData } = supabase.storage.from('destination-photos').getPublicUrl(filePath);
+    const { data: publicUrlData } = supabase.storage
+      .from('destination-photos')
+      .getPublicUrl(filePath);
     imageSrc = publicUrlData.publicUrl;
   }
 
@@ -137,7 +139,9 @@ export async function updateDestination(
       throw new Error(`DESTINATION_UPLOAD_FAILED:${uploadError.message}`);
     }
 
-    const { data: publicUrlData } = supabase.storage.from('destination-photos').getPublicUrl(filePath);
+    const { data: publicUrlData } = supabase.storage
+      .from('destination-photos')
+      .getPublicUrl(filePath);
     imageSrc = publicUrlData.publicUrl;
   }
 

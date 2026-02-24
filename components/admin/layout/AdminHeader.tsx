@@ -31,24 +31,26 @@ export default function AdminHeader({ onToggleSidebar }: AdminHeaderProps) {
       <div className='d-flex items-center x-gap-20'>
         {adminContent.shell.topActions.map((action) => (
           <div key={action.id}>
-            {action.imageSrc ? avatarUrl ? (
-              <Image
-                width={42}
-                height={42}
-                src={avatarUrl}
-                alt={action.label}
-                className='rounded-circle object-cover'
-                style={{ borderRadius: '50%' }}
-              />
-            ) : (
-              <div
-                className='size-40 rounded-circle border-1 flex-center text-dark-1'
-                aria-label={action.label}
-                title={action.label}
-                style={{ borderRadius: '50%' }}
-              >
-                <i className='icon-person text-18' />
-              </div>
+            {action.imageSrc ? (
+              avatarUrl ? (
+                <Image
+                  width={42}
+                  height={42}
+                  src={avatarUrl}
+                  alt={action.label}
+                  className='rounded-circle object-cover'
+                  style={{ borderRadius: '50%' }}
+                />
+              ) : (
+                <div
+                  className='size-40 rounded-circle border-1 flex-center text-dark-1'
+                  aria-label={action.label}
+                  title={action.label}
+                  style={{ borderRadius: '50%' }}
+                >
+                  <i className='icon-person text-18' />
+                </div>
+              )
             ) : (
               <button type='button' aria-label={action.label}>
                 <i className={action.iconClass}></i>

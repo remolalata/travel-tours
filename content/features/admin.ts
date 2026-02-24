@@ -41,8 +41,18 @@ export const adminContent: AdminContent = {
         iconClass: 'icon-application text-26',
         label: 'Settings',
         children: [
-          { id: 51, href: '/admin/help-center', iconClass: 'icon-headphone text-26', label: 'Help Center' },
-          { id: 52, href: '/admin/profile', iconClass: 'icon-account text-26', label: 'My Profile' },
+          {
+            id: 51,
+            href: '/admin/help-center',
+            iconClass: 'icon-headphone text-26',
+            label: 'Help Center',
+          },
+          {
+            id: 52,
+            href: '/admin/profile',
+            iconClass: 'icon-account text-26',
+            label: 'My Profile',
+          },
         ],
       },
       { id: 6, href: '/logout', iconClass: 'icon-logout text-26', label: 'Logout' },
@@ -369,7 +379,8 @@ export const adminContent: AdminContent = {
           inclusionContent: 'Inclusion Content',
         },
         helpers: {
-          title: 'This is the tour name your customers will see. The slug is created automatically.',
+          title:
+            'This is the tour name your customers will see. The slug is created automatically.',
           description: 'Write a short description of the experience.',
           location: 'Enter the place shown to customers (for example: Boracay, Philippines).',
           duration: 'How long is the tour? Example: 4 Days or 2 Days 1 Night.',
@@ -554,9 +565,7 @@ export const adminContent: AdminContent = {
       loadingLabel: 'Loading profile...',
       photoTitle: 'Your photo',
       photoHint: 'PNG or JPG no bigger than 800px wide and tall.',
-      photos: [
-        { id: 'profile-photo-1', src: '', alt: 'Profile upload slot 1' },
-      ],
+      photos: [{ id: 'profile-photo-1', src: '', alt: 'Profile upload slot 1' }],
       passwordTitle: 'Change Password',
       passwordFields: [
         { id: 'old-password', label: 'Old password', kind: 'input' },
@@ -569,7 +578,8 @@ export const adminContent: AdminContent = {
         fixHighlightedFields: 'Please fix the highlighted fields.',
         sessionExpired: 'Session expired. Please sign in again.',
         profileUploadFailedPrefix: 'Profile photo upload failed',
-        profileTableMissing: 'Unable to save profile details. Make sure the "profiles" table exists with the required columns.',
+        profileTableMissing:
+          'Unable to save profile details. Make sure the "profiles" table exists with the required columns.',
         profileSaved: 'Profile saved successfully.',
         passwordOldIncorrect: 'Old password is incorrect.',
         passwordSaved: 'Password updated successfully.',

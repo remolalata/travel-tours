@@ -1,4 +1,7 @@
-export function getDiscountPercent(price: number, originalPrice: number | null | undefined): number | null {
+export function getDiscountPercent(
+  price: number,
+  originalPrice: number | null | undefined,
+): number | null {
   if (typeof originalPrice !== 'number') {
     return null;
   }

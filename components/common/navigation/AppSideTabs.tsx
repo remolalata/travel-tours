@@ -35,7 +35,9 @@ export default function AppSideTabs<Key extends string>({
               <div className='appSideTabs__index'>{index + 1}</div>
               <div className='appSideTabs__text'>
                 <div className='appSideTabs__title'>{item.title}</div>
-                {item.description ? <div className='appSideTabs__description'>{item.description}</div> : null}
+                {item.description ? (
+                  <div className='appSideTabs__description'>{item.description}</div>
+                ) : null}
               </div>
             </div>
           </button>

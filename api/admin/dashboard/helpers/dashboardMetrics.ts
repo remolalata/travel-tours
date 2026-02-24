@@ -97,7 +97,9 @@ export function buildAdminDashboardViewModel(
 ): AdminDashboardViewModel {
   const now = new Date();
   const rangeStart = getRangeStart(range, now);
-  const filteredBookings = dataset.bookings.filter((booking) => isWithinRange(booking.bookedAt, rangeStart));
+  const filteredBookings = dataset.bookings.filter((booking) =>
+    isWithinRange(booking.bookedAt, rangeStart),
+  );
   const filteredReviews = dataset.reviews.filter(
     (review) => review.isPublished && isWithinRange(review.createdAt, rangeStart),
   );
@@ -106,8 +108,12 @@ export function buildAdminDashboardViewModel(
   const approvedOrCompletedBookings = filteredBookings.filter(
     (booking) => booking.bookingStatus === 'approved' || booking.bookingStatus === 'completed',
   );
-  const completedBookings = filteredBookings.filter((booking) => booking.bookingStatus === 'completed');
-  const cancelledBookings = filteredBookings.filter((booking) => booking.bookingStatus === 'cancelled');
+  const completedBookings = filteredBookings.filter(
+    (booking) => booking.bookingStatus === 'completed',
+  );
+  const cancelledBookings = filteredBookings.filter(
+    (booking) => booking.bookingStatus === 'cancelled',
+  );
 
   const totalRevenue = approvedOrCompletedBookings.reduce(
     (sum, booking) => sum + getRecognizedRevenue(booking),
@@ -156,24 +162,29 @@ export function buildAdminDashboardViewModel(
   const destinationMap = new Map<string, { name: string; bookings: number; revenue: number }>();
   for (const booking of filteredBookings) {
     const destinationName = booking.destinationName || 'Unknown Destination';
-    const current =
-      destinationMap.get(destinationName) ?? { name: destinationName, bookings: 0, revenue: 0 };
+    const current = destinationMap.get(destinationName) ?? {
+      name: destinationName,
+      bookings: 0,
+      revenue: 0,
+    };
     current.bookings += 1;
     current.revenue += getRecognizedRevenue(booking);
     destinationMap.set(destinationName, current);
   }
 
-  const topToursMap = new Map<string, { title: string; destinationName: string; bookings: number; revenue: number }>();
+  const topToursMap = new Map<
+    string,
+    { title: string; destinationName: string; bookings: number; revenue: number }
+  >();
   for (const booking of filteredBookings) {
     const title = booking.tourTitle || 'Unknown Tour';
     const key = `${title}::${booking.destinationName ?? 'Unknown Destination'}`;
-    const current =
-      topToursMap.get(key) ?? {
-        title,
-        destinationName: booking.destinationName || 'Unknown Destination',
-        bookings: 0,
-        revenue: 0,
-      };
+    const current = topToursMap.get(key) ?? {
+      title,
+      destinationName: booking.destinationName || 'Unknown Destination',
+      bookings: 0,
+      revenue: 0,
+    };
     current.bookings += 1;
     current.revenue += getRecognizedRevenue(booking);
     topToursMap.set(key, current);
@@ -260,12 +271,14 @@ export function buildAdminDashboardViewModel(
         bookings: point?.bookings ?? 0,
       };
     }),
-    statusBreakdown: (Object.keys(STATUS_LABEL_MAP) as AdminDashboardBookingStatus[]).map((statusKey) => ({
-      key: statusKey,
-      label: STATUS_LABEL_MAP[statusKey],
-      count: statusCounts.get(statusKey) ?? 0,
-      color: STATUS_COLOR_MAP[statusKey],
-    })),
+    statusBreakdown: (Object.keys(STATUS_LABEL_MAP) as AdminDashboardBookingStatus[]).map(
+      (statusKey) => ({
+        key: statusKey,
+        label: STATUS_LABEL_MAP[statusKey],
+        count: statusCounts.get(statusKey) ?? 0,
+        color: STATUS_COLOR_MAP[statusKey],
+      }),
+    ),
     topDestinations: [...destinationMap.values()]
       .sort((left, right) => right.bookings - left.bookings || right.revenue - left.revenue)
       .slice(0, 6),

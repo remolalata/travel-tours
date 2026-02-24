@@ -36,4 +36,3 @@ export const footerContent = {
   },
   copyright: '© Copyright Travel & Tours 2026',
 } as const;
-

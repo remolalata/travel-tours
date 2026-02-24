@@ -67,14 +67,16 @@ const sharedArticle = {
       reviewer: 'Cameron Williamson',
       ratingLabel: '5.0 Excellent',
       publishedAt: 'April 14 2023',
-      message: 'Nibh vel aliquet lectus proin nibh nisl condimentum id. Tellus id interdum velit laoreet id donec ultrices tincidunt.',
+      message:
+        'Nibh vel aliquet lectus proin nibh nisl condimentum id. Tellus id interdum velit laoreet id donec ultrices tincidunt.',
     },
     {
       id: 2,
       reviewer: 'Kristin Watson',
       ratingLabel: '4.8 Great',
       publishedAt: 'April 18 2023',
-      message: 'Praesent elementum facilisis leo vel fringilla est ullamcorper eget nulla. Dictumst quisque sagittis purus sit amet volutpat consequat.',
+      message:
+        'Praesent elementum facilisis leo vel fringilla est ullamcorper eget nulla. Dictumst quisque sagittis purus sit amet volutpat consequat.',
     },
   ],
   commentForm: {
@@ -122,7 +124,8 @@ export const blogContent: BlogContent = {
       date: 'April 06 2023',
       author: 'Ali Tufan',
       title: 'Kenya vs Tanzania Safari: The Better African Safari Experience',
-      excerpt: 'From creepy coach rides with comedic theatrics to somber strolls through tragic neighborhoods.',
+      excerpt:
+        'From creepy coach rides with comedic theatrics to somber strolls through tragic neighborhoods.',
       badge: 'Trips',
       continent: 'Africa',
       article: {
@@ -148,7 +151,8 @@ export const blogContent: BlogContent = {
       date: 'April 07 2023',
       author: 'Emily Johnson',
       title: 'Exploring the Serengeti: A Wildlife Adventure',
-      excerpt: 'From creepy coach rides with comedic theatrics to somber strolls through tragic neighborhoods.',
+      excerpt:
+        'From creepy coach rides with comedic theatrics to somber strolls through tragic neighborhoods.',
       badge: 'Trips',
       continent: 'North America',
       article: sharedArticle,
@@ -160,7 +164,8 @@ export const blogContent: BlogContent = {
       date: 'April 08 2023',
       author: 'Maxwell Rhodes',
       title: 'Into the Wild: An Unforgettable Safari Journey',
-      excerpt: 'From creepy coach rides with comedic theatrics to somber strolls through tragic neighborhoods.',
+      excerpt:
+        'From creepy coach rides with comedic theatrics to somber strolls through tragic neighborhoods.',
       badge: 'Trips',
       continent: 'North America',
       article: sharedArticle,
@@ -172,7 +177,8 @@ export const blogContent: BlogContent = {
       date: 'April 09 2023',
       author: 'Sophia Martinez',
       title: 'Safari Photography: Capturing the Essence of Wildlife',
-      excerpt: 'From creepy coach rides with comedic theatrics to somber strolls through tragic neighborhoods.',
+      excerpt:
+        'From creepy coach rides with comedic theatrics to somber strolls through tragic neighborhoods.',
       badge: 'Trips',
       continent: 'Africa',
       article: sharedArticle,
@@ -184,7 +190,8 @@ export const blogContent: BlogContent = {
       date: 'April 10 2023',
       author: 'Elijah Williams',
       title: 'Surviving the Safari: A Comprehensive Guide',
-      excerpt: 'From creepy coach rides with comedic theatrics to somber strolls through tragic neighborhoods.',
+      excerpt:
+        'From creepy coach rides with comedic theatrics to somber strolls through tragic neighborhoods.',
       badge: 'Trips',
       continent: 'South America Guide',
       article: sharedArticle,
@@ -196,7 +203,8 @@ export const blogContent: BlogContent = {
       date: 'April 11 2023',
       author: 'Ava Thompson',
       title: 'Luxury Safari Experience: Where Comfort Meets Wilderness',
-      excerpt: 'From creepy coach rides with comedic theatrics to somber strolls through tragic neighborhoods.',
+      excerpt:
+        'From creepy coach rides with comedic theatrics to somber strolls through tragic neighborhoods.',
       badge: 'Trips',
       continent: 'Europe',
       article: sharedArticle,
@@ -208,7 +216,8 @@ export const blogContent: BlogContent = {
       date: 'April 12 2023',
       author: 'Oliver Davis',
       title: 'African Safari: A Journey Through Nature’s Wonders',
-      excerpt: 'From creepy coach rides with comedic theatrics to somber strolls through tragic neighborhoods.',
+      excerpt:
+        'From creepy coach rides with comedic theatrics to somber strolls through tragic neighborhoods.',
       badge: 'Trips',
       continent: 'Asia',
       article: sharedArticle,
@@ -220,7 +229,8 @@ export const blogContent: BlogContent = {
       date: 'April 13 2023',
       author: 'Harper Garcia',
       title: 'Safari Camping Tips: Making the Most of the Wild Outdoors',
-      excerpt: 'From creepy coach rides with comedic theatrics to somber strolls through tragic neighborhoods.',
+      excerpt:
+        'From creepy coach rides with comedic theatrics to somber strolls through tragic neighborhoods.',
       badge: 'Trips',
       continent: 'Asia',
       article: sharedArticle,
@@ -232,7 +242,8 @@ export const blogContent: BlogContent = {
       date: 'April 14 2023',
       author: 'Evelyn Cooper',
       title: 'The Beauty of Wildlife: A Safari Perspective',
-      excerpt: 'From creepy coach rides with comedic theatrics to somber strolls through tragic neighborhoods.',
+      excerpt:
+        'From creepy coach rides with comedic theatrics to somber strolls through tragic neighborhoods.',
       badge: 'Trips',
       continent: 'Asia',
       article: sharedArticle,

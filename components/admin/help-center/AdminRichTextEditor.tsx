@@ -91,7 +91,9 @@ export default function AdminRichTextEditor({
           type='button'
           style={{
             ...toolbarButtonStyle,
-            borderColor: editor.isActive('paragraph') ? 'rgba(235, 102, 43, 0.45)' : defaultToolbarBorderColor,
+            borderColor: editor.isActive('paragraph')
+              ? 'rgba(235, 102, 43, 0.45)'
+              : defaultToolbarBorderColor,
           }}
           onClick={() => editor.chain().focus().setParagraph().run()}
           aria-label={toolbarLabels.paragraph}
@@ -104,7 +106,9 @@ export default function AdminRichTextEditor({
           style={{
             ...toolbarButtonStyle,
             fontWeight: 700,
-            borderColor: editor.isActive('bold') ? 'rgba(235, 102, 43, 0.45)' : defaultToolbarBorderColor,
+            borderColor: editor.isActive('bold')
+              ? 'rgba(235, 102, 43, 0.45)'
+              : defaultToolbarBorderColor,
           }}
           onClick={() => editor.chain().focus().toggleBold().run()}
           aria-label={toolbarLabels.bold}
@@ -117,7 +121,9 @@ export default function AdminRichTextEditor({
           style={{
             ...toolbarButtonStyle,
             fontStyle: 'italic',
-            borderColor: editor.isActive('italic') ? 'rgba(235, 102, 43, 0.45)' : defaultToolbarBorderColor,
+            borderColor: editor.isActive('italic')
+              ? 'rgba(235, 102, 43, 0.45)'
+              : defaultToolbarBorderColor,
           }}
           onClick={() => editor.chain().focus().toggleItalic().run()}
           aria-label={toolbarLabels.italic}
@@ -129,7 +135,9 @@ export default function AdminRichTextEditor({
           type='button'
           style={{
             ...toolbarButtonStyle,
-            borderColor: editor.isActive('bulletList') ? 'rgba(235, 102, 43, 0.45)' : defaultToolbarBorderColor,
+            borderColor: editor.isActive('bulletList')
+              ? 'rgba(235, 102, 43, 0.45)'
+              : defaultToolbarBorderColor,
           }}
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           aria-label={toolbarLabels.bulletList}
@@ -141,7 +149,9 @@ export default function AdminRichTextEditor({
           type='button'
           style={{
             ...toolbarButtonStyle,
-            borderColor: editor.isActive('orderedList') ? 'rgba(235, 102, 43, 0.45)' : defaultToolbarBorderColor,
+            borderColor: editor.isActive('orderedList')
+              ? 'rgba(235, 102, 43, 0.45)'
+              : defaultToolbarBorderColor,
           }}
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           aria-label={toolbarLabels.orderedList}

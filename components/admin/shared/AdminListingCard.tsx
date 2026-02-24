@@ -20,7 +20,13 @@ export default function AdminListingCard({
       <div className='tourCard -type-1 py-10 px-10 border-1 rounded-12 -hover-shadow'>
         <div className='tourCard__header'>
           <div className='tourCard__image ratio ratio-28:20'>
-            <Image width={421} height={301} src={item.imageSrc} alt={item.title} className='img-ratio rounded-12' />
+            <Image
+              width={421}
+              height={301}
+              src={item.imageSrc}
+              alt={item.title}
+              className='img-ratio rounded-12'
+            />
           </div>
 
           <button className='tourCard__favorite' type='button'>
@@ -104,7 +110,8 @@ export default function AdminListingCard({
             <div className='col-auto'>
               <div className='text-right md:text-left'>
                 <div className='lh-14'>${formatNumber(item.price)}</div>
-                {pricePrefix} <span className='text-20 fw-500'>${formatNumber(item.fromPrice)}</span>
+                {pricePrefix}{' '}
+                <span className='text-20 fw-500'>${formatNumber(item.fromPrice)}</span>
               </div>
             </div>
           </div>

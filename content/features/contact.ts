@@ -47,4 +47,3 @@ export const contactPageContent = {
     },
   ] as ContactLocationItem[],
 } as const;
-

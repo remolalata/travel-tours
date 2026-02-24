@@ -4,7 +4,17 @@ import { blogContent } from '@/content/features/blog';
 import { allTour } from '@/data/tours';
 import { getSiteUrl } from '@/utils/seo';
 
-const staticRoutes = ['/', '/about', '/blog', '/contact', '/destinations', '/get-quote', '/help-center', '/terms', '/tours'];
+const staticRoutes = [
+  '/',
+  '/about',
+  '/blog',
+  '/contact',
+  '/destinations',
+  '/get-quote',
+  '/help-center',
+  '/terms',
+  '/tours',
+];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = getSiteUrl();

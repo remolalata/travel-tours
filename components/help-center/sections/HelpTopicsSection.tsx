@@ -18,7 +18,13 @@ export default function HelpTopicsSection() {
           {topics.items.map((topic) => (
             <div key={topic.id} className='col-lg-4 col-md-6'>
               <div className='px-50 py-45 border-1 rounded-12'>
-                <Image width={60} height={60} src={topic.iconSrc} alt={topic.title} className='mb-20' />
+                <Image
+                  width={60}
+                  height={60}
+                  src={topic.iconSrc}
+                  alt={topic.title}
+                  className='mb-20'
+                />
 
                 <h3 className='text-18 fw-500'>{topic.title}</h3>
 

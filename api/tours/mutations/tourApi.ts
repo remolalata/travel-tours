@@ -96,7 +96,9 @@ function mapTourRowToToursListItem(tour: TourRow): ToursListItem {
 export async function fetchPopularTours(supabase: SupabaseClient): Promise<HomePopularTourItem[]> {
   const { data, error } = await supabase
     .from('tours')
-    .select('id,slug,title,location,image_src,duration_label,price,original_price,description,is_featured')
+    .select(
+      'id,slug,title,location,image_src,duration_label,price,original_price,description,is_featured',
+    )
     .eq('is_popular', true)
     .order('created_at', { ascending: false })
     .order('id', { ascending: false })
@@ -109,10 +111,14 @@ export async function fetchPopularTours(supabase: SupabaseClient): Promise<HomeP
   return ((data ?? []) as TourRow[]).map(mapTourRowToHomeTour);
 }
 
-export async function fetchTopTrendingTours(supabase: SupabaseClient): Promise<HomeTrendingTourItem[]> {
+export async function fetchTopTrendingTours(
+  supabase: SupabaseClient,
+): Promise<HomeTrendingTourItem[]> {
   const { data, error } = await supabase
     .from('tours')
-    .select('id,slug,title,location,image_src,duration_label,price,original_price,description,is_featured')
+    .select(
+      'id,slug,title,location,image_src,duration_label,price,original_price,description,is_featured',
+    )
     .eq('is_top_trending', true)
     .order('created_at', { ascending: false })
     .order('id', { ascending: false })
@@ -134,9 +140,12 @@ export async function fetchToursList(
 
   const { data, error, count } = await supabase
     .from('tours')
-    .select('id,slug,title,location,image_src,duration_label,price,original_price,description,is_featured', {
-      count: 'exact',
-    })
+    .select(
+      'id,slug,title,location,image_src,duration_label,price,original_price,description,is_featured',
+      {
+        count: 'exact',
+      },
+    )
     .eq('is_active', true)
     .order('created_at', { ascending: false })
     .order('id', { ascending: false })
@@ -188,7 +197,9 @@ export async function fetchRelatedToursByDestination(
 ): Promise<HomePopularTourItem[]> {
   let query = supabase
     .from('tours')
-    .select('id,slug,title,location,image_src,duration_label,price,original_price,description,is_featured')
+    .select(
+      'id,slug,title,location,image_src,duration_label,price,original_price,description,is_featured',
+    )
     .eq('is_active', true)
     .eq('destination_id', input.destinationId)
     .order('created_at', { ascending: false })

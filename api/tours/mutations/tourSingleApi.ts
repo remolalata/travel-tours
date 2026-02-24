@@ -38,19 +38,21 @@ export async function fetchTourSinglePageData(
 
   const tour = tourRow as TourSingleRow;
 
-  const [{ data: inclusionRows, error: inclusionError }, { data: itineraryRows, error: itineraryError }] =
-    await Promise.all([
-      supabase
-        .from('tour_inclusions')
-        .select('id,item_type,item_order,content')
-        .eq('tour_id', tour.id)
-        .order('item_order', { ascending: true }),
-      supabase
-        .from('tour_itinerary_steps')
-        .select('id,is_summary,day_number,title,content,icon')
-        .eq('tour_id', tour.id)
-        .order('day_number', { ascending: true }),
-    ]);
+  const [
+    { data: inclusionRows, error: inclusionError },
+    { data: itineraryRows, error: itineraryError },
+  ] = await Promise.all([
+    supabase
+      .from('tour_inclusions')
+      .select('id,item_type,item_order,content')
+      .eq('tour_id', tour.id)
+      .order('item_order', { ascending: true }),
+    supabase
+      .from('tour_itinerary_steps')
+      .select('id,is_summary,day_number,title,content,icon')
+      .eq('tour_id', tour.id)
+      .order('day_number', { ascending: true }),
+  ]);
 
   if (inclusionError) {
     throw new Error(`TOUR_INCLUSIONS_FETCH_FAILED:${inclusionError.message}`);

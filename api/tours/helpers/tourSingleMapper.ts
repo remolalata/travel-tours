@@ -33,7 +33,10 @@ type TourItineraryStepRow = {
   icon: string | null;
 };
 
-function mapInclusionRows(rows: TourInclusionRow[], itemType: 'included' | 'excluded'): IncludedExcludedItem[] {
+function mapInclusionRows(
+  rows: TourInclusionRow[],
+  itemType: 'included' | 'excluded',
+): IncludedExcludedItem[] {
   return rows
     .filter((row) => row.item_type === itemType)
     .sort((a, b) => a.item_order - b.item_order)
@@ -104,7 +107,9 @@ export function mapTourSinglePageData(
       includedItems: includedItems.length > 0 ? includedItems : baseTourContent.includedItems,
       excludedItems: excludedItems.length > 0 ? excludedItems : baseTourContent.excludedItems,
       itinerarySummarySteps:
-        itinerarySummarySteps.length > 0 ? itinerarySummarySteps : baseTourContent.itinerarySummarySteps,
+        itinerarySummarySteps.length > 0
+          ? itinerarySummarySteps
+          : baseTourContent.itinerarySummarySteps,
       itinerarySteps: itinerarySteps.length > 0 ? itinerarySteps : baseTourContent.itinerarySteps,
     },
     galleryImageUrls: buildGalleryImageUrls(tour),

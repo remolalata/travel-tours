@@ -9,7 +9,9 @@ const phonePattern = /^[+]?[\d\s\-()]{7,20}$/;
 
 export type ValidationErrors<T> = Partial<Record<keyof T, string>>;
 
-export function validateAdminProfileForm(input: AdminProfileFormState): ValidationErrors<AdminProfileFormState> {
+export function validateAdminProfileForm(
+  input: AdminProfileFormState,
+): ValidationErrors<AdminProfileFormState> {
   const errors: ValidationErrors<AdminProfileFormState> = {};
 
   if (!input.firstName.trim()) errors.firstName = 'required_first_name';

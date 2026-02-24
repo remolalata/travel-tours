@@ -214,11 +214,15 @@ export default function TourList1({ initialToursPage }: TourList1Props) {
                         <div className='tourCard__price'>
                           {elm.fromPrice > elm.price ? (
                             <>
-                              <div className='tourCard__priceOld'>₱{formatNumber(elm.fromPrice)}</div>
+                              <div className='tourCard__priceOld'>
+                                ₱{formatNumber(elm.fromPrice)}
+                              </div>
 
                               <div className='d-flex items-center tourCard__priceCurrent'>
                                 From{' '}
-                                <span className='ml-5 text-20 fw-500'>₱{formatNumber(elm.price)}</span>
+                                <span className='ml-5 text-20 fw-500'>
+                                  ₱{formatNumber(elm.price)}
+                                </span>
                               </div>
                             </>
                           ) : (

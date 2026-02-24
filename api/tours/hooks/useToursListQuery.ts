@@ -12,7 +12,10 @@ type UseToursListQueryOptions = {
   initialData?: PaginatedToursList;
 };
 
-export default function useToursListQuery(input: FetchToursListInput, options?: UseToursListQueryOptions) {
+export default function useToursListQuery(
+  input: FetchToursListInput,
+  options?: UseToursListQueryOptions,
+) {
   const supabase = useMemo(() => createClient(), []);
 
   return useQuery({

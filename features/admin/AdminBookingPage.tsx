@@ -86,7 +86,8 @@ export default function AdminBookingPage() {
         minWidth: 140,
         flex: 1,
         sortable: false,
-        renderCell: (params: GridRenderCellParams<AdminBookingData, string | null>) => params.row.destinationName ?? '-',
+        renderCell: (params: GridRenderCellParams<AdminBookingData, string | null>) =>
+          params.row.destinationName ?? '-',
       },
       {
         field: 'customerName',
@@ -167,7 +168,9 @@ export default function AdminBookingPage() {
           rowKey={(row) => row.id}
           loading={bookingsQuery.isLoading}
           refreshing={bookingsQuery.isFetching && !bookingsQuery.isLoading}
-          errorMessage={bookingsQuery.isError ? 'Failed to load bookings. Please refresh and try again.' : null}
+          errorMessage={
+            bookingsQuery.isError ? 'Failed to load bookings. Please refresh and try again.' : null
+          }
           emptyMessage='No bookings found for this status.'
           pagination={{
             page,

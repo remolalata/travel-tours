@@ -44,7 +44,10 @@ export default function MobileMenu({ mobileMenuOpen, setMobileMenuOpen }: Mobile
         </div>
 
         <div className='menu__content'>
-          <ul className='menuNav js-navList -is-active' style={{ maxHeight: 'calc(100vh - 262px)', overflowY: 'auto' }}>
+          <ul
+            className='menuNav js-navList -is-active'
+            style={{ maxHeight: 'calc(100vh - 262px)', overflowY: 'auto' }}
+          >
             {mobileMenuData.map((menuSection) => (
               <li key={menuSection.id} className='menuNav__item -has-submenu js-has-submenu'>
                 <a
@@ -58,7 +61,9 @@ export default function MobileMenu({ mobileMenuOpen, setMobileMenuOpen }: Mobile
                 >
                   <span
                     className={
-                      menuSection.submenu.some((item) => item.href.split('/')[1] === pathnameSegment)
+                      menuSection.submenu.some(
+                        (item) => item.href.split('/')[1] === pathnameSegment,
+                      )
                         ? 'activeMenu'
                         : ''
                     }

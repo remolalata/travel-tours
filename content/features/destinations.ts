@@ -17,12 +17,48 @@ export const destinationsPageContent: DestinationsPageContent = {
     ctaHref: '/tours',
     tourSuffix: '+ Tours',
     items: [
-      { id: 1, name: 'Boracay', imageSrc: '/img/destinationCards/boracay.webp', tours: 124, href: '/tours' },
-      { id: 2, name: 'Palawan', imageSrc: '/img/destinationCards/palawan.webp', tours: 98, href: '/tours' },
-      { id: 3, name: 'Cebu', imageSrc: '/img/destinationCards/cebu.webp', tours: 76, href: '/tours' },
-      { id: 4, name: 'Bohol', imageSrc: '/img/destinationCards/bohol.webp', tours: 64, href: '/tours' },
-      { id: 5, name: 'Siargao', imageSrc: '/img/destinationCards/siargao.webp', tours: 52, href: '/tours' },
-      { id: 6, name: 'Bangkok', imageSrc: '/img/destinationCards/bangkok.webp', tours: 88, href: '/tours' },
+      {
+        id: 1,
+        name: 'Boracay',
+        imageSrc: '/img/destinationCards/boracay.webp',
+        tours: 124,
+        href: '/tours',
+      },
+      {
+        id: 2,
+        name: 'Palawan',
+        imageSrc: '/img/destinationCards/palawan.webp',
+        tours: 98,
+        href: '/tours',
+      },
+      {
+        id: 3,
+        name: 'Cebu',
+        imageSrc: '/img/destinationCards/cebu.webp',
+        tours: 76,
+        href: '/tours',
+      },
+      {
+        id: 4,
+        name: 'Bohol',
+        imageSrc: '/img/destinationCards/bohol.webp',
+        tours: 64,
+        href: '/tours',
+      },
+      {
+        id: 5,
+        name: 'Siargao',
+        imageSrc: '/img/destinationCards/siargao.webp',
+        tours: 52,
+        href: '/tours',
+      },
+      {
+        id: 6,
+        name: 'Bangkok',
+        imageSrc: '/img/destinationCards/bangkok.webp',
+        tours: 88,
+        href: '/tours',
+      },
     ],
   },
   popularTours: {
@@ -77,7 +113,12 @@ export const destinationsPageContent: DestinationsPageContent = {
     generalInfo: [
       { id: 1, label: 'Time Zone', value: 'GMT +07:00', note: '7 hours ahead of UTC' },
       { id: 2, label: 'Currency', value: 'Thai Baht (THB)', note: 'Rates vary by provider' },
-      { id: 3, label: 'Best time to visit', value: 'November to April', note: 'Drier season for tours' },
+      {
+        id: 3,
+        label: 'Best time to visit',
+        value: 'November to April',
+        note: 'Drier season for tours',
+      },
     ],
   },
 };
