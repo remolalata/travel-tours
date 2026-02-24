@@ -12,9 +12,9 @@ export const metadata = {
 };
 
 export default async function Page() {
-  const { user, isAdmin } = await getServerAuthState();
+  const { user } = await getServerAuthState();
   if (user) {
-    redirect(isAdmin ? '/admin/dashboard' : '/');
+    redirect('/');
   }
 
   return (

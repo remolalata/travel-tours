@@ -36,10 +36,10 @@ export const tourSingleContent = {
     },
     ctaLabel: 'Book Now',
     paymentFlow: {
-      modalTitle: 'Complete Booking (Simulated Payment)',
+      modalTitle: 'Complete Booking',
       actions: {
         cancel: 'Cancel',
-        confirm: 'Confirm & Simulate Payment',
+        confirm: 'Confirm Booking',
         processing: 'Processing...',
       },
       fields: {
@@ -51,7 +51,7 @@ export const tourSingleContent = {
       },
       helpers: {
         selectDatesFirst: 'Select travel dates in the sidebar before confirming payment.',
-        paymentOption: 'Simulation only. No real payment gateway is used.',
+        paymentOption: '',
       },
       summary: {
         title: 'Booking Summary',
@@ -60,7 +60,7 @@ export const tourSingleContent = {
         tourTypeLabel: 'Tour Type',
         travelersLabel: 'Travelers',
         totalAmountLabel: 'Estimated Total',
-        amountDueNowLabel: 'Charge Now (Simulated)',
+        amountDueNowLabel: 'Amount Due Now',
       },
       paymentOptions: [
         { value: 'full', label: 'Full Payment (100%)' },

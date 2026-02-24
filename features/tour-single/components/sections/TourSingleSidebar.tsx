@@ -237,7 +237,7 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
                 bookingFlow.formState.notes.trim(),
                 `Location: ${location || '-'}`,
                 `Tour Type: ${tourType || '-'}`,
-                `Simulation Payment Option: ${paymentOptionLabel}`,
+                `Payment Option: ${paymentOptionLabel}`,
               ]
                 .filter(Boolean)
                 .join(' | '),

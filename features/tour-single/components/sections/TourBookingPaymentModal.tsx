@@ -80,13 +80,13 @@ export default function TourBookingPaymentModal({
         onClose();
       }}
       title={content.modalTitle}
-      size='medium'
+      size='small'
       actions={
         <>
-          <AppButton variant='outline' onClick={onClose} disabled={isSubmitting}>
+          <AppButton size='sm' variant='outline' onClick={onClose} disabled={isSubmitting}>
             {content.actions.cancel}
           </AppButton>
-          <AppButton onClick={onConfirm} disabled={isSubmitting}>
+          <AppButton size='sm' onClick={onConfirm} disabled={isSubmitting}>
             {isSubmitting ? content.actions.processing : content.actions.confirm}
           </AppButton>
         </>
@@ -117,7 +117,7 @@ export default function TourBookingPaymentModal({
           </div>
         </div>
 
-        <div className='col-md-6'>
+        <div className='col-sm-6 col-12'>
           <AppTextField
             label={content.fields.adults}
             value={formState.adults}
@@ -129,7 +129,7 @@ export default function TourBookingPaymentModal({
           />
         </div>
 
-        <div className='col-md-6'>
+        <div className='col-sm-6 col-12'>
           <AppTextField
             label={content.fields.children}
             value={formState.children}
@@ -149,7 +149,7 @@ export default function TourBookingPaymentModal({
             required
             sx={undefined}
           />
-          <AppFieldHelper text={content.helpers.paymentOption} />
+          {content.helpers.paymentOption ? <AppFieldHelper text={content.helpers.paymentOption} /> : null}
         </div>
 
         <div className='col-12'>
