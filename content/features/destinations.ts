@@ -8,7 +8,7 @@ export const destinationsPageContent: DestinationsPageContent = {
   hero: {
     title: 'Phuket',
     description: 'Explore deals, travel guides and things to do in Phuket',
-    backgroundImageSrc: '/img/pageHeader/1.jpg',
+    backgroundImageSrc: '/img/hero.webp',
     shapeImageSrc: '/img/hero/1/shape.svg',
   },
   trending: {

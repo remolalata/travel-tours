@@ -1,24 +1,29 @@
-import AboutBanner from '@/components/about/sections/AboutBanner';
 import AboutHero from '@/components/about/sections/AboutHero';
-import AboutIntro from '@/components/about/sections/AboutIntro';
-import AboutTeam from '@/components/about/sections/AboutTeam';
 import SiteFooter from '@/components/layout/footers/SiteFooter';
 import SiteHeader from '@/components/layout/header/SiteHeader';
-import AppPromoBanner from '@/features/home/components/banners/AppPromoBanner';
-import WhyChooseUsFeatures from '@/features/home/components/features/WhyChooseUsFeatures';
-import CustomerTestimonials from '@/features/home/components/testimonials/CustomerTestimonials';
+import { aboutContent } from '@/content/features/about';
 
 export default function AboutPage() {
+  const { intro } = aboutContent;
+
   return (
     <main>
       <SiteHeader />
       <AboutHero />
-      <AboutIntro />
-      <AboutBanner />
-      <WhyChooseUsFeatures />
-      <CustomerTestimonials />
-      <AppPromoBanner />
-      <AboutTeam />
+      <section className='layout-pt-lg layout-pb-lg'>
+        <div className='container'>
+          <div className='row justify-center'>
+            <div className='col-xl-9 col-lg-10'>
+              <h2 className='text-30 fw-700'>{intro.heading}</h2>
+              {intro.paragraphs.map((paragraph, index) => (
+                <p key={paragraph} className={index === 0 ? 'mt-20' : 'mt-15'}>
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
       <SiteFooter />
     </main>
   );

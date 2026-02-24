@@ -7,23 +7,24 @@ export const aboutContent: AboutContent = {
   },
   hero: {
     title: 'About Us',
-    description:
-      'A tropical paradise made for animal lovers replete with monkey caves, dog foundations, and dolphins in the wild.',
-    backgroundImageSrc: '/img/pageHeader/1.jpg',
+    description: '',
+    backgroundImageSrc: '/img/hero.webp',
+    backgroundImageAlt: 'About page header background',
     shapeImageSrc: '/img/hero/1/shape.svg',
+    shapeImageAlt: 'About page header shape',
   },
   intro: {
     heading:
-      'Hello. Our agency has been present for over 29 years in the market. We make the most of all our customers.',
+      'Travel & Tours helps travelers plan smooth, memorable trips with clear guidance, curated packages, and reliable support from inquiry to return.',
     paragraphs: [
-      'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
+      'We focus on practical travel planning, transparent inclusions, and destination experiences that fit real schedules and budgets. Whether you are booking a family getaway, a couple trip, or a group adventure, our team works to make every step easy to understand.',
+      'From trip recommendations and quote requests to booking assistance and pre-travel coordination, we aim to deliver a friendly and dependable experience that lets you spend less time worrying about logistics and more time enjoying the journey.',
     ],
     ctaLabel: 'Learn More',
     ctaHref: '/contact',
   },
   banner: {
-    imageSrc: '/img/misc/1.png',
+    imageSrc: '/img/hero.webp',
     imageAlt: 'About media banner',
     videoHref: 'https://www.youtube.com/watch?v=ANYfx4-jyqY',
     playAriaLabel: 'Play about video',

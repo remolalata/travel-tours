@@ -7,7 +7,9 @@ export interface AboutHero {
   title: string;
   description: string;
   backgroundImageSrc: string;
+  backgroundImageAlt: string;
   shapeImageSrc: string;
+  shapeImageAlt: string;
 }
 
 export interface AboutIntro {
