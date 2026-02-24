@@ -1,60 +1,62 @@
 'use client';
 
-import MenuItem from '@mui/material/MenuItem';
 import type { SxProps, Theme } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 
 import { muiFieldSx } from '@/utils/styles/muiFieldSx';
 
-type AppSelectOption = {
-  value: string;
-  label: string;
-};
-
-type AppSelectFieldProps = {
+type AppTextareaFieldProps = {
   label: string;
   value: string;
-  options: readonly AppSelectOption[];
   onChange: (value: string) => void;
-  emptyOptionLabel?: string;
   required?: boolean;
+  placeholder?: string;
   errorMessage?: string;
   helperText?: string;
   disabled?: boolean;
+  rows?: number;
+  minRows?: number;
+  shrinkLabel?: boolean;
   sx?: SxProps<Theme>;
 };
 
-export default function AppSelectField({
+export default function AppTextareaField({
   label,
   value,
-  options,
   onChange,
-  emptyOptionLabel,
   required,
+  placeholder,
   errorMessage,
   helperText,
   disabled,
+  rows,
+  minRows,
+  shrinkLabel,
   sx,
-}: AppSelectFieldProps) {
+}: AppTextareaFieldProps) {
+  const inputLabelProps =
+    required || shrinkLabel
+      ? {
+          ...(required ? { required: true } : {}),
+          ...(shrinkLabel ? { shrink: true } : {}),
+        }
+      : undefined;
+
   return (
     <TextField
       fullWidth
-      select
+      multiline
       label={label}
       value={value}
       onChange={(event) => onChange(event.target.value)}
+      placeholder={placeholder}
       error={Boolean(errorMessage)}
       helperText={errorMessage ?? helperText}
       disabled={disabled}
-      InputLabelProps={required ? { required: true } : undefined}
+      rows={rows}
+      minRows={minRows}
+      InputLabelProps={inputLabelProps}
       sx={sx ?? muiFieldSx}
-    >
-      {emptyOptionLabel ? <MenuItem value=''>{emptyOptionLabel}</MenuItem> : null}
-      {options.map((option) => (
-        <MenuItem key={option.value} value={option.value}>
-          {option.label}
-        </MenuItem>
-      ))}
-    </TextField>
+    />
   );
 }

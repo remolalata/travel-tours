@@ -8,6 +8,7 @@ export type AuthViewerState = {
   avatarUrl: string | null;
   fullName: string | null;
   email: string | null;
+  phone: string | null;
 };
 
 type UserRoleRow = {
@@ -18,6 +19,7 @@ type ProfileRow = {
   first_name: string | null;
   last_name: string | null;
   avatar_url: string | null;
+  phone: string | null;
 };
 
 function buildFullName(firstName: string | null, lastName: string | null): string | null {
@@ -37,6 +39,7 @@ export async function fetchAuthViewerState(supabase: SupabaseClient): Promise<Au
       avatarUrl: null,
       fullName: null,
       email: null,
+      phone: null,
     };
   }
 
@@ -44,7 +47,7 @@ export async function fetchAuthViewerState(supabase: SupabaseClient): Promise<Au
     supabase.from('users').select('role').eq('user_id', user.id).maybeSingle<UserRoleRow>(),
     supabase
       .from('profiles')
-      .select('first_name,last_name,avatar_url')
+      .select('first_name,last_name,avatar_url,phone')
       .eq('user_id', user.id)
       .maybeSingle<ProfileRow>(),
   ]);
@@ -57,5 +60,6 @@ export async function fetchAuthViewerState(supabase: SupabaseClient): Promise<Au
     avatarUrl: profileData?.avatar_url ?? null,
     fullName: buildFullName(profileData?.first_name ?? null, profileData?.last_name ?? null),
     email: user.email ?? null,
+    phone: profileData?.phone ?? null,
   };
 }

@@ -1,5 +1,6 @@
 import type { TextFieldProps } from '@mui/material/TextField';
 
+import { getQuoteContent } from '@/content/features/getQuote';
 import { tourTypeOptions } from '@/content/shared/tourTypeOptions';
 import { locations } from '@/data/searchDDLocations';
 import type { QuoteFormState } from '@/features/get-quote/hooks/useQuoteRequestForm';
@@ -20,37 +21,38 @@ export interface QuoteFieldConfig {
   inputProps?: TextFieldProps['inputProps'];
 }
 
-const budgetOptions = ['Below ₱20,000', '₱20,000 - ₱50,000', '₱50,000 - ₱100,000', '₱100,000+'];
-const hotelClassOptions = ['3-Star', '4-Star', '5-Star', 'Flexible'];
+const budgetOptions = getQuoteContent.form.options.budget;
+const hotelClassOptions = getQuoteContent.form.options.hotelClass;
 const destinationOptions = Array.from(new Set(locations.map((location) => location.choice)));
+const fieldLabels = getQuoteContent.form.fields;
 
 export const quoteFieldSx = muiFieldSx;
 
 export const quoteFieldConfigs: readonly QuoteFieldConfig[] = [
   {
     name: 'where',
-    label: 'Where',
+    label: fieldLabels.where,
     colClassName: 'col-md-6',
     required: true,
     selectOptions: destinationOptions,
   },
   {
     name: 'when',
-    label: 'When',
+    label: fieldLabels.when,
     colClassName: 'col-md-6',
     component: 'date-range',
     required: true,
   },
   {
     name: 'tourType',
-    label: 'Tour Type',
+    label: fieldLabels.tourType,
     colClassName: 'col-md-6',
     required: true,
     selectOptions: tourTypeOptions,
   },
   {
     name: 'adults',
-    label: 'Adults',
+    label: fieldLabels.adults,
     colClassName: 'col-md-3',
     required: true,
     type: 'number',
@@ -58,48 +60,50 @@ export const quoteFieldConfigs: readonly QuoteFieldConfig[] = [
   },
   {
     name: 'children',
-    label: 'Children',
+    label: fieldLabels.children,
     colClassName: 'col-md-3',
     type: 'number',
     inputProps: { min: 0 },
   },
   {
     name: 'budget',
-    label: 'Budget Range',
+    label: fieldLabels.budget,
     colClassName: 'col-md-6',
+    required: true,
     selectOptions: budgetOptions,
   },
   {
     name: 'hotelClass',
-    label: 'Preferred Hotel',
+    label: fieldLabels.hotelClass,
     colClassName: 'col-md-6',
+    required: true,
     selectOptions: hotelClassOptions,
   },
   {
     name: 'fullName',
-    label: 'Full Name',
+    label: fieldLabels.fullName,
     colClassName: 'col-md-4',
     required: true,
   },
   {
     name: 'email',
-    label: 'Email',
+    label: fieldLabels.email,
     colClassName: 'col-md-4',
     required: true,
     type: 'email',
   },
   {
     name: 'phone',
-    label: 'Phone Number',
+    label: fieldLabels.phone,
     colClassName: 'col-md-4',
     required: true,
   },
   {
     name: 'notes',
-    label: 'Additional Notes',
+    label: fieldLabels.notes,
     colClassName: 'col-12',
     multiline: true,
     minRows: 3,
-    placeholder: 'Flight preference, activities, pickup details, or special requests.',
+    placeholder: fieldLabels.notesPlaceholder,
   },
 ];

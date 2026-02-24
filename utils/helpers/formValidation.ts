@@ -9,6 +9,18 @@ const phonePattern = /^[+]?[\d\s\-()]{7,20}$/;
 
 export type ValidationErrors<T> = Partial<Record<keyof T, string>>;
 
+export type QuoteRequestValidationInput = {
+  where: string;
+  when: string;
+  tourType: string;
+  adults: string;
+  budget: string;
+  hotelClass: string;
+  fullName: string;
+  email: string;
+  phone: string;
+};
+
 export function validateAdminProfileForm(
   input: AdminProfileFormState,
 ): ValidationErrors<AdminProfileFormState> {
@@ -46,6 +58,32 @@ export function validateAdminPasswordForm(
   if (!errors.newPassword && input.newPassword === input.oldPassword) {
     errors.newPassword = 'same_as_old_password';
   }
+
+  return errors;
+}
+
+export function validateQuoteRequestForm(
+  input: QuoteRequestValidationInput,
+): ValidationErrors<QuoteRequestValidationInput> {
+  const errors: ValidationErrors<QuoteRequestValidationInput> = {};
+
+  if (!input.where.trim()) errors.where = 'required_where';
+  if (!input.when.trim()) errors.when = 'required_when';
+  if (!input.tourType.trim()) errors.tourType = 'required_tour_type';
+
+  if (!input.adults.trim()) errors.adults = 'required_adults';
+  else {
+    const adults = Number(input.adults);
+    if (!Number.isFinite(adults) || adults < 1) errors.adults = 'invalid_adults';
+  }
+  if (!input.budget.trim()) errors.budget = 'required_budget';
+  if (!input.hotelClass.trim()) errors.hotelClass = 'required_hotel_class';
+
+  if (!input.fullName.trim()) errors.fullName = 'required_full_name';
+  if (!input.email.trim()) errors.email = 'required_email';
+  else if (!emailPattern.test(input.email.trim())) errors.email = 'invalid_email';
+  if (!input.phone.trim()) errors.phone = 'required_phone';
+  else if (!phonePattern.test(input.phone.trim())) errors.phone = 'invalid_phone';
 
   return errors;
 }

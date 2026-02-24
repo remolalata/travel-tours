@@ -10,6 +10,10 @@ export const adminContent: AdminContent = {
       title: 'Destinations | Travel & Tours',
       description: 'Manage destination records and visibility.',
     },
+    quotesInbox: {
+      title: 'Quotes Inbox | Travel & Tours',
+      description: 'Review incoming quote requests from guests and logged-in users.',
+    },
     booking: {
       title: 'My Booking | Travel & Tours',
       description: 'Review approved, pending, and cancelled bookings.',
@@ -33,29 +37,35 @@ export const adminContent: AdminContent = {
     footerPrefix: 'Copyright Travel & Tours',
     navItems: [
       { id: 1, href: '/admin/dashboard', iconClass: 'icon-dashboard text-26', label: 'Dashboard' },
-      { id: 2, href: '/admin/destinations', iconClass: 'icon-pin text-26', label: 'Destinations' },
-      { id: 3, href: '/admin/booking', iconClass: 'icon-calendar text-26', label: 'Bookings' },
-      { id: 4, href: '/admin/tours', iconClass: 'icon-menu text-26', label: 'Tours' },
       {
-        id: 5,
+        id: 2,
+        href: '/admin/quotes-inbox',
+        iconClass: 'icon-message text-26',
+        label: 'Quotes Inbox',
+      },
+      { id: 3, href: '/admin/destinations', iconClass: 'icon-pin text-26', label: 'Destinations' },
+      { id: 4, href: '/admin/booking', iconClass: 'icon-calendar text-26', label: 'Bookings' },
+      { id: 5, href: '/admin/tours', iconClass: 'icon-menu text-26', label: 'Tours' },
+      {
+        id: 6,
         iconClass: 'icon-application text-26',
         label: 'Settings',
         children: [
           {
-            id: 51,
+            id: 61,
             href: '/admin/help-center',
             iconClass: 'icon-headphone text-26',
             label: 'Help Center',
           },
           {
-            id: 52,
+            id: 62,
             href: '/admin/profile',
             iconClass: 'icon-account text-26',
             label: 'My Profile',
           },
         ],
       },
-      { id: 6, href: '/logout', iconClass: 'icon-logout text-26', label: 'Logout' },
+      { id: 7, href: '/logout', iconClass: 'icon-logout text-26', label: 'Logout' },
     ],
     topActions: [
       { id: 1, iconClass: 'icon-mail text-20', label: 'Notifications' },
@@ -223,6 +233,12 @@ export const adminContent: AdminContent = {
             },
           },
         },
+      },
+    },
+    quotesInbox: {
+      intro: {
+        title: 'Quotes Inbox',
+        description: 'View and manage submitted quote requests.',
       },
     },
     destinations: {

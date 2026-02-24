@@ -11,6 +11,7 @@ export default async function SiteHeader() {
     avatarUrl: authState.avatarUrl,
     fullName: authState.fullName,
     email: authState.email,
+    phone: null,
   };
 
   return <SiteHeaderClient initialAuthState={initialAuthState} />;

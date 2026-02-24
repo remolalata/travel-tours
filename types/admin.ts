@@ -1,5 +1,6 @@
 export type AdminPageKey =
   | 'main'
+  | 'quotesInbox'
   | 'destinations'
   | 'booking'
   | 'listing'
@@ -463,6 +464,9 @@ export interface AdminProfileContent {
 
 export interface AdminPageContentMap {
   main: AdminMainContent;
+  quotesInbox: {
+    intro: AdminSectionIntro;
+  };
   destinations: AdminDestinationsContent;
   booking: AdminBookingContent;
   listing: AdminListingContent;

@@ -3,8 +3,9 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 
+import useAdminTourReferencesQuery from '@/api/admin/tours/hooks/useAdminTourReferencesQuery';
 import Calender from '@/components/common/dropdownSearch/Calender';
 import Location from '@/components/common/dropdownSearch/Location';
 import TourType from '@/components/common/dropdownSearch/TourType';
@@ -13,14 +14,29 @@ import { homeContent } from '@/content/features/home';
 export default function HomeSearchHero() {
   const router = useRouter();
   const shouldReduceMotion = useReducedMotion();
+  const referencesQuery = useAdminTourReferencesQuery();
   const [currentActiveDD, setCurrentActiveDD] = useState<string>('');
   const [location, setLocation] = useState<string>('');
+  const [when, setWhen] = useState<string>('');
   const [tourType, setTourType] = useState<string>('');
   const whenInputId = useId();
   const dropDownContainer = useRef<HTMLDivElement | null>(null);
   const baseDuration = shouldReduceMotion ? 0 : 0.45;
   const viewport = { once: true, amount: 0.35 as const };
   const { hero } = homeContent;
+  const locationOptions = useMemo(
+    () =>
+      (referencesQuery.data?.destinations ?? []).map((destination, index) => ({
+        id: Number(destination.value) || index + 1,
+        choice: destination.label,
+        type: 'Destination',
+      })),
+    [referencesQuery.data?.destinations],
+  );
+  const tourTypeOptions = useMemo(
+    () => (referencesQuery.data?.tourTypes ?? []).map((tourTypeOption) => tourTypeOption.label),
+    [referencesQuery.data?.tourTypes],
+  );
 
   const handleLocationChange: React.Dispatch<React.SetStateAction<string>> = (value) => {
     setLocation((previousValue) => (typeof value === 'function' ? value(previousValue) : value));
@@ -127,6 +143,7 @@ export default function HomeSearchHero() {
                       <Location
                         setLocation={handleLocationChange}
                         active={currentActiveDD === 'location'}
+                        options={locationOptions}
                       />
                     </div>
 
@@ -151,6 +168,7 @@ export default function HomeSearchHero() {
                               <Calender
                                 active={currentActiveDD === 'calender'}
                                 inputId={whenInputId}
+                                onValueChange={(displayValue) => setWhen(displayValue)}
                               />
                             </span>
                             <span className='js-last-date'></span>
@@ -182,6 +200,7 @@ export default function HomeSearchHero() {
                       <TourType
                         setTourType={handleTourTypeChange}
                         active={currentActiveDD === 'tourType'}
+                        options={tourTypeOptions}
                       />
                     </div>
                   </div>
@@ -194,6 +213,7 @@ export default function HomeSearchHero() {
 
                         const quoteSearchParams = new URLSearchParams();
                         if (location) quoteSearchParams.set('where', location);
+                        if (when) quoteSearchParams.set('when', when);
                         if (tourType) quoteSearchParams.set('tourType', tourType);
 
                         const searchParamsString = quoteSearchParams.toString();
