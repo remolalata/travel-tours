@@ -1,15 +1,22 @@
 'use client';
 
-import { TextField } from '@mui/material';
 import Link from 'next/link';
 
+import AppTextField from '@/components/common/form/AppTextField';
 import { authContent } from '@/content/features/auth';
 import useLoginForm from '@/utils/hooks/auth/useLoginForm';
-import { muiFieldSx } from '@/utils/styles/muiFieldSx';
 
 export default function LoginForm() {
-  const { email, password, errorMessage, isSubmitting, setEmail, setPassword, handleSubmit } =
-    useLoginForm();
+  const {
+    email,
+    password,
+    fieldErrors,
+    errorMessage,
+    isSubmitting,
+    setEmail,
+    setPassword,
+    handleSubmit,
+  } = useLoginForm();
 
   return (
     <section className='mt-header layout-pt-lg layout-pb-lg'>
@@ -32,27 +39,26 @@ export default function LoginForm() {
               className='px-60 md:px-25 py-60 md:py-30 border rounded-12'
             >
               <div>
-                <TextField
-                  fullWidth
-                  required
+                <AppTextField
                   type='email'
                   label={authContent.login.fields.emailLabel}
                   value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  sx={muiFieldSx}
+                  onChange={setEmail}
+                  autoComplete='email'
+                  required
+                  errorMessage={fieldErrors.email}
                 />
               </div>
 
               <div className='mt-30'>
-                <TextField
-                  fullWidth
-                  required
+                <AppTextField
                   type='password'
                   label={authContent.login.fields.passwordLabel}
                   value={password}
-                  onChange={(event) => setPassword(event.target.value)}
+                  onChange={setPassword}
                   autoComplete='current-password'
-                  sx={muiFieldSx}
+                  required
+                  errorMessage={fieldErrors.password}
                 />
               </div>
 

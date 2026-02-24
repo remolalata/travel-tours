@@ -18,6 +18,9 @@ export const authContent = {
     },
     messages: {
       userVerificationFailed: 'Unable to verify your account. Please try again.',
+      emailRequired: 'Email address is required.',
+      emailInvalid: 'Enter a valid email address.',
+      passwordRequired: 'Password is required.',
     },
   },
 } as const;
