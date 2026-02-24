@@ -76,7 +76,7 @@ export default function TourList1({ initialToursPage }: TourList1Props) {
             <div className='lg:d-flex mb-30 accordion d-none js-accordion'>
               <div className={`accordion__item col-12 ${sidebarActive ? 'is-active' : ''} `}>
                 <button
-                  className='bg-light-1 px-25 py-10 border-1 rounded-12 accordion__button button -dark-1'
+                  className='bg-light-1 px-25 py-10 border rounded-12 accordion__button button -dark-1'
                   onClick={() => setSidebarActive((pre) => !pre)}
                 >
                   <i className='mr-10 text-16 icon-sort-down'></i>
@@ -171,8 +171,8 @@ export default function TourList1({ initialToursPage }: TourList1Props) {
                     </div>
 
                     <div className='tourCard__content'>
-                      <div className='tourCard__location d-flex items-center text-13 text-light-2'>
-                        <i className='icon-pin d-flex text-16 text-light-2 mr-5'></i>
+                      <div className='d-flex items-center text-13 text-light-2 tourCard__location'>
+                        <i className='d-flex mr-5 text-16 text-light-2 icon-pin'></i>
                         {elm.location}
                       </div>
 

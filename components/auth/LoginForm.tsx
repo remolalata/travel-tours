@@ -14,11 +14,11 @@ export default function LoginForm() {
   return (
     <section className='mt-header layout-pt-lg layout-pb-lg'>
       <div className='container'>
-        <div className='row justify-center'>
+        <div className='justify-center row'>
           <div className='col-xl-6 col-lg-7 col-md-9'>
-            <div className='text-center mb-60 md:mb-30'>
+            <div className='mb-60 md:mb-30 text-center'>
               <h1 className='text-30'>{authContent.login.heading}</h1>
-              <div className='text-18 fw-500 mt-20 md:mt-15'>{authContent.login.subheading}</div>
+              <div className='mt-20 md:mt-15 text-18 fw-500'>{authContent.login.subheading}</div>
               <div className='mt-5'>
                 {authContent.login.helpPrefix}{' '}
                 <Link href='/contact' className='text-accent-1'>
@@ -29,7 +29,7 @@ export default function LoginForm() {
 
             <form
               onSubmit={handleSubmit}
-              className='border-1 rounded-12 px-60 py-60 md:px-25 md:py-30'
+              className='px-60 md:px-25 py-60 md:py-30 border rounded-12'
             >
               <div>
                 <TextField
@@ -61,7 +61,7 @@ export default function LoginForm() {
               <button
                 type='submit'
                 disabled={isSubmitting}
-                className='button -md -dark-1 bg-accent-1 text-white col-12 mt-30 disabled'
+                className='mt-30 text-white bg-accent-1 button -md -dark-1 col-12 disabled'
               >
                 {isSubmitting
                   ? authContent.login.actions.submittingLabel

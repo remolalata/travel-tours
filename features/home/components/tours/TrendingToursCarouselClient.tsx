@@ -17,11 +17,11 @@ export default function TrendingToursCarouselClient({ tours }: TrendingToursCaro
   const { trendingTours } = homeContent;
 
   return (
-    <section className='layout-pt-xl layout-pb-xl relative'>
-      <div className='sectionBg -w-1530 rounded-12 bg-light-1'></div>
+    <section className='relative layout-pt-xl layout-pb-xl'>
+      <div className='bg-light-1 rounded-12 -w-1530 sectionBg'></div>
 
       <div className='container'>
-        <div className='row justify-between items-end y-gap-10'>
+        <div className='justify-between items-end y-gap-10 row'>
           <div className='col-auto'>
             <FadeIn as='h2' className='text-30 md:text-24'>
               {trendingTours.title}
@@ -30,16 +30,16 @@ export default function TrendingToursCarouselClient({ tours }: TrendingToursCaro
 
           <div className='col-auto'>
             <FadeIn delay={0.1}>
-              <Link href='/tours' className='buttonArrow d-flex items-center'>
+              <Link href='/tours' className='d-flex items-center buttonArrow'>
                 <span>{trendingTours.ctaLabel}</span>
-                <i className='icon-arrow-top-right text-16 ml-10'></i>
+                <i className='icon-arrow-top-right ml-10 text-16'></i>
               </Link>
             </FadeIn>
           </div>
         </div>
 
         <div className='relative pt-40 sm:pt-20'>
-          <div className='overflow-hidden pb-30 js-section-slider'>
+          <div className='pb-30 overflow-hidden js-section-slider'>
             <FadeIn className='swiper-wrapper'>
               <Swiper
                 spaceBetween={30}
@@ -67,7 +67,7 @@ export default function TrendingToursCarouselClient({ tours }: TrendingToursCaro
                       favoriteLabel={trendingTours.favoriteLabel}
                       pricePrefix={trendingTours.pricePrefix}
                       currencySymbol='$'
-                      className='tourCard -type-1 py-10 px-10 border-1 rounded-12 bg-white -hover-shadow'
+                      className='bg-white -hover-shadow px-10 py-10 border rounded-12 tourCard -type-1'
                     />
                   </SwiperSlide>
                 ))}
@@ -78,7 +78,7 @@ export default function TrendingToursCarouselClient({ tours }: TrendingToursCaro
           <FadeIn className='navAbsolute' delay={0.1}>
             <button
               type='button'
-              className='navAbsolute__button bg-white js-slider1-prev prev1'
+              className='bg-white navAbsolute__button js-slider1-prev prev1'
               aria-label={trendingTours.navigation.previousLabel}
               title={trendingTours.navigation.previousLabel}
             >
@@ -87,7 +87,7 @@ export default function TrendingToursCarouselClient({ tours }: TrendingToursCaro
 
             <button
               type='button'
-              className='navAbsolute__button bg-white js-slider1-next next1'
+              className='bg-white navAbsolute__button js-slider1-next next1'
               aria-label={trendingTours.navigation.nextLabel}
               title={trendingTours.navigation.nextLabel}
             >

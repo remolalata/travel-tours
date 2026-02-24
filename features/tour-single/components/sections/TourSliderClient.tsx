@@ -43,7 +43,7 @@ export default function TourSliderClient({
 
         <div className='relative pt-40 sm:pt-20'>
           <div
-            className='overflow-hidden pb-5 js-section-slider'
+            className='pb-5 overflow-hidden js-section-slider'
             data-gap='30'
             data-slider-cols='xl-4 lg-3 md-2 sm-1 base-1'
             data-nav-prev={previousButtonClass}
@@ -82,7 +82,7 @@ export default function TourSliderClient({
                     item={tour}
                     favoriteLabel={favoriteLabel}
                     pricePrefix={pricePrefix}
-                    className='tourCard -type-1 py-10 px-10 border-1 rounded-12 bg-white -hover-shadow'
+                    className='bg-white -hover-shadow px-10 py-10 border rounded-12 tourCard -type-1'
                   />
                 </SwiperSlide>
               ))}

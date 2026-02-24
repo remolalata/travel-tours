@@ -31,7 +31,7 @@ export default function HeaderAccountMenu({ authState }: HeaderAccountMenuProps)
           {headerAccountContent.actions.signUp}
         </Link>
 
-        <Link href='/login' className='button -sm -dark-1 bg-accent-1 rounded-200 text-white ml-30'>
+        <Link href='/login' className='ml-30 rounded-200 text-white bg-accent-1 button -sm -dark-1'>
           {headerAccountContent.actions.logIn}
         </Link>
       </>
@@ -42,7 +42,7 @@ export default function HeaderAccountMenu({ authState }: HeaderAccountMenuProps)
     <>
       <button
         type='button'
-        className='ml-30 d-flex items-center'
+        className='d-flex items-center ml-30'
         aria-label={headerAccountContent.aria.openAccountMenu}
         title={authState.fullName ?? authState.email ?? headerAccountContent.avatar.titleFallback}
         onClick={handleOpen}
@@ -58,7 +58,7 @@ export default function HeaderAccountMenu({ authState }: HeaderAccountMenuProps)
           />
         ) : (
           <div
-            className='size-40 rounded-circle border-1 flex-center text-dark-1 fw-500'
+            className='flex-center border rounded-circle size-40 text-dark-1 fw-500'
             style={{ borderRadius: '50%' }}
           >
             {avatarFallbackLabel}

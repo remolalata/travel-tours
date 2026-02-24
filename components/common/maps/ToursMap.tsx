@@ -83,7 +83,7 @@ export default function ToursMap() {
             >
               <Link
                 href={`/tour/${selectedLocation.id}`}
-                className='tourCard -type-1 py-10 px-10 border-1 rounded-12  -hover-shadow'
+                className='-hover-shadow px-10 py-10 border rounded-12 tourCard -type-1'
               >
                 <div className='tourCard__header'>
                   <div className='tourCard__image ratio ratio-28:20'>
@@ -92,7 +92,7 @@ export default function ToursMap() {
                       height={301}
                       src={selectedLocation.imageSrc}
                       alt='image'
-                      className='img-ratio rounded-12'
+                      className='rounded-12 img-ratio'
                     />
                   </div>
 
@@ -105,29 +105,29 @@ export default function ToursMap() {
                   </button>
                 </div>
 
-                <div className='tourCard__content px-10 pt-10'>
-                  <div className='tourCard__location d-flex items-center text-13 text-light-2'>
-                    <i className='icon-pin d-flex text-16 text-light-2 mr-5'></i>
+                <div className='px-10 pt-10 tourCard__content'>
+                  <div className='d-flex items-center text-13 text-light-2 tourCard__location'>
+                    <i className='d-flex mr-5 text-16 text-light-2 icon-pin'></i>
                     {selectedLocation.location}
                   </div>
 
-                  <h3 className='tourCard__title text-16 fw-500 mt-5'>
+                  <h3 className='mt-5 text-16 tourCard__title fw-500'>
                     <span>{selectedLocation.title}</span>
                   </h3>
 
-                  <div className='tourCard__rating d-flex items-center text-13 mt-5'>
+                  <div className='d-flex items-center mt-5 text-13 tourCard__rating'>
                     <div className='d-flex x-gap-5'>
                       <Stars star={selectedLocation.rating} />
                     </div>
 
-                    <span className='text-dark-1 ml-10'>
+                    <span className='ml-10 text-dark-1'>
                       {selectedLocation.rating} ({selectedLocation.ratingCount})
                     </span>
                   </div>
 
-                  <div className='d-flex justify-between items-center border-1-top text-13 text-dark-1 pt-10 mt-10'>
+                  <div className='d-flex justify-between items-center mt-10 pt-10 border-top text-13 text-dark-1'>
                     <div className='d-flex items-center'>
-                      <i className='icon-clock text-16 mr-5'></i>
+                      <i className='mr-5 text-16 icon-clock'></i>
                       {selectedLocation.duration}
                     </div>
 

@@ -31,7 +31,7 @@ export default function AppFaqAccordion({ items }: AppFaqAccordionProps) {
       {items.map((item, index) => (
         <div key={`${item.question}-${index}`} className='col-12'>
           <div
-            className={`accordion__item px-20 py-15 border-1 rounded-12 ${
+            className={`accordion__item px-20 py-15 border rounded-12 ${
               currentActiveFaq == index ? 'is-active' : ''
             } `}
           >

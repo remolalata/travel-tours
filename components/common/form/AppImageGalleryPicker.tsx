@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
 
@@ -37,7 +38,7 @@ function GalleryItem({
   labels: AppImageGalleryPickerLabels;
 }) {
   return (
-    <div className='rounded-12 border-1 bg-white p-10' style={{ position: 'relative' }}>
+    <div className='bg-white p-10 border rounded-12' style={{ position: 'relative' }}>
       <button
         type='button'
         aria-label={labels.remove}
@@ -65,17 +66,21 @@ function GalleryItem({
       </button>
 
       <div
-        className='overflow-hidden rounded-10 border-1'
+        className='border rounded-10 overflow-hidden'
         style={{
+          position: 'relative',
           aspectRatio: '1 / 1',
           borderColor: 'rgba(5, 7, 60, 0.10)',
           background: '#f8fafc',
         }}
       >
-        <img
+        <Image
           src={item.src}
           alt={item.alt || `${labels.itemAltFallback} ${index + 1}`}
-          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          fill
+          unoptimized
+          sizes='(max-width: 768px) 50vw, 170px'
+          style={{ objectFit: 'cover', display: 'block' }}
         />
       </div>
     </div>
@@ -143,7 +148,7 @@ export default function AppImageGalleryPicker({
       {items.length === 0 ? (
         <div
           {...getRootProps()}
-          className='rounded-12 border-1 p-20'
+          className='p-20 border rounded-12'
           style={{
             borderStyle: 'dashed',
             borderColor: isDragActive ? 'rgba(235, 102, 43, 0.55)' : 'rgba(5, 7, 60, 0.16)',
@@ -152,14 +157,14 @@ export default function AppImageGalleryPicker({
           }}
         >
           <div
-            className='d-flex items-center justify-center text-center'
+            className='d-flex justify-center items-center text-center'
             style={{ width: '100%', aspectRatio: '21 / 9' }}
           >
             <div>
               <div className='text-15 fw-500' style={{ color: '#05073c' }}>
                 {labels.dropzoneLabel}
               </div>
-              <div className='text-13 mt-5' style={{ color: '#5a647d' }}>
+              <div className='mt-5 text-13' style={{ color: '#5a647d' }}>
                 {labels.dropzoneHint}
               </div>
             </div>

@@ -266,8 +266,8 @@ export default function AdminTourCreateForm() {
   });
 
   return (
-    <div className='toursCreateForm rounded-12 bg-white shadow-2 px-40 pt-40 pb-30 md:px-20 md:pt-20 md:pb-20 mt-60 md:mt-30'>
-      <div className='row y-gap-20'>
+    <div className='bg-white shadow-2 mt-60 md:mt-30 px-40 md:px-20 pt-40 md:pt-20 pb-30 md:pb-20 rounded-12 toursCreateForm'>
+      <div className='y-gap-20 row'>
         <div className='col-12 col-lg-3'>
           <div className='toursCreateNavWrap'>
             <AppSideTabs
@@ -280,10 +280,10 @@ export default function AdminTourCreateForm() {
 
         <div className='col-12 col-lg-9'>
           {activeSection === 'basic' ? (
-            <div className='toursCreateSection border-1 rounded-12 px-20 py-20'>
+            <div className='px-20 py-20 border rounded-12 toursCreateSection'>
               <div className='toursCreateSection__header'>
                 <h4 className='text-18 fw-500'>{content.sections.basic.title}</h4>
-                <p className='text-14 text-light-1 mt-5'>{content.sections.basic.description}</p>
+                <p className='mt-5 text-14 text-light-1'>{content.sections.basic.description}</p>
               </div>
               <Box
                 sx={{
@@ -313,7 +313,7 @@ export default function AdminTourCreateForm() {
                     ariaLabel={content.fields.description}
                   />
                   {fieldErrors.description ? (
-                    <div className='text-13 mt-5' style={{ color: '#b3261e', fontWeight: 500 }}>
+                    <div className='mt-5 text-13' style={{ color: '#b3261e', fontWeight: 500 }}>
                       {fieldErrors.description}
                     </div>
                   ) : null}
@@ -348,10 +348,10 @@ export default function AdminTourCreateForm() {
           ) : null}
 
           {activeSection === 'classification' ? (
-            <div className='toursCreateSection border-1 rounded-12 px-20 py-20'>
+            <div className='px-20 py-20 border rounded-12 toursCreateSection'>
               <div className='toursCreateSection__header'>
                 <h4 className='text-18 fw-500'>{content.sections.classification.title}</h4>
-                <p className='text-14 text-light-1 mt-5'>
+                <p className='mt-5 text-14 text-light-1'>
                   {content.sections.classification.description}
                 </p>
               </div>
@@ -359,7 +359,7 @@ export default function AdminTourCreateForm() {
                 <div className='mb-15'>
                   <AppFieldHelper
                     text={content.messages.referencesLoadError}
-                    className='text-red-1 mt-0'
+                    className='mt-0 text-red-1'
                   />
                 </div>
               ) : null}
@@ -415,10 +415,10 @@ export default function AdminTourCreateForm() {
           ) : null}
 
           {activeSection === 'pricing' ? (
-            <div className='toursCreateSection border-1 rounded-12 px-20 py-20'>
+            <div className='px-20 py-20 border rounded-12 toursCreateSection'>
               <div className='toursCreateSection__header'>
                 <h4 className='text-18 fw-500'>{content.sections.pricing.title}</h4>
-                <p className='text-14 text-light-1 mt-5'>{content.sections.pricing.description}</p>
+                <p className='mt-5 text-14 text-light-1'>{content.sections.pricing.description}</p>
               </div>
               <Box
                 sx={{
@@ -451,10 +451,10 @@ export default function AdminTourCreateForm() {
           ) : null}
 
           {activeSection === 'media' ? (
-            <div className='toursCreateSection border-1 rounded-12 px-20 py-20'>
+            <div className='px-20 py-20 border rounded-12 toursCreateSection'>
               <div className='toursCreateSection__header'>
                 <h4 className='text-18 fw-500'>{content.sections.media.title}</h4>
-                <p className='text-14 text-light-1 mt-5'>{content.sections.media.description}</p>
+                <p className='mt-5 text-14 text-light-1'>{content.sections.media.description}</p>
               </div>
               <Box
                 sx={{
@@ -503,7 +503,7 @@ export default function AdminTourCreateForm() {
           ) : null}
 
           {activeSection === 'itinerary' ? (
-            <div className='toursCreateSection border-1 rounded-12 px-20 py-20'>
+            <div className='px-20 py-20 border rounded-12 toursCreateSection'>
               <AdminItineraryBlocksManager
                 items={formState.itineraries}
                 onAddItem={itineraryBlocksManager.addItem}
@@ -525,7 +525,7 @@ export default function AdminTourCreateForm() {
           ) : null}
 
           {activeSection === 'inclusions' ? (
-            <div className='toursCreateSection border-1 rounded-12 px-20 py-20'>
+            <div className='px-20 py-20 border rounded-12 toursCreateSection'>
               <AdminInclusionBlocksManager
                 items={formState.inclusions}
                 onAddItem={inclusionBlocksManager.addItem}

@@ -21,11 +21,11 @@ export default function AdminToursGrid({
 }: AdminToursGridProps) {
   if (isLoading) {
     return (
-      <div className='row y-gap-30'>
+      <div className='y-gap-30 row'>
         {Array.from({ length: 6 }).map((_, index) => (
           <div key={`tour-skeleton-${index}`} className='col-lg-6'>
-            <div className='border-1 rounded-12 px-20 py-20'>
-              <div className='row x-gap-20 y-gap-20 items-center'>
+            <div className='px-20 py-20 border rounded-12'>
+              <div className='items-center x-gap-20 y-gap-20 row'>
                 <div className='col-12 col-xl-auto'>
                   <Skeleton
                     variant='rounded'
@@ -77,15 +77,15 @@ export default function AdminToursGrid({
   }
 
   if (errorMessage) {
-    return <div className='text-14 text-center text-red-1 py-20'>{errorMessage}</div>;
+    return <div className='py-20 text-14 text-red-1 text-center'>{errorMessage}</div>;
   }
 
   if (tours.length === 0) {
-    return <div className='text-14 text-center py-20'>{emptyMessage}</div>;
+    return <div className='py-20 text-14 text-center'>{emptyMessage}</div>;
   }
 
   return (
-    <div className='row y-gap-30'>
+    <div className='y-gap-30 row'>
       {tours.map((item) => (
         <div key={item.id} className='col-lg-6'>
           <AdminListingCard item={item} pricePrefix={pricePrefix} />

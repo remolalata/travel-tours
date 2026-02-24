@@ -29,7 +29,7 @@ export default function HomeTourCard({
   return (
     <Link
       href={`/tour/${item.slug ?? item.id}`}
-      className={className ?? '-hover-shadow px-10 py-10 border-1 rounded-12 tourCard -type-1'}
+      className={className ?? '-hover-shadow px-10 py-10 border rounded-12 tourCard -type-1'}
     >
       <div className='tourCard__header'>
         <div className='tourCard__image ratio ratio-28:20'>
@@ -72,7 +72,7 @@ export default function HomeTourCard({
           </span>
         </div>
 
-        <div className='d-flex justify-between items-center mt-10 pt-10 border-1-top text-13 text-dark-1'>
+        <div className='d-flex justify-between items-center mt-10 pt-10 border-top text-13 text-dark-1'>
           <div className='d-flex items-center'>
             <i className='mr-5 text-16 icon-clock'></i>
             {item.duration}

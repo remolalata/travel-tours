@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useDropzone } from 'react-dropzone';
 
 import AppButton from '@/components/common/button/AppButton';
@@ -77,24 +78,28 @@ export default function AppSingleImagePicker({
 
       {item ? (
         <div
-          className='overflow-hidden rounded-12 border-1'
+          className='border rounded-12 overflow-hidden'
           style={{
+            position: 'relative',
             borderColor: 'rgba(5, 7, 60, 0.10)',
             background: '#f8fafc',
             width: '100%',
             aspectRatio: '21 / 9',
           }}
         >
-          <img
+          <Image
             src={item.src}
             alt={item.alt || labels.previewAltFallback}
-            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            fill
+            unoptimized
+            sizes='100vw'
+            style={{ objectFit: 'cover', display: 'block' }}
           />
         </div>
       ) : (
         <div
           {...getRootProps()}
-          className='rounded-12 border-1 p-15'
+          className='p-15 border rounded-12'
           style={{
             borderStyle: 'dashed',
             borderColor: isDragActive ? 'rgba(235, 102, 43, 0.55)' : 'rgba(5, 7, 60, 0.16)',
@@ -103,17 +108,17 @@ export default function AppSingleImagePicker({
           }}
         >
           <div
-            className='d-flex items-center justify-center text-center'
+            className='d-flex justify-center items-center text-center'
             style={{ width: '100%', aspectRatio: '21 / 9' }}
           >
             <div>
               <div className='text-15 fw-500' style={{ color: '#05073c' }}>
                 {labels.dropzoneLabel}
               </div>
-              <div className='text-13 mt-5' style={{ color: '#5a647d' }}>
+              <div className='mt-5 text-13' style={{ color: '#5a647d' }}>
                 {labels.dropzoneHint}
               </div>
-              <div className='text-13 mt-10' style={{ color: '#5a647d' }}>
+              <div className='mt-10 text-13' style={{ color: '#5a647d' }}>
                 {labels.empty}
               </div>
             </div>
