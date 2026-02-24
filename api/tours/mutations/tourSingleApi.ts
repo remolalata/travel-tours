@@ -20,7 +20,7 @@ export async function fetchTourSinglePageData(
   let query = supabase
     .from('tours')
     .select(
-      'id,slug,destination_id,title,location,image_src,images,duration_label,price,original_price,description,is_featured',
+      'id,slug,destination_id,title,location,image_src,images,duration_label,price,original_price,description,is_featured,tour_types(name)',
     )
     .limit(1);
 

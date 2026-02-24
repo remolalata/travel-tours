@@ -135,6 +135,7 @@ export default async function Page(props: TourPageProps) {
         <TourDetailsContent
           tour={tour}
           tourContent={tourContent}
+          destinationId={routeContext.destinationId}
           reviews={reviews}
           galleryImageUrls={galleryImageUrls}
           overviewDescription={overviewDescription}

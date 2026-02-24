@@ -17,6 +17,7 @@ import TourSingleSidebar from './TourSingleSidebar';
 interface TourDetailsContentProps {
   tour: Tour;
   tourContent: TourContent;
+  destinationId?: number;
   reviews?: Review[];
   galleryImageUrls?: string[];
   overviewDescription?: string | null;
@@ -26,6 +27,7 @@ interface TourDetailsContentProps {
 export default function TourDetailsContent({
   tour,
   tourContent,
+  destinationId,
   reviews,
   galleryImageUrls,
   overviewDescription,
@@ -88,7 +90,12 @@ export default function TourDetailsContent({
 
             <div className='col-lg-4'>
               <div className='d-flex justify-end js-pin-content'>
-                <TourSingleSidebar tour={tour} tourContent={tourContent} />
+                <TourSingleSidebar
+                  key={tour.id}
+                  tour={tour}
+                  tourContent={tourContent}
+                  destinationId={destinationId}
+                />
               </div>
             </div>
           </div>

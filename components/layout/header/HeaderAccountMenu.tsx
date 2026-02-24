@@ -1,6 +1,6 @@
 'use client';
 
-import { List, ListItemButton, ListItemText, Popover } from '@mui/material';
+import { Divider, List, ListItemButton, ListItemText, Popover } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo } from 'react';
@@ -85,38 +85,108 @@ export default function HeaderAccountMenu({ authState }: HeaderAccountMenuProps)
       >
         <List sx={{ py: 0.75, px: 0.75, minWidth: 170 }}>
           {authState.role === 'admin' ? (
-            <li style={{ listStyle: 'none' }}>
-              <ListItemButton
-                component={Link}
-                href='/admin/dashboard'
-                onClick={handleClose}
-                sx={{
-                  width: '100%',
-                  py: 0.75,
-                  px: 1.5,
-                  borderRadius: 1,
-                  gap: 1,
-                  justifyContent: 'flex-start',
-                  '& .MuiListItemText-primary': {
-                    fontSize: 15,
-                    fontWeight: 500,
-                  },
-                  '&:hover': {
-                    bgcolor: '#05073c',
-                    '& i': {
-                      color: '#fff',
-                    },
+            <>
+              <li style={{ listStyle: 'none' }}>
+                <ListItemButton
+                  component={Link}
+                  href='/admin/dashboard'
+                  onClick={handleClose}
+                  sx={{
+                    width: '100%',
+                    py: 0.75,
+                    px: 1.5,
+                    borderRadius: 1,
+                    gap: 1,
+                    justifyContent: 'flex-start',
                     '& .MuiListItemText-primary': {
-                      color: '#fff',
+                      fontSize: 15,
+                      fontWeight: 500,
                     },
-                  },
+                    '&:hover': {
+                      bgcolor: '#05073c',
+                      '& i': {
+                        color: '#fff',
+                      },
+                      '& .MuiListItemText-primary': {
+                        color: '#fff',
+                      },
+                    },
+                  }}
+                >
+                  <i className={headerAccountContent.actions.dashboardIconClass} />
+                  <ListItemText primary={headerAccountContent.actions.dashboard} />
+                </ListItemButton>
+              </li>
+              <Divider
+                sx={{
+                  my: 0.5,
+                  borderColor: headerAccountContent.menu.dividerColor,
                 }}
-              >
-                <i className={headerAccountContent.actions.dashboardIconClass} />
-                <ListItemText primary={headerAccountContent.actions.dashboard} />
-              </ListItemButton>
-            </li>
+              />
+            </>
           ) : null}
+          <li style={{ listStyle: 'none' }}>
+            <ListItemButton
+              component={Link}
+              href='/my-bookings'
+              onClick={handleClose}
+              sx={{
+                width: '100%',
+                py: 0.75,
+                px: 1.5,
+                borderRadius: 1,
+                gap: 1,
+                justifyContent: 'flex-start',
+                '& .MuiListItemText-primary': {
+                  fontSize: 15,
+                  fontWeight: 500,
+                },
+                '&:hover': {
+                  bgcolor: '#05073c',
+                  '& i': {
+                    color: '#fff',
+                  },
+                  '& .MuiListItemText-primary': {
+                    color: '#fff',
+                  },
+                },
+              }}
+            >
+              <i className={headerAccountContent.actions.myBookingsIconClass} />
+              <ListItemText primary={headerAccountContent.actions.myBookings} />
+            </ListItemButton>
+          </li>
+          <li style={{ listStyle: 'none' }}>
+            <ListItemButton
+              component={Link}
+              href='/profile'
+              onClick={handleClose}
+              sx={{
+                width: '100%',
+                py: 0.75,
+                px: 1.5,
+                borderRadius: 1,
+                gap: 1,
+                justifyContent: 'flex-start',
+                '& .MuiListItemText-primary': {
+                  fontSize: 15,
+                  fontWeight: 500,
+                },
+                '&:hover': {
+                  bgcolor: '#05073c',
+                  '& i': {
+                    color: '#fff',
+                  },
+                  '& .MuiListItemText-primary': {
+                    color: '#fff',
+                  },
+                },
+              }}
+            >
+              <i className={headerAccountContent.actions.profileIconClass} />
+              <ListItemText primary={headerAccountContent.actions.profile} />
+            </ListItemButton>
+          </li>
           <li style={{ listStyle: 'none' }}>
             <form action='/logout' method='post' style={{ width: '100%' }}>
               <ListItemButton

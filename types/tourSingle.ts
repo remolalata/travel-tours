@@ -9,6 +9,7 @@ export type TourSingleRouteContext = {
 
 export type TourSinglePageTour = TourFeaturedItem & {
   slug: string;
+  tourTypeName?: string | null;
 };
 
 export type TourSinglePageData = {

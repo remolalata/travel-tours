@@ -15,6 +15,14 @@ type TourSingleRow = {
   original_price: number | null;
   description: string | null;
   is_featured: boolean;
+  tour_types:
+    | {
+        name: string | null;
+      }
+    | Array<{
+        name: string | null;
+      }>
+    | null;
 };
 
 type TourInclusionRow = {
@@ -68,6 +76,16 @@ function buildGalleryImageUrls(tour: TourSingleRow): string[] {
   return tour.image_src ? [tour.image_src] : [];
 }
 
+function getTourType(row: TourSingleRow['tour_types']): { name: string | null } | null {
+  if (!row) return null;
+
+  if (Array.isArray(row)) {
+    return row[0] ?? null;
+  }
+
+  return row;
+}
+
 export function mapTourSinglePageData(
   tour: TourSingleRow,
   inclusionRows: TourInclusionRow[],
@@ -78,6 +96,7 @@ export function mapTourSinglePageData(
   const excludedItems = mapInclusionRows(inclusionRows, 'excluded');
   const itinerarySummarySteps = mapItineraryRows(itineraryRows, true);
   const itinerarySteps = mapItineraryRows(itineraryRows, false);
+  const tourType = getTourType(tour.tour_types);
 
   return {
     routeContext: {
@@ -88,6 +107,7 @@ export function mapTourSinglePageData(
     tour: {
       id: tour.id,
       slug: tour.slug,
+      tourTypeName: tourType?.name ?? null,
       imageSrc: tour.image_src,
       location: tour.location,
       title: tour.title,
