@@ -13,6 +13,21 @@ type HeaderAccountMenuProps = {
   authState: AuthViewerState;
 };
 
+function getFirstNameLabel(authState: AuthViewerState): string | null {
+  const fullName = authState.fullName?.trim();
+
+  if (fullName) {
+    return fullName.split(/\s+/)[0] ?? null;
+  }
+
+  const email = authState.email?.trim();
+  if (email) {
+    return email.split('@')[0] ?? null;
+  }
+
+  return null;
+}
+
 function getAvatarFallbackLabel(authState: AuthViewerState): string {
   const source =
     authState.fullName ?? authState.email ?? headerAccountContent.avatar.fallbackSource;
@@ -22,6 +37,7 @@ function getAvatarFallbackLabel(authState: AuthViewerState): string {
 
 export default function HeaderAccountMenu({ authState }: HeaderAccountMenuProps) {
   const avatarFallbackLabel = useMemo(() => getAvatarFallbackLabel(authState), [authState]);
+  const firstNameLabel = useMemo(() => getFirstNameLabel(authState), [authState]);
   const { anchorEl, isOpen, popoverId, handleClose, handleOpen } = useHeaderAccountMenu();
 
   if (!authState.isAuthenticated) {
@@ -47,6 +63,7 @@ export default function HeaderAccountMenu({ authState }: HeaderAccountMenuProps)
         title={authState.fullName ?? authState.email ?? headerAccountContent.avatar.titleFallback}
         onClick={handleOpen}
       >
+        {firstNameLabel ? <span className='mr-10 text-14 fw-500'>{firstNameLabel}</span> : null}
         {authState.avatarUrl ? (
           <Image
             width={40}
