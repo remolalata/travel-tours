@@ -1,4 +1,23 @@
 export const tourSingleContent = {
+  mainInformation: {
+    badges: {
+      bestsellerLabel: 'Bestseller',
+      freeCancellationLabel: 'Free cancellation',
+    },
+    stats: {
+      bookedLabel: '30K+ booked',
+    },
+    actions: {
+      share: {
+        label: 'Share',
+        ariaLabelPrefix: 'Share this tour on Facebook',
+      },
+      wishlist: {
+        label: 'Wishlist',
+        href: '#',
+      },
+    },
+  },
   details: {
     includedTitle: "What's included",
     itineraryTitle: 'Itinerary',

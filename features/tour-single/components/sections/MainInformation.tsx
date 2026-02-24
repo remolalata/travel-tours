@@ -1,11 +1,25 @@
+import { tourSingleContent } from '@/content/features/tourSingle';
 import Stars from '@/components/common/Stars';
 import type { Tour } from '@/data/tours';
+import FacebookShareAction from '@/features/tour-single/components/sections/FacebookShareAction';
 
 interface MainInformationProps {
   tour?: Tour;
 }
 
+function getTitleLines(title?: string): { firstLine: string; secondLine: string } {
+  const titleParts = title?.split(' ') ?? [];
+
+  return {
+    firstLine: titleParts.slice(0, 7).join(' '),
+    secondLine: titleParts.slice(7).join(' '),
+  };
+}
+
 export default function MainInformation({ tour }: MainInformationProps) {
+  const content = tourSingleContent.mainInformation;
+  const titleLines = getTitleLines(tour?.title);
+
   return (
     <>
       <div className='justify-between items-end y-gap-20 row'>
@@ -13,21 +27,21 @@ export default function MainInformation({ tour }: MainInformationProps) {
           <div className='items-center x-gap-10 y-gap-10 row'>
             <div className='col-auto'>
               <button className='px-15 py-5 rounded-200 text-14 -accent-1 bg-accent-1-05 text-accent-1 button'>
-                Bestseller
+                {content.badges.bestsellerLabel}
               </button>
             </div>
             <div className='col-auto'>
               <button className='bg-light-1 px-15 py-5 rounded-200 text-14 -accent-1 button'>
-                Free cancellation
+                {content.badges.freeCancellationLabel}
               </button>
             </div>
           </div>
 
           <h2 className='mt-20 text-40 sm:text-30 lh-14'>
-            {tour?.title.split(' ').slice(0, 7).join(' ')}
+            {titleLines.firstLine}
 
             <br />
-            {tour?.title.split(' ').slice(7).join(' ')}
+            {titleLines.secondLine}
           </h2>
 
           <div className='items-center x-gap-20 y-gap-20 pt-20 row'>
@@ -50,7 +64,7 @@ export default function MainInformation({ tour }: MainInformationProps) {
             <div className='col-auto'>
               <div className='d-flex items-center'>
                 <i className='mr-5 text-16 icon-reservation'></i>
-                30K+ booked
+                {content.stats.bookedLabel}
               </div>
             </div>
           </div>
@@ -58,14 +72,15 @@ export default function MainInformation({ tour }: MainInformationProps) {
 
         <div className='col-auto'>
           <div className='d-flex x-gap-30 y-gap-10'>
-            <a href='#' className='d-flex items-center'>
-              <i className='flex-center mr-10 text-16 icon-share'></i>
-              Share
-            </a>
+            <FacebookShareAction
+              label={content.actions.share.label}
+              ariaLabelPrefix={content.actions.share.ariaLabelPrefix}
+              tourTitle={tour?.title}
+            />
 
-            <a href='#' className='d-flex items-center'>
+            <a href={content.actions.wishlist.href} className='d-flex items-center'>
               <i className='flex-center mr-10 text-16 icon-heart'></i>
-              Wishlist
+              {content.actions.wishlist.label}
             </a>
           </div>
         </div>
