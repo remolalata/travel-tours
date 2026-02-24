@@ -1,7 +1,9 @@
+import { supportContact } from '@/content/shared/supportContact';
+
 export const footerContent = {
   support: {
     prefix: 'Speak to our expert at',
-    phoneDisplay: '+63 970 551 7169',
+    phoneDisplay: supportContact.phone.display,
   },
   social: {
     title: 'Follow Us',
@@ -13,17 +15,17 @@ export const footerContent = {
       href: '#',
     },
     phone: {
-      label: '+63 970 551 7169',
-      href: 'tel:+639705517169',
+      label: supportContact.phone.display,
+      href: supportContact.phone.telHref,
     },
     whatsapp: {
-      label: 'WhatsApp: +63 970 551 7169',
-      href: 'https://wa.me/639705517169',
+      label: `WhatsApp: ${supportContact.phone.display}`,
+      href: supportContact.phone.whatsappHref,
       ariaLabel: 'WhatsApp',
     },
     viber: {
-      label: 'Viber: +63 970 551 7169',
-      href: 'viber://chat?number=%2B639705517169',
+      label: `Viber: ${supportContact.phone.display}`,
+      href: supportContact.phone.viberHref,
       ariaLabel: 'Viber',
     },
   },

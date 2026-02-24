@@ -41,7 +41,7 @@ export default function TourSliderClient({
           </div>
         </div>
 
-        <div className='relative pt-40 sm:pt-20'>
+        <div className='relative pt-20'>
           <div
             className='pb-5 overflow-hidden js-section-slider'
             data-gap='30'

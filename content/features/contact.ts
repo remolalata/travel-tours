@@ -1,3 +1,5 @@
+import { supportContact } from '@/content/shared/supportContact';
+
 export interface ContactLocationItem {
   id: number;
   title: string;
@@ -31,19 +33,19 @@ export const contactPageContent = {
       id: 2,
       title: 'Phone',
       address: 'Call us directly',
-      contact: '+63 970 551 7169',
+      contact: supportContact.phone.display,
     },
     {
       id: 3,
       title: 'WhatsApp',
       address: 'Chat with us on WhatsApp',
-      contact: '+63 970 551 7169',
+      contact: supportContact.phone.display,
     },
     {
       id: 4,
       title: 'Viber',
       address: 'Message us on Viber',
-      contact: '+63 970 551 7169',
+      contact: supportContact.phone.display,
     },
   ] as ContactLocationItem[],
 } as const;

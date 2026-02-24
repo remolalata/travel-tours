@@ -12,7 +12,6 @@ export const headerAccountContent = {
     logoutIconClass: 'icon-logout text-16',
   },
   aria: {
-    openMainMenu: 'Open main menu',
     toggleSearch: 'Toggle search',
     openAccountMenu: 'Open account menu',
   },

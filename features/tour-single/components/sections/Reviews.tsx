@@ -32,7 +32,7 @@ export default function Reviews({ tourContent, reviews }: ReviewsProps) {
     return (
       <>
         {dbReviews.map((review) => (
-          <div key={review.id} className='pt-30'>
+          <div key={review.id} className={review.id === dbReviews[0]?.id ? 'pt-0' : 'pt-30'}>
             <div className='justify-between row'>
               <div className='col-auto'>
                 <div className='d-flex items-center'>
@@ -72,7 +72,7 @@ export default function Reviews({ tourContent, reviews }: ReviewsProps) {
   return (
     <>
       {reviewItems.map((elm: ReviewItem, i) => (
-        <div key={i} className='pt-30'>
+        <div key={i} className={i === 0 ? 'pt-0' : 'pt-30'}>
           <div className='justify-between row'>
             <div className='col-auto'>
               <div className='d-flex items-center'>

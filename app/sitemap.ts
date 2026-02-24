@@ -1,13 +1,11 @@
 import type { MetadataRoute } from 'next';
 
-import { blogContent } from '@/content/features/blog';
 import { allTour } from '@/data/tours';
 import { getSiteUrl } from '@/utils/seo';
 
 const staticRoutes = [
   '/',
   '/about',
-  '/blog',
   '/contact',
   '/destinations',
   '/get-quote',
@@ -34,12 +32,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  const blogEntries: MetadataRoute.Sitemap = blogContent.posts.map((post) => ({
-    url: `${siteUrl}/blog/${post.slug}`,
-    lastModified: now,
-    changeFrequency: 'monthly',
-    priority: 0.6,
-  }));
-
-  return [...staticEntries, ...tourEntries, ...blogEntries];
+  return [...staticEntries, ...tourEntries];
 }

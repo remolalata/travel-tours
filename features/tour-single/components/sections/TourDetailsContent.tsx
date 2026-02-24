@@ -58,13 +58,15 @@ export default function TourDetailsContent({
 
               <h2 className='text-30'>{detailsContent.includedTitle}</h2>
 
-              <Included tourContent={tourContent} />
+              <div className='mt-20'>
+                <Included tourContent={tourContent} />
+              </div>
 
               <div className='mt-60 mb-60 line'></div>
 
               <h2 className='text-30'>{detailsContent.itineraryTitle}</h2>
 
-              <div className='mt-30'>
+              <div className='mt-20'>
                 <ItineraryRoadmap tourContent={tourContent} />
               </div>
 
@@ -72,7 +74,7 @@ export default function TourDetailsContent({
 
               <h2 className='text-30'>{detailsContent.faqTitle}</h2>
 
-              <div className='y-gap-20 mt-30 accordion -simple row js-accordion'>
+              <div className='y-gap-20 mt-20 accordion -simple row js-accordion'>
                 <Faq tourContent={tourContent} items={faqItems} />
               </div>
 
@@ -80,7 +82,9 @@ export default function TourDetailsContent({
 
               <h2 className='text-30'>{detailsContent.reviewsTitle}</h2>
 
-              <Reviews tourContent={tourContent} reviews={reviews} />
+              <div className='mt-20'>
+                <Reviews tourContent={tourContent} reviews={reviews} />
+              </div>
 
               <button className='mt-30 -outline-accent-1 text-accent-1 button -md'>
                 {detailsContent.seeMoreReviewsLabel}

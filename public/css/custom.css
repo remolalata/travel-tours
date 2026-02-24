@@ -53,7 +53,6 @@
   overflow: hidden !important;
 }
 .roadMap2 .roadmap__content.active {
-  padding-top: 20px;
   max-height: 240px !important;
 }
 .roadMap2 .roadmap__title {

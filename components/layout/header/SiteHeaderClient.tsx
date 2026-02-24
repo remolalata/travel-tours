@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react';
 
 import useAuthViewerQuery from '@/api/auth/hooks/useAuthViewerQuery';
 import type { AuthViewerState } from '@/api/auth/mutations/authApi';
-import MobileMenu from '@/components/layout/components/MobileMenu';
 import HeaderAccountMenu from '@/components/layout/header/HeaderAccountMenu';
 import HeaderSerch from '@/components/layout/shared/HeaderSerch';
 import { headerAccountContent } from '@/content/shared/layoutHeaderAccount';
@@ -16,7 +15,6 @@ type SiteHeaderClientProps = {
 };
 
 export default function SiteHeaderClient({ initialAuthState }: SiteHeaderClientProps) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [addClass, setAddClass] = useState(false);
 
@@ -59,16 +57,6 @@ export default function SiteHeaderClient({ initialAuthState }: SiteHeaderClientP
     <>
       <header className={`header -type-1 js-header ${addClass ? '-is-sticky' : ''}`}>
         <div className='header__container container'>
-          <div className='headerMobile__left'>
-            <button
-              onClick={() => setMobileMenuOpen(true)}
-              className='header__menuBtn js-menu-button'
-              aria-label={headerAccountContent.aria.openMainMenu}
-            >
-              <i className='icon-main-menu'></i>
-            </button>
-          </div>
-
           <div className='header__logo'>
             <Link href='/' className='header__logo'>
               <Image width='167' height='32' src='/img/logo.svg' alt='logo icon' priority />
@@ -92,14 +80,6 @@ export default function SiteHeaderClient({ initialAuthState }: SiteHeaderClientP
 
           <div className='header__right'>
             <HeaderAccountMenu authState={authState} />
-
-            <button
-              onClick={() => setMobileMenuOpen(true)}
-              className='header__menuBtn ml-30 js-menu-button'
-              aria-label={headerAccountContent.aria.openMainMenu}
-            >
-              <i className='icon-main-menu'></i>
-            </button>
           </div>
         </div>
 
@@ -107,7 +87,6 @@ export default function SiteHeaderClient({ initialAuthState }: SiteHeaderClientP
           <HeaderSerch />
         </div>
       </header>
-      <MobileMenu mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
     </>
   );
 }
