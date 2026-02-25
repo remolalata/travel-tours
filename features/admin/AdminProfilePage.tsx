@@ -4,9 +4,9 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { type FormEvent, useCallback, useEffect, useState } from 'react';
 
-import useAdminPasswordEditor from '@/api/admin/profile/hooks/useAdminPasswordEditor';
-import useAdminProfileEditor from '@/api/admin/profile/hooks/useAdminProfileEditor';
-import useAdminProfileQuery from '@/api/admin/profile/hooks/useAdminProfileQuery';
+import useAdminPasswordEditor from '@/services/admin/profile/hooks/useAdminPasswordEditor';
+import useAdminProfileEditor from '@/services/admin/profile/hooks/useAdminProfileEditor';
+import useAdminProfileQuery from '@/services/admin/profile/hooks/useAdminProfileQuery';
 import AdminShell from '@/components/admin/layout/AdminShell';
 import AppToast from '@/components/common/feedback/AppToast';
 import AppTextField from '@/components/common/form/AppTextField';

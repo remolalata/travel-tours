@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo } from 'react';
 
-import type { AuthViewerState } from '@/api/auth/mutations/authApi';
+import type { AuthViewerState } from '@/services/auth/mutations/authApi';
 import { headerAccountContent } from '@/content/shared/layoutHeaderAccount';
 import useHeaderAccountMenu from '@/utils/hooks/layout/useHeaderAccountMenu';
 

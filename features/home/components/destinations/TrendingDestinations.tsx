@@ -1,4 +1,4 @@
-import { fetchTrendingDestinations } from '@/api/destinations/mutations/destinationApi';
+import { fetchTrendingDestinations } from '@/services/destinations/mutations/destinationApi';
 import TrendingDestinationsClient from '@/features/home/components/destinations/TrendingDestinationsClient';
 import type { FetchTrendingDestinationsInput, TrendingDestination } from '@/types/destination';
 import { createClient } from '@/utils/supabase/server';

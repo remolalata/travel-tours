@@ -1,4 +1,4 @@
-import type { RawBookingStatus } from '@/api/admin/bookings/mutations/bookingApi';
+import type { RawBookingStatus } from '@/services/admin/bookings/mutations/bookingApi';
 import type { BookingStatus } from '@/types/admin';
 
 export const bookingStatusLabelMap: Record<RawBookingStatus, BookingStatus> = {

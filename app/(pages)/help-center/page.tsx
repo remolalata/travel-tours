@@ -1,4 +1,4 @@
-import { fetchFaqItems } from '@/api/faqs/mutations/faqApi';
+import { fetchFaqItems } from '@/services/faqs/mutations/faqApi';
 import { helpCenterPageContent } from '@/content/features/help-center';
 import HelpCenterPage from '@/features/help-center/HelpCenterPage';
 import type { FaqItem } from '@/types/tourContent';

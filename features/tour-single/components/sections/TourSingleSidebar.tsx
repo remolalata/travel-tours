@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import useCreateSimulatedBookingMutation from '@/api/bookings/hooks/useCreateSimulatedBookingMutation';
+import useCreateSimulatedBookingMutation from '@/services/bookings/hooks/useCreateSimulatedBookingMutation';
 import Calender from '@/components/common/dropdownSearch/Calender';
 import Location from '@/components/common/dropdownSearch/Location';
 import TourType from '@/components/common/dropdownSearch/TourType';

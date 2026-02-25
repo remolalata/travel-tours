@@ -1,4 +1,4 @@
-import { fetchReviews } from '@/api/reviews/mutations/reviewApi';
+import { fetchReviews } from '@/services/reviews/mutations/reviewApi';
 import CustomerTestimonialsClient from '@/features/home/components/testimonials/CustomerTestimonialsClient';
 import type { FetchReviewsInput, Review } from '@/types/review';
 import { createClient } from '@/utils/supabase/server';

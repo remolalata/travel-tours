@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { fetchAuthViewerState } from '@/api/auth/mutations/authApi';
+import { fetchAuthViewerState } from '@/services/auth/mutations/authApi';
 import { createClient } from '@/utils/supabase/client';
 
 type RouteAccessGuardMode = 'guest-only' | 'auth-required';

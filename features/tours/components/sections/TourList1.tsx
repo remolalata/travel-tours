@@ -4,8 +4,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import useToursListQuery from '@/api/tours/hooks/useToursListQuery';
-import type { PaginatedToursList } from '@/api/tours/mutations/tourApi';
+import useToursListQuery from '@/services/tours/hooks/useToursListQuery';
+import type { PaginatedToursList } from '@/services/tours/mutations/tourApi';
 import Pagination from '@/components/common/Pagination';
 import Stars from '@/components/common/Stars';
 import { speedFeatures } from '@/data/tourFilteringOptions';

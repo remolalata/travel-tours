@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import useAdminTourReferencesQuery from '@/api/admin/tours/hooks/useAdminTourReferencesQuery';
+import useAdminTourReferencesQuery from '@/services/admin/tours/hooks/useAdminTourReferencesQuery';
 import AdminRichTextEditor from '@/components/admin/help-center/AdminRichTextEditor';
 import AdminInclusionBlocksManager from '@/components/admin/tours/AdminInclusionBlocksManager';
 import AdminItineraryBlocksManager from '@/components/admin/tours/AdminItineraryBlocksManager';

@@ -4,8 +4,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-import useAuthViewerQuery from '@/api/auth/hooks/useAuthViewerQuery';
-import type { AuthViewerState } from '@/api/auth/mutations/authApi';
+import useAuthViewerQuery from '@/services/auth/hooks/useAuthViewerQuery';
+import type { AuthViewerState } from '@/services/auth/mutations/authApi';
 import HeaderAccountMenu from '@/components/layout/header/HeaderAccountMenu';
 import HeaderSerch from '@/components/layout/shared/HeaderSerch';
 import { headerAccountContent } from '@/content/shared/layoutHeaderAccount';

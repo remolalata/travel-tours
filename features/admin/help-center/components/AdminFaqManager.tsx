@@ -17,8 +17,8 @@ import Alert from '@mui/material/Alert';
 import Skeleton from '@mui/material/Skeleton';
 import { useState } from 'react';
 
-import useFaqItemsQuery from '@/api/faqs/hooks/useFaqItemsQuery';
-import useSaveFaqItemsMutation from '@/api/faqs/hooks/useSaveFaqItemsMutation';
+import useFaqItemsQuery from '@/services/faqs/hooks/useFaqItemsQuery';
+import useSaveFaqItemsMutation from '@/services/faqs/hooks/useSaveFaqItemsMutation';
 import AppButton from '@/components/common/button/AppButton';
 import AppToast from '@/components/common/feedback/AppToast';
 import { adminContent } from '@/content/features/admin';

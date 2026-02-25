@@ -18,8 +18,8 @@ import {
   YAxis,
 } from 'recharts';
 
-import { buildAdminDashboardViewModel } from '@/api/admin/dashboard/helpers/dashboardMetrics';
-import useAdminDashboardQuery from '@/api/admin/dashboard/hooks/useAdminDashboardQuery';
+import { buildAdminDashboardViewModel } from '@/services/admin/dashboard/helpers/dashboardMetrics';
+import useAdminDashboardQuery from '@/services/admin/dashboard/hooks/useAdminDashboardQuery';
 import AdminDashboardKpiCard from '@/components/admin/dashboard/AdminDashboardKpiCard';
 import AdminDashboardPanel from '@/components/admin/dashboard/AdminDashboardPanel';
 import AdminTopDestinationsSummary from '@/components/admin/dashboard/AdminTopDestinationsSummary';

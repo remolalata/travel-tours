@@ -1,4 +1,4 @@
-import type { AuthViewerState } from '@/api/auth/mutations/authApi';
+import type { AuthViewerState } from '@/services/auth/mutations/authApi';
 import ContactForm from '@/components/contact/sections/ContactForm';
 import Locations from '@/components/contact/sections/Locations';
 import Map from '@/components/contact/sections/Map';

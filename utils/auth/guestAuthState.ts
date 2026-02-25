@@ -1,4 +1,4 @@
-import type { AuthViewerState } from '@/api/auth/mutations/authApi';
+import type { AuthViewerState } from '@/services/auth/mutations/authApi';
 
 export const guestAuthState: AuthViewerState = {
   isAuthenticated: false,

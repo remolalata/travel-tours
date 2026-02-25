@@ -1,4 +1,4 @@
-import { fetchTopTrendingTours } from '@/api/tours/mutations/tourApi';
+import { fetchTopTrendingTours } from '@/services/tours/mutations/tourApi';
 import { tourData } from '@/data/tours';
 import TrendingToursCarouselClient from '@/features/home/components/tours/TrendingToursCarouselClient';
 import type { TourBase } from '@/types/tour';

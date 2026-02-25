@@ -3,8 +3,8 @@
 import type { GridRenderCellParams } from '@mui/x-data-grid';
 import { useMemo, useState } from 'react';
 
-import useAdminBookingsQuery from '@/api/admin/bookings/hooks/useAdminBookingsQuery';
-import type { AdminBookingData } from '@/api/admin/bookings/mutations/bookingApi';
+import useAdminBookingsQuery from '@/services/admin/bookings/hooks/useAdminBookingsQuery';
+import type { AdminBookingData } from '@/services/admin/bookings/mutations/bookingApi';
 import AdminShell from '@/components/admin/layout/AdminShell';
 import AppMultiSelectPills from '@/components/common/form/AppMultiSelectPills';
 import type { DataTableColumn } from '@/components/common/table/AppDataTable';

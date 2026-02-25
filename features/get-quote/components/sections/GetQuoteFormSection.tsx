@@ -4,10 +4,10 @@ import { IconButton } from '@mui/material';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import useAdminTourReferencesQuery from '@/api/admin/tours/hooks/useAdminTourReferencesQuery';
-import useAuthViewerQuery from '@/api/auth/hooks/useAuthViewerQuery';
-import type { AuthViewerState } from '@/api/auth/mutations/authApi';
-import useCreateQuoteRequestMutation from '@/api/quote-requests/hooks/useCreateQuoteRequestMutation';
+import useAdminTourReferencesQuery from '@/services/admin/tours/hooks/useAdminTourReferencesQuery';
+import useAuthViewerQuery from '@/services/auth/hooks/useAuthViewerQuery';
+import type { AuthViewerState } from '@/services/auth/mutations/authApi';
+import useCreateQuoteRequestMutation from '@/services/quote-requests/hooks/useCreateQuoteRequestMutation';
 import AppToast from '@/components/common/feedback/AppToast';
 import AppBreadcrumb from '@/components/common/navigation/AppBreadcrumb';
 import { getQuoteContent } from '@/content/features/getQuote';

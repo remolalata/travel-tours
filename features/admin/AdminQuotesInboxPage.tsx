@@ -3,8 +3,8 @@
 import type { GridRenderCellParams } from '@mui/x-data-grid';
 import { useMemo, useState } from 'react';
 
-import useAdminQuoteRequestsQuery from '@/api/admin/quotes-inbox/hooks/useAdminQuoteRequestsQuery';
-import type { AdminQuoteRequestRow } from '@/api/admin/quotes-inbox/mutations/quoteRequestApi';
+import useAdminQuoteRequestsQuery from '@/services/admin/quotes-inbox/hooks/useAdminQuoteRequestsQuery';
+import type { AdminQuoteRequestRow } from '@/services/admin/quotes-inbox/mutations/quoteRequestApi';
 import AdminShell from '@/components/admin/layout/AdminShell';
 import type { DataTableColumn } from '@/components/common/table/AppDataTable';
 import AppDataTable from '@/components/common/table/AppDataTable';

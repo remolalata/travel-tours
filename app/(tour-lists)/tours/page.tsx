@@ -1,5 +1,5 @@
-import type { PaginatedToursList } from '@/api/tours/mutations/tourApi';
-import { fetchToursList } from '@/api/tours/mutations/tourApi';
+import type { PaginatedToursList } from '@/services/tours/mutations/tourApi';
+import { fetchToursList } from '@/services/tours/mutations/tourApi';
 import SiteFooter from '@/components/layout/footers/SiteFooter';
 import SiteHeader from '@/components/layout/header/SiteHeader';
 import PageHeader from '@/features/tours/components/sections/PageHeader';

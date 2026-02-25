@@ -1,4 +1,4 @@
-import type { AuthViewerState } from '@/api/auth/mutations/authApi';
+import type { AuthViewerState } from '@/services/auth/mutations/authApi';
 import SiteHeaderClient from '@/components/layout/header/SiteHeaderClient';
 import { getServerAuthState } from '@/utils/auth/server';
 

@@ -3,7 +3,7 @@
 import { Navigation, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-import type { HomePopularTourItem } from '@/api/tours/mutations/tourApi';
+import type { HomePopularTourItem } from '@/services/tours/mutations/tourApi';
 import FadeIn from '@/components/common/motion/FadeIn';
 import HomeTourCard from '@/features/home/components/tours/HomeTourCard';
 

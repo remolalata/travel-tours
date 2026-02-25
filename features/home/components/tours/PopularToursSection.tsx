@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { fetchPopularTours } from '@/api/tours/mutations/tourApi';
+import { fetchPopularTours } from '@/services/tours/mutations/tourApi';
 import FadeIn from '@/components/common/motion/FadeIn';
 import { homeContent } from '@/content/features/home';
 import { tourData } from '@/data/tours';

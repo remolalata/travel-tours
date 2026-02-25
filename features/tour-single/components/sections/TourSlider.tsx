@@ -1,4 +1,4 @@
-import { fetchRelatedToursByDestination } from '@/api/tours/mutations/tourApi';
+import { fetchRelatedToursByDestination } from '@/services/tours/mutations/tourApi';
 import { tourSingleContent } from '@/content/features/tourSingle';
 import { tourData } from '@/data/tours';
 import { createClient } from '@/utils/supabase/server';

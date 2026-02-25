@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 
-import useAdminTourReferencesQuery from '@/api/admin/tours/hooks/useAdminTourReferencesQuery';
+import useAdminTourReferencesQuery from '@/services/admin/tours/hooks/useAdminTourReferencesQuery';
 import Calender from '@/components/common/dropdownSearch/Calender';
 import Location from '@/components/common/dropdownSearch/Location';
 import TourType from '@/components/common/dropdownSearch/TourType';

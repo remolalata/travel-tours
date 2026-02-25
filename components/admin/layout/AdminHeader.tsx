@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 
-import useAdminProfileQuery from '@/api/admin/profile/hooks/useAdminProfileQuery';
+import useAdminProfileQuery from '@/services/admin/profile/hooks/useAdminProfileQuery';
 import { adminContent } from '@/content/features/admin';
 
 type AdminHeaderProps = {

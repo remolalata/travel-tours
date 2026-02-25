@@ -1,4 +1,4 @@
-import { fetchFaqItems } from '@/api/faqs/mutations/faqApi';
+import { fetchFaqItems } from '@/services/faqs/mutations/faqApi';
 import FadeIn from '@/components/common/motion/FadeIn';
 import SiteFooter from '@/components/layout/footers/SiteFooter';
 import SiteHeader from '@/components/layout/header/SiteHeader';

@@ -12,10 +12,10 @@ import type { GridRenderCellParams } from '@mui/x-data-grid';
 import Image from 'next/image';
 import { type ChangeEvent, useState } from 'react';
 
-import useCreateDestinationMutation from '@/api/destinations/hooks/useCreateDestinationMutation';
-import useDeleteDestinationMutation from '@/api/destinations/hooks/useDeleteDestinationMutation';
-import useDestinationsQuery from '@/api/destinations/hooks/useDestinationsQuery';
-import useUpdateDestinationMutation from '@/api/destinations/hooks/useUpdateDestinationMutation';
+import useCreateDestinationMutation from '@/services/destinations/hooks/useCreateDestinationMutation';
+import useDeleteDestinationMutation from '@/services/destinations/hooks/useDeleteDestinationMutation';
+import useDestinationsQuery from '@/services/destinations/hooks/useDestinationsQuery';
+import useUpdateDestinationMutation from '@/services/destinations/hooks/useUpdateDestinationMutation';
 import AdminShell from '@/components/admin/layout/AdminShell';
 import AppButton from '@/components/common/button/AppButton';
 import AppToast from '@/components/common/feedback/AppToast';

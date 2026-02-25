@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { cache } from 'react';
 
-import { fetchFaqItems } from '@/api/faqs/mutations/faqApi';
-import { fetchReviews } from '@/api/reviews/mutations/reviewApi';
-import { fetchTourSinglePageData } from '@/api/tours/mutations/tourSingleApi';
+import { fetchFaqItems } from '@/services/faqs/mutations/faqApi';
+import { fetchReviews } from '@/services/reviews/mutations/reviewApi';
+import { fetchTourSinglePageData } from '@/services/tours/mutations/tourSingleApi';
 import SiteFooter from '@/components/layout/footers/SiteFooter';
 import SiteHeader from '@/components/layout/header/SiteHeader';
 import PageHeader from '@/features/tour-single/components/sections/PageHeader';
