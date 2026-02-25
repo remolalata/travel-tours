@@ -10,7 +10,6 @@ const staticRoutes = [
   '/destinations',
   '/get-quote',
   '/help-center',
-  '/terms',
   '/tours',
 ];
 

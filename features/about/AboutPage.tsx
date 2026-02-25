@@ -1,14 +1,24 @@
+import type { AuthViewerState } from '@/api/auth/mutations/authApi';
 import AboutHero from '@/components/about/sections/AboutHero';
 import SiteFooter from '@/components/layout/footers/SiteFooter';
-import SiteHeader from '@/components/layout/header/SiteHeader';
+import SiteHeaderClient from '@/components/layout/header/SiteHeaderClient';
 import { aboutContent } from '@/content/features/about';
+
+const guestAuthState: AuthViewerState = {
+  isAuthenticated: false,
+  role: null,
+  avatarUrl: null,
+  fullName: null,
+  email: null,
+  phone: null,
+};
 
 export default function AboutPage() {
   const { intro } = aboutContent;
 
   return (
     <main>
-      <SiteHeader />
+      <SiteHeaderClient initialAuthState={guestAuthState} />
       <AboutHero />
       <section className='layout-pt-lg layout-pb-lg'>
         <div className='container'>
