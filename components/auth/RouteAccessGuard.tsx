@@ -30,7 +30,7 @@ export default function RouteAccessGuard({ mode, children }: RouteAccessGuardPro
         }
 
         if (mode === 'guest-only' && viewer.isAuthenticated) {
-          router.replace(viewer.role === 'admin' ? '/admin/dashboard' : '/');
+          router.replace('/');
           return;
         }
 
@@ -60,7 +60,7 @@ export default function RouteAccessGuard({ mode, children }: RouteAccessGuardPro
     };
   }, [mode, router, supabase]);
 
-  if (isChecking) {
+  if (isChecking && mode === 'auth-required') {
     return null;
   }
 
