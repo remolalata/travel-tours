@@ -1,32 +1,29 @@
-import { redirect } from 'next/navigation';
-
+import RouteAccessGuard from '@/components/auth/RouteAccessGuard';
 import SiteFooter from '@/components/layout/footers/SiteFooter';
-import SiteHeader from '@/components/layout/header/SiteHeader';
-import { getServerAuthState } from '@/utils/auth/server';
+import SiteHeaderClient from '@/components/layout/header/SiteHeaderClient';
+import { guestAuthState } from '@/utils/auth/guestAuthState';
+
+export const dynamic = 'force-static';
 
 export const metadata = {
   title: 'My Bookings | Travel & Tours',
   description: 'Manage and review your bookings.',
 };
 
-export default async function Page() {
-  const { user } = await getServerAuthState();
-
-  if (!user) {
-    redirect('/login');
-  }
-
+export default function Page() {
   return (
     <main>
-      <SiteHeader />
-      <section className='layout-pt-lg layout-pb-lg'>
-        <div className='container'>
-          <div className='rounded-12 bg-white shadow-2 px-40 pt-40 pb-30 md:px-20 md:pt-20 mt-60'>
-            <h1 className='text-30'>My Bookings</h1>
-            <p className='mt-10'>My Bookings page setup is coming soon.</p>
+      <SiteHeaderClient initialAuthState={guestAuthState} />
+      <RouteAccessGuard mode='auth-required'>
+        <section className='layout-pt-lg layout-pb-lg'>
+          <div className='container'>
+            <div className='rounded-12 bg-white shadow-2 px-40 pt-40 pb-30 md:px-20 md:pt-20 mt-60'>
+              <h1 className='text-30'>My Bookings</h1>
+              <p className='mt-10'>My Bookings page setup is coming soon.</p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </RouteAccessGuard>
       <SiteFooter />
     </main>
   );

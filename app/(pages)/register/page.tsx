@@ -1,26 +1,24 @@
-import { redirect } from 'next/navigation';
-
 import RegisterForm from '@/components/auth/RegisterForm';
+import RouteAccessGuard from '@/components/auth/RouteAccessGuard';
 import SiteFooter from '@/components/layout/footers/SiteFooter';
-import SiteHeader from '@/components/layout/header/SiteHeader';
+import SiteHeaderClient from '@/components/layout/header/SiteHeaderClient';
 import { authContent } from '@/content/features/auth';
-import { getServerAuthState } from '@/utils/auth/server';
+import { guestAuthState } from '@/utils/auth/guestAuthState';
+
+export const dynamic = 'force-static';
 
 export const metadata = {
   title: authContent.register.metadata.title,
   description: authContent.register.metadata.description,
 };
 
-export default async function Page() {
-  const { user } = await getServerAuthState();
-  if (user) {
-    redirect('/');
-  }
-
+export default function Page() {
   return (
     <main>
-      <SiteHeader />
-      <RegisterForm />
+      <SiteHeaderClient initialAuthState={guestAuthState} />
+      <RouteAccessGuard mode='guest-only'>
+        <RegisterForm />
+      </RouteAccessGuard>
       <SiteFooter />
     </main>
   );

@@ -1,26 +1,24 @@
-import { redirect } from 'next/navigation';
-
 import LoginForm from '@/components/auth/LoginForm';
+import RouteAccessGuard from '@/components/auth/RouteAccessGuard';
 import SiteFooter from '@/components/layout/footers/SiteFooter';
-import SiteHeader from '@/components/layout/header/SiteHeader';
+import SiteHeaderClient from '@/components/layout/header/SiteHeaderClient';
 import { authContent } from '@/content/features/auth';
-import { getServerAuthState } from '@/utils/auth/server';
+import { guestAuthState } from '@/utils/auth/guestAuthState';
+
+export const dynamic = 'force-static';
 
 export const metadata = {
   title: authContent.login.metadata.title,
   description: authContent.login.metadata.description,
 };
 
-export default async function Page() {
-  const { user, isAdmin } = await getServerAuthState();
-  if (user) {
-    redirect(isAdmin ? '/admin/dashboard' : '/');
-  }
-
+export default function Page() {
   return (
     <main>
-      <SiteHeader />
-      <LoginForm />
+      <SiteHeaderClient initialAuthState={guestAuthState} />
+      <RouteAccessGuard mode='guest-only'>
+        <LoginForm />
+      </RouteAccessGuard>
       <SiteFooter />
     </main>
   );
