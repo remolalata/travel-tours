@@ -59,6 +59,9 @@ const siteUrl = getSiteUrl();
 const siteName = 'Travel & Tours';
 const defaultDescription = 'Book curated tours and travel packages with Travel & Tours.';
 const logoUrl = `${siteUrl}/img/logo.svg`;
+const defaultOgImagePath = '/img/hero/7/1.jpg';
+const defaultOgImageWidth = 1200;
+const defaultOgImageHeight = 630;
 
 const organizationJsonLd = {
   '@context': 'https://schema.org',
@@ -92,11 +95,20 @@ export const metadata: Metadata = {
     siteName,
     locale: 'en_US',
     type: 'website',
+    images: [
+      {
+        url: defaultOgImagePath,
+        width: defaultOgImageWidth,
+        height: defaultOgImageHeight,
+        alt: `${siteName} preview image`,
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: siteName,
     description: defaultDescription,
+    images: [defaultOgImagePath],
   },
   robots: {
     index: true,

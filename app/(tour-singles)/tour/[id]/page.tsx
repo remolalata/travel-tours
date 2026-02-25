@@ -43,6 +43,9 @@ function isNumericRouteValue(value: string): boolean {
   return /^\d+$/.test(value);
 }
 
+const ogImageWidth = 1200;
+const ogImageHeight = 630;
+
 export async function generateMetadata(props: TourPageProps): Promise<Metadata> {
   const params = await props.params;
   const routeValue = params.id;
@@ -76,7 +79,17 @@ export async function generateMetadata(props: TourPageProps): Promise<Metadata> 
       title,
       description,
       url: canonicalPath,
-      images: primaryImage ? [{ url: primaryImage, alt: singlePageData.tour.title }] : undefined,
+      type: 'website',
+      images: primaryImage
+        ? [
+            {
+              url: primaryImage,
+              alt: singlePageData.tour.title,
+              width: ogImageWidth,
+              height: ogImageHeight,
+            },
+          ]
+        : undefined,
     },
     twitter: {
       card: 'summary_large_image',
