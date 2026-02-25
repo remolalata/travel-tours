@@ -1,6 +1,6 @@
-# GR8 Escapes Website
+# Travel & Tours Website
 
-Marketing website for **Gr8 Escapes Travel & Tours** built with **Next.js (App Router)**.
+Marketing website for **Travel & Tours** built with **Next.js (App Router)**.
 
 ## Stack
 
@@ -31,13 +31,13 @@ Marketing website for **Gr8 Escapes Travel & Tours** built with **Next.js (App R
 
 - Hook: `components/common/hooks/useFirstVisitPromo.js`
 - Modal: `components/common/FirstVisitPromoModal.jsx`
-- Storage key: `gr8escapes:first-visit-promo-seen`
+- Storage key: `travel-tours:first-visit-promo-seen`
 - Behavior: opens after 5 seconds for first-time visitors only
 
 To test it again in browser devtools:
 
 ```js
-localStorage.removeItem('gr8escapes:first-visit-promo-seen');
+localStorage.removeItem('travel-tours:first-visit-promo-seen');
 ```
 
 ## Environment Variables
@@ -54,6 +54,56 @@ Required public variables (used by floating chat buttons):
 - `NEXT_PUBLIC_WHATSAPP_NUMBER`
 - `NEXT_PUBLIC_VIBER_NUMBER`
 - `NEXT_PUBLIC_SITE_URL` (for canonical URLs, `robots.txt`, and sitemap)
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+## Supabase Migrations
+
+Database schema, RLS, and seed data are versioned in:
+
+- `supabase/migrations/20260220230000_users.sql`
+- `supabase/migrations/20260220230100_profiles.sql`
+- `supabase/migrations/20260220230200_profile_photos_storage.sql`
+- `supabase/migrations/20260220230300_destinations.sql`
+- `supabase/migrations/20260220230400_bookings.sql`
+
+Recommended workflow:
+
+1. Initialize Supabase project files (once):
+
+```bash
+npx supabase init
+```
+
+2. Link to your target Supabase project:
+
+```bash
+npx supabase link --project-ref <your-project-ref>
+```
+
+3. Apply migrations to the linked remote project:
+
+```bash
+npx supabase db push
+```
+
+Optional reset commands:
+
+- Reset local Supabase (Docker) and re-run all migrations/seeds:
+
+```bash
+npx supabase db reset
+```
+
+- Reset linked remote Supabase project and re-run all migrations/seeds:
+
+```bash
+npx supabase db reset --linked
+```
+
+Warning: `db reset --linked` is destructive for remote data.
+
+For a new project, run steps 2-3 and the same schema/policies will be created automatically.
 
 ## Getting Started
 

@@ -350,4 +350,3 @@ export const tabContent: DestinationTab[] = [
     ],
   },
 ];
-

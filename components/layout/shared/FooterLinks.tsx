@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 import { footerLinkSections } from '@/content/shared/layoutFooterLinks';
 
 export default function FooterLinks() {
@@ -9,9 +11,9 @@ export default function FooterLinks() {
 
           <div className='y-gap-10 mt-20'>
             {section.links.map((link) => (
-              <a key={link.id} className='d-block fw-500' href={link.href}>
+              <Link key={link.id} className='d-block fw-500' href={link.href}>
                 {link.text}
-              </a>
+              </Link>
             ))}
           </div>
         </div>

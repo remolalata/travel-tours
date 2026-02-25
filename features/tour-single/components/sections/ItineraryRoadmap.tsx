@@ -31,7 +31,7 @@ export default function ItineraryRoadmap({ tourContent }: ItineraryRoadmapProps)
           )}
           <div className='roadmap__wrap'>
             <div
-              className='roadmap__title'
+              className={`roadmap__title ${elm.content && activeRoadmap === i ? 'mb-20' : ''}`}
               onClick={() => setActiveRoadmap((previousValue) => (previousValue === i ? -1 : i))}
             >
               {elm.title}

@@ -99,32 +99,11 @@ const itineraryStepsBase: ItineraryStep[] = [
     icon: 'icon-flag',
     title: 'Day 7: Check-Out and Airport Transfer',
     content:
-      'After breakfast, check out from the hotel and enjoy your scheduled transfer to the airport. Salamat and we hope to see you again on your next GR8 escape!',
+      'After breakfast, check out from the hotel and enjoy your scheduled transfer to the airport. Salamat and we hope to see you again on your next Travel & Tours escape!',
   },
 ];
 
-const faqItemsBase: FaqItem[] = [
-  {
-    question: 'Can I get a refund?',
-    answer:
-      'Yes, refunds depend on the package terms and airline/hotel policies. For most promos, full refund is available if cancellation is made at least 24-72 hours before departure, subject to supplier rules.',
-  },
-  {
-    question: 'Can I change the travel date?',
-    answer:
-      'Yes, date changes are allowed for selected packages, subject to fare difference, hotel availability, and rebooking fees. Message us early so we can secure the best options for your new date.',
-  },
-  {
-    question: 'When and where does the tour end?',
-    answer:
-      'The tour usually ends at your hotel or designated drop-off point on the last day. For flight-included packages, we also provide airport transfer based on your confirmed departure schedule.',
-  },
-  {
-    question: 'Do you arrange airport transfers?',
-    answer:
-      'Yes, airport transfers are included in most packages. Depending on your booking, this may be shared (SIC) or private transfer. Final details are provided in your travel confirmation.',
-  },
-];
+const faqItemsBase: FaqItem[] = [];
 
 const ratingItemsBase: RatingItem[] = [
   {
@@ -219,8 +198,6 @@ const cloneIncludedExcluded = (items: IncludedExcludedItem[]): IncludedExcludedI
 const cloneItinerarySteps = (items: ItineraryStep[]): ItineraryStep[] =>
   items.map((item) => ({ ...item }));
 
-const cloneFaqItems = (items: FaqItem[]): FaqItem[] => items.map((item) => ({ ...item }));
-
 const cloneRatingItems = (items: RatingItem[]): RatingItem[] => items.map((item) => ({ ...item }));
 
 const cloneReviewItems = (items: ReviewItem[]): ReviewItem[] =>
@@ -234,7 +211,7 @@ export const createTourContentTemplate = (): TourContent => ({
   excludedItems: cloneIncludedExcluded(excludedItemsBase),
   itinerarySummarySteps: cloneItinerarySteps(itinerarySummaryStepsBase),
   itinerarySteps: cloneItinerarySteps(itineraryStepsBase),
-  faqItems: cloneFaqItems(faqItemsBase),
+  faqItems: [...faqItemsBase],
   ratingItems: cloneRatingItems(ratingItemsBase),
   reviewItems: cloneReviewItems(reviewItemsBase),
   timeSlots: [...timeSlotsBase],

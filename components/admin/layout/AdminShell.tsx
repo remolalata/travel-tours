@@ -1,8 +1,9 @@
 'use client';
 
-import { type ReactNode,useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
 import { adminContent } from '@/content/features/admin';
+import useAdminSessionGuard from '@/utils/hooks/auth/useAdminSessionGuard';
 
 import AdminHeader from './AdminHeader';
 import AdminSidebar from './AdminSidebar';
@@ -14,6 +15,7 @@ type AdminShellProps = {
 };
 
 export default function AdminShell({ title, description, children }: AdminShellProps) {
+  useAdminSessionGuard();
   const [sideBarOpen, setSideBarOpen] = useState(true);
 
   return (

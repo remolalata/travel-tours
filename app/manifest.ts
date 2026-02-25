@@ -6,9 +6,9 @@ export default function manifest(): MetadataRoute.Manifest {
   const siteUrl = getSiteUrl();
 
   return {
-    name: 'Gr8 Escapes Travel & Tours',
-    short_name: 'Gr8 Escapes',
-    description: 'Book curated tours and travel packages with Gr8 Escapes Travel & Tours.',
+    name: 'Travel & Tours',
+    short_name: 'Travel & Tours',
+    description: 'Book curated tours and travel packages with Travel & Tours.',
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',

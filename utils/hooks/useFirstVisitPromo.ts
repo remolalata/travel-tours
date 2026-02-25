@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 
-const FIRST_VISIT_PROMO_KEY = 'gr8escapes:first-visit-promo-seen';
+const FIRST_VISIT_PROMO_KEY = 'travel-tours:first-visit-promo-seen';
 const FIRST_VISIT_PROMO_DELAY_MS = 5000;
 
 export default function useFirstVisitPromo() {

@@ -47,11 +47,13 @@
 }
 .roadMap2 .roadmap__content {
   transition: 0.4s;
+  margin-top: 0;
+  padding-top: 0;
   max-height: 0px !important;
   overflow: hidden !important;
 }
 .roadMap2 .roadmap__content.active {
-  max-height: 200px !important;
+  max-height: 240px !important;
 }
 .roadMap2 .roadmap__title {
   cursor: pointer;
@@ -1083,4 +1085,192 @@ body.promoModal-open {
 *::before,
 *::after {
   animation: none !important;
+}
+
+.admin-listing-image {
+  width: 100%;
+  height: 220px;
+}
+
+@media (min-width: 1200px) {
+  .admin-listing-image {
+    width: 240px;
+    height: 220px;
+  }
+}
+
+.toursCreateForm {
+  border: 1px solid rgba(5, 7, 60, 0.08);
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 20px 40px rgba(5, 7, 60, 0.06);
+}
+
+.toursCreateNavWrap {
+  position: sticky;
+  top: 96px;
+}
+
+.appSideTabs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+}
+
+.appSideTabs::before {
+  content: '';
+  position: absolute;
+  left: 16px;
+  top: 10px;
+  bottom: 10px;
+  width: 2px;
+  background: rgba(5, 7, 60, 0.12);
+}
+
+.appSideTabs__item {
+  width: 100%;
+  text-align: left;
+  border: 1px solid #e9edf5;
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 12px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.appSideTabs__item:hover {
+  border-color: rgba(235, 102, 43, 0.5);
+  box-shadow: 0 10px 24px rgba(5, 7, 60, 0.08);
+  transform: translateY(-1px);
+}
+
+.appSideTabs__item.is-active {
+  border-color: rgba(235, 102, 43, 0.65);
+  background: #f5f7ff;
+  box-shadow: 0 14px 26px rgba(5, 7, 60, 0.1);
+}
+
+.appSideTabs__itemContent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.appSideTabs__index {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 700;
+  color: #4f5670;
+  background: rgba(5, 7, 60, 0.08);
+  border: 1px solid rgba(5, 7, 60, 0.16);
+}
+
+.appSideTabs__text {
+  min-width: 0;
+}
+
+.appSideTabs__title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #05073c;
+  line-height: 1.25;
+}
+
+.appSideTabs__description {
+  font-size: 13px;
+  line-height: 1.4;
+  color: #6a7285;
+  margin-top: 6px;
+}
+
+.toursCreateSection {
+  border-color: #e8edf5;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 14px 30px rgba(5, 7, 60, 0.06);
+}
+
+.toursCreateSection__header {
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #edf1f7;
+}
+
+.toursCreateSection__header .text-light-1 {
+  color: #4f5870 !important;
+}
+
+.toursCreateForm .text-13.text-light-1 {
+  color: #5a647d !important;
+}
+
+.toursCreateSwitchField {
+  padding: 14px;
+  border: 1px solid #e8edf5;
+  border-radius: 12px;
+  background: #fafcff;
+}
+
+.toursCreateItineraryCard {
+  background: #ffffff;
+  border-color: #e8edf5;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.toursCreateSubmitButton {
+  box-shadow: 0 8px 18px rgba(235, 102, 43, 0.28);
+}
+
+@media (max-width: 991px) {
+  .toursCreateNavWrap {
+    position: static;
+  }
+
+  .appSideTabs {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .appSideTabs::before {
+    display: none;
+  }
+}
+.tourCard.-type-2 .tourCard__price > .tourCard__priceCurrentOnly {
+  -webkit-text-decoration-line: none;
+  text-decoration-line: none;
+  color: inherit;
+}
+
+.admin-rich-text-editor__content p {
+  margin: 0;
+}
+
+.admin-rich-text-editor__content p + p {
+  margin-top: 10px;
+}
+
+.admin-rich-text-editor__content ul,
+.admin-rich-text-editor__content ol {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.admin-rich-text-editor__content ul + p,
+.admin-rich-text-editor__content ol + p,
+.admin-rich-text-editor__content p + ul,
+.admin-rich-text-editor__content p + ol {
+  margin-top: 10px;
 }

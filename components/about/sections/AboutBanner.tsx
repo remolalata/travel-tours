@@ -10,7 +10,13 @@ export default function AboutBanner() {
     <section className='layout-pt-xl'>
       <div className='video relative container'>
         <div className='video__bg'>
-          <Image width={1290} height={550} src={banner.imageSrc} alt={banner.imageAlt} className='rounded-12' />
+          <Image
+            width={1290}
+            height={550}
+            src={banner.imageSrc}
+            alt={banner.imageAlt}
+            className='rounded-12'
+          />
         </div>
 
         <div className='row justify-center pb-50 md:pb-0'>

@@ -1,10 +1,10 @@
 export type AdminPageKey =
   | 'main'
+  | 'quotesInbox'
+  | 'destinations'
   | 'booking'
   | 'listing'
-  | 'addTour'
-  | 'favorites'
-  | 'messages'
+  | 'helpCenter'
   | 'profile';
 
 export interface AdminMetadata {
@@ -14,9 +14,10 @@ export interface AdminMetadata {
 
 export interface AdminNavItem {
   id: number;
-  href: string;
+  href?: string;
   iconClass: string;
   label: string;
+  children?: AdminNavItem[];
 }
 
 export interface AdminTopAction {
@@ -73,28 +74,135 @@ export interface AdminMainContent {
   statCards: AdminStatCard[];
   activities: AdminActivityItem[];
   chartTabs: AdminChartTab[];
+  dashboard: {
+    filters: {
+      rangeLabel: string;
+      options: Array<{
+        id: '90d' | '180d' | 'all';
+        label: string;
+      }>;
+    };
+    messages: {
+      loading: string;
+      loadError: string;
+      emptyTopTours: string;
+      emptyChart: string;
+      retry: string;
+    };
+    charts: {
+      revenueTrend: {
+        title: string;
+        subtitle: string;
+        revenueLegend: string;
+        bookingsLegend: string;
+      };
+      bookingStatus: {
+        title: string;
+        subtitle: string;
+        totalLabel: string;
+      };
+      topDestinations: {
+        title: string;
+        subtitle: string;
+        bookingsSuffix: string;
+      };
+      ratings: {
+        title: string;
+        subtitle: string;
+        averageLabel: string;
+      };
+      topTours: {
+        title: string;
+        subtitle: string;
+        columns: {
+          tour: string;
+          destination: string;
+          bookings: string;
+          revenue: string;
+        };
+      };
+    };
+  };
 }
 
-export type BookingStatus = 'Approved' | 'Pending' | 'Cancelled';
-
-export interface AdminBookingItem {
-  id: number;
-  orderNumber: string;
-  imageUrl: string;
-  title: string;
-  startDate: string;
-  endDate: string;
-  numberOfPeople: string;
-  cost: string;
-  status: BookingStatus;
-}
+export type BookingStatus = 'Approved' | 'Pending' | 'Cancelled' | 'Completed';
 
 export interface AdminBookingContent {
   intro: AdminSectionIntro;
   tabs: BookingStatus[];
-  tableHeaders: string[];
-  bookings: AdminBookingItem[];
-  resultSummary: string;
+}
+
+export interface AdminDestinationsContent {
+  intro: AdminSectionIntro;
+  addButtonLabel: string;
+  addModal: {
+    title: string;
+    fields: {
+      name: string;
+      active: string;
+    };
+    image: {
+      uploadLabel: string;
+      clearLabel: string;
+      previewAlt: string;
+    };
+    actions: {
+      cancel: string;
+      save: string;
+      saving: string;
+    };
+    messages: {
+      requiredName: string;
+      uploadFailedPrefix: string;
+      createFailedPrefix: string;
+      createSuccess: string;
+    };
+  };
+  editModal: {
+    title: string;
+    fields: {
+      name: string;
+      active: string;
+    };
+    image: {
+      uploadLabel: string;
+      clearLabel: string;
+      previewAlt: string;
+    };
+    actions: {
+      cancel: string;
+      save: string;
+      saving: string;
+    };
+    messages: {
+      requiredName: string;
+      uploadFailedPrefix: string;
+      updateFailedPrefix: string;
+      updateSuccess: string;
+    };
+  };
+  table: {
+    columns: {
+      name: string;
+      image: string;
+      active: string;
+      actions: string;
+    };
+    statusLabels: {
+      active: string;
+      inactive: string;
+    };
+    actions: {
+      editLabel: string;
+      deleteLabel: string;
+    };
+    messages: {
+      loadError: string;
+      empty: string;
+      deleteFailedPrefix: string;
+      deleteSuccess: string;
+    };
+  };
 }
 
 export interface AdminListingItem {
@@ -111,79 +219,215 @@ export interface AdminListingItem {
 
 export interface AdminListingContent {
   intro: AdminSectionIntro;
+  addButtonLabel: string;
   pricePrefix: string;
-  cards: AdminListingItem[];
-  resultSummary: string;
+  messages: {
+    loading: string;
+    loadError: string;
+    empty: string;
+  };
+  summary: {
+    showing: string;
+    of: string;
+    itemSuffix: string;
+  };
+  createPage: {
+    intro: AdminSectionIntro;
+    sections: {
+      basic: AdminSectionIntro;
+      classification: AdminSectionIntro;
+      pricing: AdminSectionIntro;
+      media: AdminSectionIntro;
+      itinerary: AdminSectionIntro;
+      inclusions: AdminSectionIntro;
+    };
+    fields: {
+      title: string;
+      description: string;
+      location: string;
+      duration: string;
+      destinationId: string;
+      tourTypeId: string;
+      price: string;
+      originalPrice: string;
+      imageSrc: string;
+      isActive: string;
+      isFeatured: string;
+      isPopular: string;
+      isTopTrending: string;
+      itineraryDayNumber: string;
+      itineraryTitle: string;
+      itineraryContent: string;
+      itineraryIcon: string;
+      itinerarySummary: string;
+      inclusionType: string;
+      inclusionOrder: string;
+      inclusionContent: string;
+    };
+    helpers: {
+      title: string;
+      description: string;
+      location: string;
+      duration: string;
+      destinationId: string;
+      tourTypeId: string;
+      price: string;
+      originalPrice: string;
+      imageSrc: string;
+      isActive: string;
+      isFeatured: string;
+      isPopular: string;
+      isTopTrending: string;
+      itineraryDayNumber: string;
+      itineraryTitle: string;
+      itineraryContent: string;
+      itineraryIcon: string;
+      itinerarySummary: string;
+      inclusionType: string;
+      inclusionOrder: string;
+      inclusionContent: string;
+    };
+    actions: {
+      cancel: string;
+      create: string;
+      addItinerary: string;
+      removeItinerary: string;
+      addInclusion: string;
+      removeInclusion: string;
+    };
+    messages: {
+      selectEmpty: string;
+      referencesLoading: string;
+      referencesLoadError: string;
+    };
+    richTextToolbar: {
+      paragraph: string;
+      bold: string;
+      italic: string;
+      bulletList: string;
+      orderedList: string;
+    };
+    itineraryBlocks: {
+      title: string;
+      description: string;
+      fields: {
+        block: string;
+      };
+      helpers: {
+        block: string;
+      };
+      actions: {
+        addItem: string;
+        removeItem: string;
+      };
+      item: {
+        titlePrefix: string;
+        dragHandleAriaLabel: string;
+        expandIconAriaLabel: string;
+      };
+    };
+    inclusionBlocks: {
+      title: string;
+      description: string;
+      fields: {
+        itemType: string;
+        content: string;
+      };
+      helpers: {
+        itemType: string;
+        content: string;
+      };
+      actions: {
+        addItem: string;
+        removeItem: string;
+      };
+      item: {
+        titlePrefix: string;
+        dragHandleAriaLabel: string;
+        expandIconAriaLabel: string;
+      };
+      typeOptions: Array<{
+        value: string;
+        label: string;
+      }>;
+    };
+    mediaPickers: {
+      mainImage: {
+        title: string;
+        dropzoneLabel: string;
+        dropzoneHint: string;
+        select: string;
+        replace: string;
+        remove: string;
+        empty: string;
+        previewAltFallback: string;
+      };
+      galleryImages: {
+        title: string;
+        dropzoneLabel: string;
+        dropzoneHint: string;
+        addMore: string;
+        remove: string;
+        empty: string;
+        dragHandleAriaLabel: string;
+        itemAltFallback: string;
+      };
+    };
+    validationMessages: Record<string, string>;
+  };
 }
 
-export interface AdminAddTourField {
-  id: string;
-  label: string;
-  kind: 'input' | 'textarea';
-}
-
-export interface AdminAddTourTab {
-  id: string;
-  label: string;
-  fields: AdminAddTourField[];
+export interface AdminHelpCenterContent {
+  intro: AdminSectionIntro;
+  faqManager: {
+    title: string;
+    description: string;
+    actions: {
+      addItem: string;
+      expandAll: string;
+      collapseAll: string;
+      save: string;
+      saving: string;
+      reset: string;
+    };
+    fields: {
+      question: string;
+      answer: string;
+    };
+    placeholders: {
+      question: string;
+      emptyQuestion: string;
+    };
+    toolbar: {
+      paragraph: string;
+      bold: string;
+      italic: string;
+      bulletList: string;
+      orderedList: string;
+    };
+    item: {
+      untitledPrefix: string;
+      dragHandleAriaLabel: string;
+      removeLabel: string;
+      expandIconAriaLabel: string;
+    };
+    messages: {
+      loading: string;
+      loadError: string;
+      empty: string;
+      localOnlyNotice: string;
+      saveSuccess: string;
+      saveFailedPrefix: string;
+      validationQuestionPrefix: string;
+      validationAnswerPrefix: string;
+    };
+  };
 }
 
 export interface AdminGalleryItem {
   id: string;
   src: string;
   alt: string;
-}
-
-export interface AdminAddTourContent {
-  intro: AdminSectionIntro;
-  tabs: AdminAddTourTab[];
-  galleryTitle: string;
-  uploadLabel: string;
-  uploadHint: string;
-  saveLabel: string;
-  gallery: AdminGalleryItem[];
-}
-
-export interface AdminFavoritesContent {
-  intro: AdminSectionIntro;
-  cards: AdminListingItem[];
-  resultSummary: string;
-  pricePrefix: string;
-}
-
-export interface AdminMessageSender {
-  id: number;
-  image: string;
-  badgeColor?: string;
-  badgeText?: string;
-  name: string;
-  role: string;
-  time: string;
-}
-
-export interface AdminMessageThreadItem {
-  id: number;
-  senderName: string;
-  senderImage: string;
-  senderStatus?: string;
-  time: string;
-  message: string;
-  align: 'left' | 'right';
-}
-
-export interface AdminMessagesContent {
-  intro: AdminSectionIntro;
-  searchPlaceholder: string;
-  deleteConversationLabel: string;
-  sendPlaceholder: string;
-  sendButtonLabel: string;
-  senders: AdminMessageSender[];
-  activeConversation: {
-    name: string;
-    image: string;
-    status: string;
-  };
-  thread: AdminMessageThreadItem[];
 }
 
 export interface AdminProfileField {
@@ -197,6 +441,8 @@ export interface AdminProfileContent {
   profileTitle: string;
   profileFields: AdminProfileField[];
   profileSaveLabel: string;
+  savingLabel: string;
+  loadingLabel: string;
   photoTitle: string;
   photoHint: string;
   photos: AdminGalleryItem[];
@@ -204,15 +450,27 @@ export interface AdminProfileContent {
   passwordFields: AdminProfileField[];
   passwordSaveLabel: string;
   uploadLabel: string;
+  messages: {
+    fixHighlightedFields: string;
+    sessionExpired: string;
+    profileUploadFailedPrefix: string;
+    profileTableMissing: string;
+    profileSaved: string;
+    passwordOldIncorrect: string;
+    passwordSaved: string;
+  };
+  validationMessages: Record<string, string>;
 }
 
 export interface AdminPageContentMap {
   main: AdminMainContent;
+  quotesInbox: {
+    intro: AdminSectionIntro;
+  };
+  destinations: AdminDestinationsContent;
   booking: AdminBookingContent;
   listing: AdminListingContent;
-  addTour: AdminAddTourContent;
-  favorites: AdminFavoritesContent;
-  messages: AdminMessagesContent;
+  helpCenter: AdminHelpCenterContent;
   profile: AdminProfileContent;
 }
 
@@ -220,4 +478,27 @@ export interface AdminContent {
   metadata: Record<AdminPageKey, AdminMetadata>;
   shell: AdminShellContent;
   pages: AdminPageContentMap;
+}
+
+export interface AdminProfileFormState {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+}
+
+export interface AdminPasswordFormState {
+  oldPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+export interface AdminTourCreateValidationInput {
+  title: string;
+  description: string;
+  location: string;
+  duration: string;
+  destinationId: string;
+  tourTypeId: string;
+  price: string;
 }

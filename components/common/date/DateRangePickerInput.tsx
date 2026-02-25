@@ -14,6 +14,7 @@ interface DateRangePickerInputProps {
   inputId?: string;
   inputClassName?: string;
   containerClassName?: string;
+  initialDisplayValue?: string;
   format?: string;
   offsetY?: number;
   emitInitialValue?: boolean;
@@ -21,6 +22,8 @@ interface DateRangePickerInputProps {
   useMuiInput?: boolean;
   muiInputLabel?: string;
   muiInputRequired?: boolean;
+  muiInputError?: boolean;
+  muiInputHelperText?: string;
   muiInputSx?: TextFieldProps['sx'];
   onValueChange?: (displayValue: string, selectedDates: [Dayjs, Dayjs]) => void;
 }
@@ -86,10 +89,45 @@ function resolveRange(firstDate: Dayjs, secondDate: Dayjs): [Dayjs, Dayjs] {
   return [firstDate, secondDate];
 }
 
+function parseMonthDayValue(value: string, year: number): Dayjs | null {
+  const parsed = dayjs(new Date(`${value}, ${year}`));
+  return parsed.isValid() ? parsed.startOf('day') : null;
+}
+
+function parseDisplayRange(
+  displayValue: string | undefined,
+  fallbackStartDate: Dayjs,
+): [Dayjs, Dayjs] | null {
+  if (!displayValue) {
+    return null;
+  }
+
+  const [rawStart, rawEnd] = displayValue.split(' - ').map((part) => part.trim());
+  if (!rawStart || !rawEnd) {
+    return null;
+  }
+
+  const baseYear = fallbackStartDate.year();
+  const parsedStart = parseMonthDayValue(rawStart, baseYear);
+  let parsedEnd = parseMonthDayValue(rawEnd, baseYear);
+
+  if (!parsedStart || !parsedEnd) {
+    return null;
+  }
+
+  // The UI display omits year, so ranges crossing New Year can appear reversed when parsed.
+  if (parsedEnd.isBefore(parsedStart, 'day')) {
+    parsedEnd = parsedEnd.add(1, 'year');
+  }
+
+  return resolveRange(parsedStart, parsedEnd);
+}
+
 export default function DateRangePickerInput({
   inputId,
   inputClassName = 'custom_input-picker',
   containerClassName = 'custom_container-picker',
+  initialDisplayValue,
   format = DEFAULT_FORMAT,
   offsetY = 10,
   emitInitialValue = false,
@@ -97,11 +135,19 @@ export default function DateRangePickerInput({
   useMuiInput = false,
   muiInputLabel,
   muiInputRequired,
+  muiInputError,
+  muiInputHelperText,
   muiInputSx,
   onValueChange,
 }: DateRangePickerInputProps) {
+  const muiInputLabelProps = muiInputRequired ? { required: true } : undefined;
+
   const inputRef = useRef<HTMLInputElement | null>(null);
   const today = useMemo(() => dayjs().startOf('day'), []);
+  const initialRange = useMemo(
+    () => parseDisplayRange(initialDisplayValue, today),
+    [initialDisplayValue, today],
+  );
   const maxSelectableDate = useMemo(
     () =>
       dayjs()
@@ -112,13 +158,13 @@ export default function DateRangePickerInput({
 
   const [anchorElement, setAnchorElement] = useState<HTMLElement | null>(null);
   const [popoverPlacement, setPopoverPlacement] = useState<'top' | 'bottom'>('bottom');
-  const [startDate, setStartDate] = useState<Dayjs>(today);
-  const [endDate, setEndDate] = useState<Dayjs>(today.add(1, 'day'));
+  const [startDate, setStartDate] = useState<Dayjs>(initialRange?.[0] ?? today);
+  const [endDate, setEndDate] = useState<Dayjs>(initialRange?.[1] ?? today.add(1, 'day'));
   const [isSelectingRangeEnd, setIsSelectingRangeEnd] = useState(false);
   const [hoveredInlineDate, setHoveredInlineDate] = useState<Dayjs | null>(null);
 
-  const [draftStartDate, setDraftStartDate] = useState<Dayjs>(today);
-  const [draftEndDate, setDraftEndDate] = useState<Dayjs>(today.add(1, 'day'));
+  const [draftStartDate, setDraftStartDate] = useState<Dayjs>(initialRange?.[0] ?? today);
+  const [draftEndDate, setDraftEndDate] = useState<Dayjs>(initialRange?.[1] ?? today.add(1, 'day'));
   const [isSelectingDraftRangeEnd, setIsSelectingDraftRangeEnd] = useState(false);
   const [hoveredDraftDate, setHoveredDraftDate] = useState<Dayjs | null>(null);
 
@@ -469,10 +515,12 @@ export default function DateRangePickerInput({
               id={inputId}
               inputRef={inputRef}
               fullWidth
-              required={muiInputRequired}
               label={muiInputLabel}
               value={displayValue}
               onClick={handleOpenPicker}
+              error={muiInputError}
+              helperText={muiInputHelperText}
+              InputLabelProps={muiInputLabelProps}
               InputProps={{
                 readOnly: true,
                 sx: {

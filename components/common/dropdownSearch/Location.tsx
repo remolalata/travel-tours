@@ -1,13 +1,17 @@
 'use client';
 
 import { locations } from '@/data/searchDDLocations';
+import type { SearchLocationOption } from '@/types/location';
 
 interface LocationProps {
   active: boolean;
   setLocation: React.Dispatch<React.SetStateAction<string>>;
+  options?: SearchLocationOption[];
 }
 
-export default function Location({ active, setLocation }: LocationProps) {
+export default function Location({ active, setLocation, options }: LocationProps) {
+  const locationOptions = options?.length ? options : locations;
+
   return (
     <div
       className={`searchFormItemDropdown -location ${active ? 'is-active' : ''} `}
@@ -16,7 +20,7 @@ export default function Location({ active, setLocation }: LocationProps) {
     >
       <div className='searchFormItemDropdown__container'>
         <div className='searchFormItemDropdown__list sroll-bar-1'>
-          {locations.map((elm) => (
+          {locationOptions.map((elm) => (
             <div
               onClick={() =>
                 setLocation((previousValue) => (previousValue === elm.choice ? '' : elm.choice))

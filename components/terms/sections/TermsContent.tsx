@@ -6,7 +6,8 @@ import { termsPageContent } from '@/content/features/terms';
 
 export default function TermsContent() {
   const [activeTabId, setActiveTabId] = useState<string>(termsPageContent.tabs[0]?.id ?? '');
-  const activeTab = termsPageContent.tabs.find((tab) => tab.id === activeTabId) ?? termsPageContent.tabs[0];
+  const activeTab =
+    termsPageContent.tabs.find((tab) => tab.id === activeTabId) ?? termsPageContent.tabs[0];
 
   return (
     <section className='layout-pt-md layout-pb-lg'>

@@ -6141,26 +6141,41 @@ h6 {
   padding: 0 30px;
 }
 
-.sidebar.-dashboard .sidebar__item a {
+.sidebar.-dashboard .sidebar__item .sidebar__linkButton {
   display: flex;
   align-items: center;
   border-radius: 12px;
   height: 55px;
   padding: 0 20px;
   transition: 0.2s;
+  width: 100%;
+  text-align: left;
+  color: inherit;
+  background-color: transparent;
+  text-decoration: none;
 }
 
-.sidebar.-dashboard .sidebar__item a i {
+.sidebar.-dashboard .sidebar__item .sidebar__linkButton i {
   display: flex;
 }
 
-.sidebar.-dashboard .sidebar__item a:hover {
+.sidebar.-dashboard .sidebar__item .sidebar__linkButton:hover {
   background-color: rgba(255, 255, 255, 0.15);
   color: white;
 }
 
-.sidebar.-dashboard .sidebar__item.-is-active a {
+.sidebar.-dashboard .sidebar__item.-is-active .sidebar__linkButton {
   background-color: rgba(255, 255, 255, 0.15);
+}
+
+.sidebar.-dashboard .sidebar__item .sidebar__logoutForm {
+  margin: 0;
+}
+
+.sidebar.-dashboard .sidebar__item .sidebar__logoutForm .sidebar__linkButton {
+  border: none;
+  font: inherit;
+  cursor: pointer;
 }
 
 .dashboard {
@@ -10669,7 +10684,7 @@ h6 {
   }
 }
 
-.border-1 {
+.border {
   border: 1px solid #e7e6e6;
 }
 
@@ -10677,11 +10692,11 @@ h6 {
   border: 1px solid var(--color-dark-1);
 }
 
-.border-1-top {
+.border-top {
   border-top: 1px solid #e7e6e6;
 }
 
-.border-1-bottom {
+.border-bottom {
   border-bottom: 1px solid #e7e6e6;
 }
 

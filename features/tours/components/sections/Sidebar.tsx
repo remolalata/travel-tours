@@ -6,7 +6,7 @@ import { useState } from 'react';
 import Calender from '@/components/common/dropdownSearch/Calender';
 import RangeSlider from '@/components/common/RangeSlider';
 import Stars from '@/components/common/Stars';
-import { durations, features, languages, rating,toursTypes } from '@/data/tourFilteringOptions';
+import { durations, features, languages, rating, toursTypes } from '@/data/tourFilteringOptions';
 
 export default function Sidebar() {
   const [ddActives, setDdActives] = useState(['tourtype']);

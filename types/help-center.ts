@@ -7,8 +7,11 @@ export interface HelpCenterHeroContent {
   title: string;
   description: string;
   backgroundImageSrc: string;
+  backgroundImageAlt: string;
   shapeImageSrc: string;
+  shapeImageAlt: string;
   searchPlaceholder: string;
+  searchButtonAriaLabel: string;
 }
 
 export interface HelpTopicItem {
@@ -16,12 +19,6 @@ export interface HelpTopicItem {
   iconSrc: string;
   title: string;
   content: string;
-}
-
-export interface HelpFaqItem {
-  id: number;
-  question: string;
-  answer: string;
 }
 
 export interface HelpCenterPageContent {
@@ -33,6 +30,5 @@ export interface HelpCenterPageContent {
   };
   faq: {
     title: string;
-    items: HelpFaqItem[];
   };
 }

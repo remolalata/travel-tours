@@ -6,14 +6,17 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 
 import FadeIn from '@/components/common/motion/FadeIn';
 import { homeContent } from '@/content/features/home';
-import type { TrendingDestination } from '@/data/destinations';
+import type { TrendingDestination } from '@/types/destination';
 
 interface DestinationSliderProps {
   destinations: TrendingDestination[];
   paginationClass: string;
 }
 
-export default function DestinationSlider({ destinations, paginationClass }: DestinationSliderProps) {
+export default function DestinationSlider({
+  destinations,
+  paginationClass,
+}: DestinationSliderProps) {
   const { trendingDestinations } = homeContent;
 
   return (

@@ -9,6 +9,7 @@ import MessengerButton from '@/components/common/MessengerButton';
 import ScrollTopBehaviour from '@/components/common/ScrollTopBehavier';
 import ScrollToTop from '@/components/common/ScrollToTop';
 import Wrapper from '@/components/layout/Wrapper';
+import ReactQueryProvider from '@/components/providers/ReactQueryProvider';
 import { getSiteUrl } from '@/utils/seo';
 
 const dmSans = localFont({
@@ -55,8 +56,8 @@ export const viewport: Viewport = {
 };
 
 const siteUrl = getSiteUrl();
-const siteName = 'Gr8 Escapes Travel & Tours';
-const defaultDescription = 'Book curated tours and travel packages with Gr8 Escapes Travel & Tours.';
+const siteName = 'Travel & Tours';
+const defaultDescription = 'Book curated tours and travel packages with Travel & Tours.';
 const logoUrl = `${siteUrl}/img/logo.svg`;
 
 const organizationJsonLd = {
@@ -130,11 +131,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         />
       </head>
       <body className={dmSans.className}>
-        <Wrapper>{children}</Wrapper>
-        <FirstVisitPromoModal />
-        <MessengerButton />
-        <ScrollToTop />
-        <ScrollTopBehaviour />
+        <ReactQueryProvider>
+          <Wrapper>{children}</Wrapper>
+          <FirstVisitPromoModal />
+          <MessengerButton />
+          <ScrollToTop />
+          <ScrollTopBehaviour />
+        </ReactQueryProvider>
       </body>
     </html>
   );

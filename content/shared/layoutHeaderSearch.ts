@@ -57,4 +57,3 @@ export const headerSearchContent = {
     },
   ] as SearchItem[],
 } as const;
-

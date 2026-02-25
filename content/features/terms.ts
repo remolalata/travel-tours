@@ -7,7 +7,7 @@ const commonParagraphs = [
 
 export const termsPageContent: TermsPageContent = {
   metadata: {
-    title: 'Terms | Gr8 Escapes Travel & Tours',
+    title: 'Terms | Travel & Tours',
     description: 'Read the terms governing bookings, payments, and site usage.',
   },
   pageHeader: {

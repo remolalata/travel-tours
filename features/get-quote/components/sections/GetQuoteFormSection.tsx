@@ -1,10 +1,16 @@
 'use client';
 
-import { Alert, IconButton } from '@mui/material';
-import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useMemo } from 'react';
+import { IconButton } from '@mui/material';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
+import useAdminTourReferencesQuery from '@/api/admin/tours/hooks/useAdminTourReferencesQuery';
+import useAuthViewerQuery from '@/api/auth/hooks/useAuthViewerQuery';
+import type { AuthViewerState } from '@/api/auth/mutations/authApi';
+import useCreateQuoteRequestMutation from '@/api/quote-requests/hooks/useCreateQuoteRequestMutation';
+import AppToast from '@/components/common/feedback/AppToast';
+import AppBreadcrumb from '@/components/common/navigation/AppBreadcrumb';
+import { getQuoteContent } from '@/content/features/getQuote';
 import { quoteFieldConfigs } from '@/features/get-quote/components/form/quoteFormConfig';
 import QuoteFormField from '@/features/get-quote/components/form/QuoteFormField';
 import useQuoteRequestForm, {
@@ -25,32 +31,84 @@ const tripDetailFields: readonly (keyof QuoteFormState)[] = [
 const contactFields: readonly (keyof QuoteFormState)[] = ['fullName', 'email', 'phone', 'notes'];
 
 export default function GetQuoteFormSection() {
-  const router = useRouter();
   const searchParams = useSearchParams();
+  const hasAppliedAuthContactPrefill = useRef(false);
+  const [toastState, setToastState] = useState<{
+    open: boolean;
+    message: string;
+    severity: 'success' | 'error';
+  }>({
+    open: false,
+    message: '',
+    severity: 'success',
+  });
+  const referencesQuery = useAdminTourReferencesQuery();
+  const createQuoteRequestMutation = useCreateQuoteRequestMutation();
+  const authQuery = useAuthViewerQuery({
+    initialData: {
+      isAuthenticated: false,
+      role: null,
+      avatarUrl: null,
+      fullName: null,
+      email: null,
+      phone: null,
+    } satisfies AuthViewerState,
+  });
   const { isVisible: isUrgentPromptVisible, dismiss: dismissUrgentPrompt } =
     useUrgentAssistancePrompt({ delayMs: 10000 });
   const initialLocation = useMemo(() => searchParams.get('where') ?? '', [searchParams]);
+  const initialWhen = useMemo(() => searchParams.get('when') ?? '', [searchParams]);
   const initialTourType = useMemo(() => searchParams.get('tourType') ?? '', [searchParams]);
   const initialAdults = useMemo(() => searchParams.get('adults') ?? '', [searchParams]);
   const initialChildren = useMemo(() => searchParams.get('children') ?? '', [searchParams]);
+  const initialFullName = authQuery.data.fullName ?? '';
+  const initialEmail = authQuery.data.email ?? '';
+  const initialPhone = authQuery.data.phone ?? '';
 
-  const { formState, isSubmitted, updateField, submit, reset } = useQuoteRequestForm({
+  const { formState, fieldErrors, updateField, submit, reset } = useQuoteRequestForm({
     initialLocation,
+    initialWhen,
     initialTourType,
     initialAdults,
     initialChildren,
+    initialFullName,
+    initialEmail,
+    initialPhone,
   });
 
   const requiredFieldCount = useMemo(
     () => quoteFieldConfigs.filter((field) => field.required).length,
     [],
   );
+  const destinationOptions = useMemo(
+    () => (referencesQuery.data?.destinations ?? []).map((destination) => destination.label),
+    [referencesQuery.data?.destinations],
+  );
+  const dynamicTourTypeOptions = useMemo(
+    () => (referencesQuery.data?.tourTypes ?? []).map((tourType) => tourType.label),
+    [referencesQuery.data?.tourTypes],
+  );
+  const resolvedQuoteFieldConfigs = useMemo(
+    () =>
+      quoteFieldConfigs.map((field) => {
+        if (field.name === 'where' && destinationOptions.length > 0) {
+          return { ...field, selectOptions: destinationOptions };
+        }
+
+        if (field.name === 'tourType' && dynamicTourTypeOptions.length > 0) {
+          return { ...field, selectOptions: dynamicTourTypeOptions };
+        }
+
+        return field;
+      }),
+    [destinationOptions, dynamicTourTypeOptions],
+  );
   const completedRequiredFieldCount = useMemo(
     () =>
-      quoteFieldConfigs.filter(
+      resolvedQuoteFieldConfigs.filter(
         (field) => field.required && formState[field.name].toString().trim().length > 0,
       ).length,
-    [formState],
+    [formState, resolvedQuoteFieldConfigs],
   );
   const completionPercentage = useMemo(
     () =>
@@ -59,24 +117,29 @@ export default function GetQuoteFormSection() {
         : 0,
     [completedRequiredFieldCount, requiredFieldCount],
   );
+  const resolvedFieldErrors = useMemo(
+    () =>
+      Object.fromEntries(
+        Object.entries(fieldErrors).map(([fieldName, errorCode]) => [
+          fieldName,
+          errorCode
+            ? (getQuoteContent.form.validationMessages[
+                errorCode as keyof typeof getQuoteContent.form.validationMessages
+              ] ?? errorCode)
+            : undefined,
+        ]),
+      ) as Partial<Record<keyof QuoteFormState, string>>,
+    [fieldErrors],
+  );
 
   const tripConfigFields = useMemo(
-    () => quoteFieldConfigs.filter((field) => tripDetailFields.includes(field.name)),
-    [],
+    () => resolvedQuoteFieldConfigs.filter((field) => tripDetailFields.includes(field.name)),
+    [resolvedQuoteFieldConfigs],
   );
   const contactConfigFields = useMemo(
-    () => quoteFieldConfigs.filter((field) => contactFields.includes(field.name)),
-    [],
+    () => resolvedQuoteFieldConfigs.filter((field) => contactFields.includes(field.name)),
+    [resolvedQuoteFieldConfigs],
   );
-
-  const handleGoBack = useCallback(() => {
-    if (typeof window !== 'undefined' && window.history.length > 1) {
-      router.back();
-      return;
-    }
-
-    router.push('/');
-  }, [router]);
 
   useEffect(() => {
     const handleContactGroupClick = (event: MouseEvent) => {
@@ -96,23 +159,47 @@ export default function GetQuoteFormSection() {
     };
   }, [dismissUrgentPrompt]);
 
+  useEffect(() => {
+    if (!authQuery.data.isAuthenticated) {
+      return;
+    }
+    if (hasAppliedAuthContactPrefill.current) {
+      return;
+    }
+
+    if (!formState.fullName && initialFullName) {
+      updateField('fullName', initialFullName);
+    }
+    if (!formState.email && initialEmail) {
+      updateField('email', initialEmail);
+    }
+    if (!formState.phone && initialPhone) {
+      updateField('phone', initialPhone);
+    }
+    hasAppliedAuthContactPrefill.current = true;
+  }, [
+    authQuery.data.isAuthenticated,
+    formState.email,
+    formState.fullName,
+    formState.phone,
+    initialEmail,
+    initialFullName,
+    initialPhone,
+    updateField,
+  ]);
+
   return (
     <section className='layout-pt-lg layout-pb-lg getQuotePage'>
       <div className='container'>
-        <div className='getQuotePage__top'>
-          <button type='button' className='getQuotePage__back' onClick={handleGoBack}>
-            <i className='icon-arrow-left' />
-            <span>Back</span>
-          </button>
-
-          <div className='breadcrumbs getQuotePage__breadcrumbs'>
-            <span className='breadcrumbs__item'>
-              <Link href='/'>Home</Link>
-            </span>
-            <span>{' > '}</span>
-            <span className='breadcrumbs__item'>
-              <Link href='/get-quote'>Get a Quote</Link>
-            </span>
+        <div className='row mb-20'>
+          <div className='col-auto'>
+            <AppBreadcrumb
+              items={getQuoteContent.breadcrumbs}
+              className='breadcrumbs text-14'
+              listClassName='d-flex items-center flex-wrap'
+              itemClassName='d-flex items-center breadcrumbs__item'
+              separatorClassName='ml-10 mr-10'
+            />
           </div>
         </div>
 
@@ -120,22 +207,19 @@ export default function GetQuoteFormSection() {
           <div className='row g-4'>
             <div className='col-lg-4 col-xl-4'>
               <aside className='getQuotePage__info'>
-                <span className='getQuotePage__eyebrow'>Custom Travel Planning</span>
-                <h1 className='getQuotePage__title'>Build Your Ideal Escape</h1>
-                <p className='getQuotePage__subtitle'>
-                  Share your destination, dates, and preferences. We&apos;ll craft a package that
-                  matches your budget and travel style.
-                </p>
+                <span className='getQuotePage__eyebrow'>{getQuoteContent.sidebar.eyebrow}</span>
+                <h1 className='getQuotePage__title'>{getQuoteContent.sidebar.title}</h1>
+                <p className='getQuotePage__subtitle'>{getQuoteContent.sidebar.subtitle}</p>
 
                 <ul className='getQuotePage__benefits'>
-                  <li>Personalized itinerary with flight, hotel, and tour options</li>
-                  <li>Transparent pricing and package recommendations</li>
-                  <li>Fast response from our travel specialist team</li>
+                  {getQuoteContent.sidebar.benefits.map((benefit) => (
+                    <li key={benefit}>{benefit}</li>
+                  ))}
                 </ul>
 
                 <div className='getQuotePage__progress'>
                   <div className='getQuotePage__progressHeader'>
-                    <span>Form progress</span>
+                    <span>{getQuoteContent.sidebar.progressLabel}</span>
                     <strong>{completionPercentage}%</strong>
                   </div>
                   <div className='getQuotePage__progressTrack'>
@@ -147,23 +231,49 @@ export default function GetQuoteFormSection() {
 
             <div className='col-lg-8 col-xl-8'>
               <div className='getQuotePage__formCard'>
-                {isSubmitted && (
-                  <Alert severity='success' sx={{ mb: 2.5 }}>
-                    Quote request received. Our team will contact you shortly.
-                  </Alert>
-                )}
-
                 <form
                   className='getQuotePage__form'
-                  onSubmit={(event) => {
+                  onSubmit={async (event) => {
                     event.preventDefault();
-                    submit();
+                    console.log('Get Quote form payload', formState);
+                    const isValid = submit();
+                    if (!isValid || createQuoteRequestMutation.isPending) {
+                      return;
+                    }
+
+                    try {
+                      await createQuoteRequestMutation.mutateAsync({
+                        where: formState.where,
+                        when: formState.when,
+                        tourType: formState.tourType,
+                        adults: formState.adults,
+                        children: formState.children,
+                        budget: formState.budget,
+                        hotelClass: formState.hotelClass,
+                        fullName: formState.fullName,
+                        email: formState.email,
+                        phone: formState.phone,
+                        notes: formState.notes,
+                      });
+
+                      setToastState({
+                        open: true,
+                        message: getQuoteContent.form.toasts.submitSuccess,
+                        severity: 'success',
+                      });
+                    } catch {
+                      setToastState({
+                        open: true,
+                        message: getQuoteContent.form.toasts.submitError,
+                        severity: 'error',
+                      });
+                    }
                   }}
                 >
                   <div className='getQuotePage__section'>
                     <div className='getQuotePage__sectionHead'>
-                      <h2>Trip Details</h2>
-                      <p>Tell us the basics of your travel plan.</p>
+                      <h2>{getQuoteContent.form.sections.tripDetails.title}</h2>
+                      <p>{getQuoteContent.form.sections.tripDetails.description}</p>
                     </div>
                     <div className='row g-3'>
                       {tripConfigFields.map((field) => (
@@ -171,6 +281,7 @@ export default function GetQuoteFormSection() {
                           key={field.name}
                           field={field}
                           value={formState[field.name]}
+                          errorMessage={resolvedFieldErrors[field.name]}
                           onValueChange={updateField}
                         />
                       ))}
@@ -181,8 +292,8 @@ export default function GetQuoteFormSection() {
 
                   <div className='getQuotePage__section'>
                     <div className='getQuotePage__sectionHead'>
-                      <h2>Contact Details</h2>
-                      <p>Where should we send your quote and follow-up details?</p>
+                      <h2>{getQuoteContent.form.sections.contactDetails.title}</h2>
+                      <p>{getQuoteContent.form.sections.contactDetails.description}</p>
                     </div>
                     <div className='row g-3'>
                       {contactConfigFields.map((field) => (
@@ -190,6 +301,7 @@ export default function GetQuoteFormSection() {
                           key={field.name}
                           field={field}
                           value={formState[field.name]}
+                          errorMessage={resolvedFieldErrors[field.name]}
                           onValueChange={updateField}
                         />
                       ))}
@@ -200,19 +312,22 @@ export default function GetQuoteFormSection() {
                     <button
                       type='button'
                       className='button -md -outline-dark-1 bg-white text-dark-1'
+                      disabled={createQuoteRequestMutation.isPending}
                       onClick={() => {
-                        reset({
-                          initialLocation,
-                          initialTourType,
-                          initialAdults,
-                          initialChildren,
-                        });
+                        hasAppliedAuthContactPrefill.current = true;
+                        reset();
                       }}
                     >
-                      Clear Form
+                      {getQuoteContent.form.actions.clear}
                     </button>
-                    <button type='submit' className='button -md -dark-1 bg-accent-1 text-white'>
-                      Request Quote
+                    <button
+                      type='submit'
+                      className='button -md -dark-1 bg-accent-1 text-white'
+                      disabled={createQuoteRequestMutation.isPending}
+                    >
+                      {createQuoteRequestMutation.isPending
+                        ? getQuoteContent.form.actions.submitting
+                        : getQuoteContent.form.actions.submit}
                     </button>
                   </div>
                 </form>
@@ -228,20 +343,25 @@ export default function GetQuoteFormSection() {
                 size='small'
                 className='getQuotePage__floatingHelpClose'
                 onClick={dismissUrgentPrompt}
-                aria-label='Close urgent assistance'
+                aria-label={getQuoteContent.floatingHelp.closeAriaLabel}
               >
                 <span aria-hidden='true'>&times;</span>
               </IconButton>
 
-              <p className='getQuotePage__floatingHelpTitle'>
-                Prefer to chat instead of filling the form?
-              </p>
+              <p className='getQuotePage__floatingHelpTitle'>{getQuoteContent.floatingHelp.title}</p>
               <p className='getQuotePage__floatingHelpText'>
-                Message our team on WhatsApp, Messenger, or Viber for a personalized quote.
+                {getQuoteContent.floatingHelp.description}
               </p>
             </div>
           </div>
         )}
+
+        <AppToast
+          open={toastState.open}
+          message={toastState.message}
+          severity={toastState.severity}
+          onClose={() => setToastState((previousValue) => ({ ...previousValue, open: false }))}
+        />
       </div>
     </section>
   );

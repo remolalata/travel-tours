@@ -2,6 +2,11 @@
 
 import { useCallback, useReducer } from 'react';
 
+import {
+  validateQuoteRequestForm,
+  type ValidationErrors,
+} from '@/utils/helpers/formValidation';
+
 export interface QuoteFormState {
   where: string;
   when: string;
@@ -18,14 +23,19 @@ export interface QuoteFormState {
 
 interface QuoteRequestState {
   form: QuoteFormState;
+  fieldErrors: ValidationErrors<QuoteFormState>;
   isSubmitted: boolean;
 }
 
 interface UseQuoteRequestFormOptions {
   initialLocation?: string;
+  initialWhen?: string;
   initialTourType?: string;
   initialAdults?: string;
   initialChildren?: string;
+  initialFullName?: string;
+  initialEmail?: string;
+  initialPhone?: string;
 }
 
 type QuoteRequestAction =
@@ -35,7 +45,9 @@ type QuoteRequestAction =
       value: string;
     }
   | {
-      type: 'submit';
+      type: 'setFieldErrors';
+      fieldErrors: ValidationErrors<QuoteFormState>;
+      isSubmitted?: boolean;
     }
   | {
       type: 'reset';
@@ -44,25 +56,30 @@ type QuoteRequestAction =
 
 const createQuoteFormState = ({
   initialLocation = '',
+  initialWhen = '',
   initialTourType = '',
   initialAdults = '',
   initialChildren = '',
+  initialFullName = '',
+  initialEmail = '',
+  initialPhone = '',
 }: UseQuoteRequestFormOptions = {}): QuoteFormState => ({
   where: initialLocation,
-  when: '',
+  when: initialWhen,
   tourType: initialTourType,
   adults: initialAdults,
   children: initialChildren,
   budget: '',
   hotelClass: '',
-  fullName: '',
-  email: '',
-  phone: '',
+  fullName: initialFullName,
+  email: initialEmail,
+  phone: initialPhone,
   notes: '',
 });
 
 const createInitialState = (options: UseQuoteRequestFormOptions): QuoteRequestState => ({
   form: createQuoteFormState(options),
+  fieldErrors: {},
   isSubmitted: false,
 });
 
@@ -78,11 +95,17 @@ const quoteRequestReducer = (
           ...state.form,
           [action.field]: action.value,
         },
+        fieldErrors: {
+          ...state.fieldErrors,
+          [action.field]: undefined,
+        },
+        isSubmitted: false,
       };
-    case 'submit':
+    case 'setFieldErrors':
       return {
         ...state,
-        isSubmitted: true,
+        fieldErrors: action.fieldErrors,
+        isSubmitted: action.isSubmitted ?? state.isSubmitted,
       };
     case 'reset':
       return createInitialState(action.payload ?? {});
@@ -99,8 +122,26 @@ export default function useQuoteRequestForm(options: UseQuoteRequestFormOptions 
   }, []);
 
   const submit = useCallback(() => {
-    dispatch({ type: 'submit' });
-  }, []);
+    const errors = validateQuoteRequestForm({
+      where: state.form.where,
+      when: state.form.when,
+      tourType: state.form.tourType,
+      adults: state.form.adults,
+      budget: state.form.budget,
+      hotelClass: state.form.hotelClass,
+      fullName: state.form.fullName,
+      email: state.form.email,
+      phone: state.form.phone,
+    });
+
+    if (Object.keys(errors).length > 0) {
+      dispatch({ type: 'setFieldErrors', fieldErrors: errors, isSubmitted: false });
+      return false;
+    }
+
+    dispatch({ type: 'setFieldErrors', fieldErrors: {}, isSubmitted: true });
+    return true;
+  }, [state.form]);
 
   const reset = useCallback((payload?: UseQuoteRequestFormOptions) => {
     dispatch({ type: 'reset', payload });
@@ -108,6 +149,7 @@ export default function useQuoteRequestForm(options: UseQuoteRequestFormOptions 
 
   return {
     formState: state.form,
+    fieldErrors: state.fieldErrors,
     isSubmitted: state.isSubmitted,
     updateField,
     submit,

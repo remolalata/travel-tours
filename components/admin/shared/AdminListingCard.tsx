@@ -2,6 +2,7 @@ import Image from 'next/image';
 
 import Stars from '@/components/common/Stars';
 import type { AdminListingItem } from '@/types/admin';
+import { formatNumber } from '@/utils/helpers/formatNumber';
 
 type AdminListingCardProps = {
   item: AdminListingItem;
@@ -16,10 +17,16 @@ export default function AdminListingCard({
 }: AdminListingCardProps) {
   if (compact) {
     return (
-      <div className='tourCard -type-1 py-10 px-10 border-1 rounded-12 -hover-shadow'>
+      <div className='-hover-shadow px-10 py-10 border rounded-12 tourCard -type-1'>
         <div className='tourCard__header'>
           <div className='tourCard__image ratio ratio-28:20'>
-            <Image width={421} height={301} src={item.imageSrc} alt={item.title} className='img-ratio rounded-12' />
+            <Image
+              width={421}
+              height={301}
+              src={item.imageSrc}
+              alt={item.title}
+              className='rounded-12 img-ratio'
+            />
           </div>
 
           <button className='tourCard__favorite' type='button'>
@@ -27,34 +34,34 @@ export default function AdminListingCard({
           </button>
         </div>
 
-        <div className='tourCard__content px-10 pt-10'>
-          <div className='tourCard__location d-flex items-center text-13 text-light-2'>
-            <i className='icon-pin d-flex text-16 text-light-2 mr-5'></i>
+        <div className='px-10 pt-10 tourCard__content'>
+          <div className='d-flex items-center text-13 text-light-2 tourCard__location'>
+            <i className='d-flex mr-5 text-16 text-light-2 icon-pin'></i>
             {item.location}
           </div>
 
-          <h3 className='tourCard__title text-16 fw-500 mt-5'>
+          <h3 className='mt-5 text-16 tourCard__title fw-500'>
             <span>{item.title}</span>
           </h3>
 
-          <div className='tourCard__rating d-flex items-center text-13 mt-5'>
+          <div className='d-flex items-center mt-5 text-13 tourCard__rating'>
             <div className='d-flex x-gap-5'>
               <Stars star={item.rating} />
             </div>
 
-            <span className='text-dark-1 ml-10'>
+            <span className='ml-10 text-dark-1'>
               {item.rating} ({item.ratingCount})
             </span>
           </div>
 
-          <div className='d-flex justify-between items-center border-1-top text-13 text-dark-1 pt-10 mt-10'>
+          <div className='d-flex justify-between items-center mt-10 pt-10 border-top text-13 text-dark-1'>
             <div className='d-flex items-center'>
-              <i className='icon-clock text-16 mr-5'></i>
+              <i className='mr-5 text-16 icon-clock'></i>
               {item.duration}
             </div>
 
             <div>
-              {pricePrefix} <span className='text-16 fw-500'>${item.price}</span>
+              {pricePrefix} <span className='text-16 fw-500'>${formatNumber(item.price)}</span>
             </div>
           </div>
         </div>
@@ -63,28 +70,28 @@ export default function AdminListingCard({
   }
 
   return (
-    <div className='border-1 rounded-12 px-20 py-20'>
-      <div className='row x-gap-20 y-gap-20 items-center'>
-        <div className='col-xxl-auto'>
+    <div className='px-20 py-20 border rounded-12'>
+      <div className='items-center x-gap-20 y-gap-20 row'>
+        <div className='col-12 col-xl-auto'>
           <Image
             width={421}
             height={301}
             src={item.imageSrc}
             alt={item.title}
-            className='size-200 w-1/1 object-cover rounded-12'
+            className='rounded-12 object-cover admin-listing-image'
           />
         </div>
 
         <div className='col'>
           <div className='d-flex items-center'>
-            <i className='icon-pin mr-5'></i>
+            <i className='mr-5 icon-pin'></i>
             {item.location}
           </div>
 
-          <div className='text-18 lh-15 fw-500 mt-5'>{item.title}</div>
+          <div className='mt-5 text-18 lh-15 fw-500'>{item.title}</div>
 
           <div className='d-flex items-center mt-5'>
-            <div className='d-flex x-gap-5 text-yellow-2 mr-10'>
+            <div className='d-flex x-gap-5 mr-10 text-yellow-2'>
               <Stars star={item.rating} />
             </div>
             <div>
@@ -92,18 +99,19 @@ export default function AdminListingCard({
             </div>
           </div>
 
-          <div className='row y-gap-15 justify-between items-end pt-5'>
+          <div className='justify-between items-end y-gap-15 pt-5 row'>
             <div className='col-auto'>
               <div className='d-flex items-center'>
-                <i className='icon-clock mr-5'></i>
+                <i className='mr-5 icon-clock'></i>
                 <div className='text-14'>{item.duration}</div>
               </div>
             </div>
 
             <div className='col-auto'>
-              <div className='text-right md:text-left'>
-                <div className='lh-14'>${item.price}</div>
-                {pricePrefix} <span className='text-20 fw-500'>${item.fromPrice}</span>
+              <div className='md:text-left text-right'>
+                <div className='lh-14'>${formatNumber(item.price)}</div>
+                {pricePrefix}{' '}
+                <span className='text-20 fw-500'>${formatNumber(item.fromPrice)}</span>
               </div>
             </div>
           </div>

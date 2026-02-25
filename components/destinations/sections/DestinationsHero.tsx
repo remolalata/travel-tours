@@ -8,7 +8,12 @@ export default function DestinationsHero() {
   return (
     <section className='pageHeader -type-1'>
       <div className='pageHeader__bg'>
-        <Image width={1800} height={500} src={hero.backgroundImageSrc} alt='Destinations header background' />
+        <Image
+          width={1800}
+          height={500}
+          src={hero.backgroundImageSrc}
+          alt='Destinations header background'
+        />
         <Image
           width={1800}
           height={40}

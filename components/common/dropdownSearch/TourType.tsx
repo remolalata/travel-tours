@@ -6,9 +6,12 @@ import { tourTypeOptions } from '@/content/shared/tourTypeOptions';
 interface TourTypeProps {
   active: boolean;
   setTourType: Dispatch<SetStateAction<string>>;
+  options?: readonly string[];
 }
 
-export default function TourType({ active, setTourType }: TourTypeProps) {
+export default function TourType({ active, setTourType, options }: TourTypeProps) {
+  const typeOptions = options?.length ? options : tourTypeOptions;
+
   return (
     <div
       className={`searchFormItemDropdown -tour-type ${active ? 'is-active' : ''} `}
@@ -17,7 +20,7 @@ export default function TourType({ active, setTourType }: TourTypeProps) {
     >
       <div className='searchFormItemDropdown__container'>
         <div className='searchFormItemDropdown__list sroll-bar-1'>
-          {tourTypeOptions.map((elm) => (
+          {typeOptions.map((elm) => (
             <div
               onClick={() => setTourType((previousValue) => (previousValue === elm ? '' : elm))}
               key={elm}

@@ -13,7 +13,7 @@ export const testimonialsOne = [
     imageSrc: '/img/testimonials/evil dog.jpeg',
     title: 'Best Family Getaway!',
     content:
-      'Nag-enjoy kami ng family ko from flight hanggang hotel transfer. Walang hassle and very organized yung itinerary. Thank you, Gr8 Escapes—core memory namin itong trip na ’to!',
+      'Nag-enjoy kami ng family ko from flight hanggang hotel transfer. Walang hassle and very organized yung itinerary. Thank you, Travel & Tours—core memory namin itong trip na ’to!',
     authorName: 'Janelle Mae Santos',
     authorRole: 'Explorer',
   },

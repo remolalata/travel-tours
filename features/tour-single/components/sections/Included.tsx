@@ -10,7 +10,7 @@ export default function Included({ tourContent }: IncludedProps) {
   const excludedItems = tourContent?.excludedItems || defaultTourContent.excludedItems;
 
   return (
-    <div className='x-gap-130 y-gap-20 pt-20 row'>
+    <div className='x-gap-130 y-gap-20 row'>
       <div className='col-lg-6'>
         <div className='y-gap-15'>
           {includedItems.map((elm: IncludedExcludedItem, i) => (

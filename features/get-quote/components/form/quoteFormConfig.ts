@@ -1,9 +1,10 @@
-import type { SxProps, Theme } from '@mui/material/styles';
 import type { TextFieldProps } from '@mui/material/TextField';
 
+import { getQuoteContent } from '@/content/features/getQuote';
 import { tourTypeOptions } from '@/content/shared/tourTypeOptions';
 import { locations } from '@/data/searchDDLocations';
 import type { QuoteFormState } from '@/features/get-quote/hooks/useQuoteRequestForm';
+import { muiFieldSx } from '@/utils/styles/muiFieldSx';
 
 export interface QuoteFieldConfig {
   name: keyof QuoteFormState;
@@ -20,64 +21,38 @@ export interface QuoteFieldConfig {
   inputProps?: TextFieldProps['inputProps'];
 }
 
-const budgetOptions = ['Below ₱20,000', '₱20,000 - ₱50,000', '₱50,000 - ₱100,000', '₱100,000+'];
-const hotelClassOptions = ['3-Star', '4-Star', '5-Star', 'Flexible'];
+const budgetOptions = getQuoteContent.form.options.budget;
+const hotelClassOptions = getQuoteContent.form.options.hotelClass;
 const destinationOptions = Array.from(new Set(locations.map((location) => location.choice)));
+const fieldLabels = getQuoteContent.form.fields;
 
-export const quoteFieldSx: SxProps<Theme> = {
-  '& .MuiInputLabel-root': {
-    color: 'rgba(5, 7, 60, 0.68)',
-    zIndex: 1,
-  },
-  '& .MuiInputLabel-root.MuiInputLabel-shrink': {
-    backgroundColor: '#fff',
-    padding: '0 6px',
-    borderRadius: '6px',
-  },
-  '& .MuiInputLabel-root.Mui-focused': {
-    color: 'var(--color-accent-1)',
-  },
-  '& .MuiOutlinedInput-root': {
-    borderRadius: '14px',
-    backgroundColor: '#fff',
-    transition: 'box-shadow 0.2s ease, border-color 0.2s ease',
-    '&:hover .MuiOutlinedInput-notchedOutline': {
-      borderColor: 'rgba(235, 102, 43, 0.45)',
-    },
-  },
-  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-    borderColor: 'var(--color-accent-1)',
-  },
-  '& .MuiOutlinedInput-root.Mui-focused': {
-    boxShadow: '0 0 0 3px rgba(235, 102, 43, 0.12)',
-  },
-};
+export const quoteFieldSx = muiFieldSx;
 
 export const quoteFieldConfigs: readonly QuoteFieldConfig[] = [
   {
     name: 'where',
-    label: 'Where',
+    label: fieldLabels.where,
     colClassName: 'col-md-6',
     required: true,
     selectOptions: destinationOptions,
   },
   {
     name: 'when',
-    label: 'When',
+    label: fieldLabels.when,
     colClassName: 'col-md-6',
     component: 'date-range',
     required: true,
   },
   {
     name: 'tourType',
-    label: 'Tour Type',
+    label: fieldLabels.tourType,
     colClassName: 'col-md-6',
     required: true,
     selectOptions: tourTypeOptions,
   },
   {
     name: 'adults',
-    label: 'Adults',
+    label: fieldLabels.adults,
     colClassName: 'col-md-3',
     required: true,
     type: 'number',
@@ -85,48 +60,50 @@ export const quoteFieldConfigs: readonly QuoteFieldConfig[] = [
   },
   {
     name: 'children',
-    label: 'Children',
+    label: fieldLabels.children,
     colClassName: 'col-md-3',
     type: 'number',
     inputProps: { min: 0 },
   },
   {
     name: 'budget',
-    label: 'Budget Range',
+    label: fieldLabels.budget,
     colClassName: 'col-md-6',
+    required: true,
     selectOptions: budgetOptions,
   },
   {
     name: 'hotelClass',
-    label: 'Preferred Hotel',
+    label: fieldLabels.hotelClass,
     colClassName: 'col-md-6',
+    required: true,
     selectOptions: hotelClassOptions,
   },
   {
     name: 'fullName',
-    label: 'Full Name',
+    label: fieldLabels.fullName,
     colClassName: 'col-md-4',
     required: true,
   },
   {
     name: 'email',
-    label: 'Email',
+    label: fieldLabels.email,
     colClassName: 'col-md-4',
     required: true,
     type: 'email',
   },
   {
     name: 'phone',
-    label: 'Phone Number',
+    label: fieldLabels.phone,
     colClassName: 'col-md-4',
     required: true,
   },
   {
     name: 'notes',
-    label: 'Additional Notes',
+    label: fieldLabels.notes,
     colClassName: 'col-12',
     multiline: true,
     minRows: 3,
-    placeholder: 'Flight preference, activities, pickup details, or special requests.',
+    placeholder: fieldLabels.notesPlaceholder,
   },
 ];

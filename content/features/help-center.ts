@@ -2,15 +2,18 @@ import type { HelpCenterPageContent } from '@/types/help-center';
 
 export const helpCenterPageContent: HelpCenterPageContent = {
   metadata: {
-    title: 'Help Center | Gr8 Escapes Travel & Tours',
+    title: 'Help Center | Travel & Tours',
     description: 'Find answers about bookings, payments, changes, and travel support.',
   },
   hero: {
     title: 'Welcome to the Help Center',
     description: 'Find quick answers and guides for common travel concerns.',
     backgroundImageSrc: '/img/pageHeader/2.jpg',
+    backgroundImageAlt: 'Help center header background',
     shapeImageSrc: '/img/hero/1/shape.svg',
+    shapeImageAlt: 'Help center header shape',
     searchPlaceholder: 'Search for a topic',
+    searchButtonAriaLabel: 'Search help topics',
   },
   topics: {
     title: 'Popular Help Topics',
@@ -55,31 +58,5 @@ export const helpCenterPageContent: HelpCenterPageContent = {
   },
   faq: {
     title: 'Frequently Asked Questions',
-    items: [
-      {
-        id: 1,
-        question: 'How soon will I receive booking confirmation?',
-        answer:
-          'Most bookings are confirmed within minutes. Some partner activities may need manual confirmation within 24 hours.',
-      },
-      {
-        id: 2,
-        question: 'Can I change my travel dates after booking?',
-        answer:
-          'Date changes depend on supplier policy. If your booking is flexible, we can help process date updates subject to availability.',
-      },
-      {
-        id: 3,
-        question: 'What happens if weather affects my tour?',
-        answer:
-          'If an activity is cancelled due to weather, we will help arrange a rebooking or refund based on the operator terms.',
-      },
-      {
-        id: 4,
-        question: 'How do I request an official receipt?',
-        answer:
-          'Send your booking reference to support and our team will provide an official receipt using the billing details on file.',
-      },
-    ],
   },
 };
