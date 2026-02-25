@@ -2,13 +2,7 @@
 
 import { useCallback } from 'react';
 
-import { buildCenteredPopupFeatures, buildFacebookShareUrl } from '@/utils/helpers/share';
-
-const FACEBOOK_SHARE_WINDOW_NAME = 'facebook-share-dialog';
-const FACEBOOK_SHARE_POPUP_SIZE = {
-  width: 640,
-  height: 720,
-} as const;
+import { buildFacebookShareUrl } from '@/utils/helpers/share';
 
 interface UseFacebookShareOptions {
   url?: string;
@@ -33,24 +27,15 @@ export default function useFacebookShare(options?: UseFacebookShareOptions) {
       }
 
       const shareUrl = buildFacebookShareUrl(targetUrl);
-      const popupFeatures = buildCenteredPopupFeatures(
-        {
-          screenX: window.screenX,
-          screenY: window.screenY,
-          outerWidth: window.outerWidth,
-          outerHeight: window.outerHeight,
-        },
-        FACEBOOK_SHARE_POPUP_SIZE,
-      );
 
-      const popupWindow = window.open(shareUrl, FACEBOOK_SHARE_WINDOW_NAME, popupFeatures);
+      const popupWindow = window.open(shareUrl, '_blank', 'noopener,noreferrer');
 
       if (popupWindow) {
         popupWindow.focus();
         return;
       }
 
-      window.location.href = shareUrl;
+      window.open(shareUrl, '_blank');
     },
     [options?.url],
   );
