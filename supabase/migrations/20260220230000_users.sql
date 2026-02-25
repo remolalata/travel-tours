@@ -132,7 +132,7 @@ seeded_auth_ids as (
 )
 update auth.users au
 set
-  encrypted_password = extensions.crypt('admin', extensions.gen_salt('bf')),
+  encrypted_password = extensions.crypt('password123', extensions.gen_salt('bf')),
   email_confirmed_at = now(),
   raw_app_meta_data = jsonb_build_object('provider', 'email', 'providers', array['email']),
   raw_user_meta_data = jsonb_build_object('first_name', s.first_name, 'last_name', s.last_name),
@@ -204,7 +204,7 @@ select
   'authenticated' as aud,
   'authenticated' as role,
   s.email,
-  extensions.crypt('admin', extensions.gen_salt('bf')) as encrypted_password,
+  extensions.crypt('password123', extensions.gen_salt('bf')) as encrypted_password,
   now() as email_confirmed_at,
   '' as recovery_token,
   '' as email_change_token_new,

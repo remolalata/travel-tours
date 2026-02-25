@@ -857,6 +857,7 @@ select
     else '/img/tours/boracay.webp'
   end as image_src,
   array[
+    '/img/tours/og-preview.webp',
     '/img/tours/baguio-highlands.webp',
     '/img/tours/bangkok-city.webp',
     '/img/tours/boracay.webp',

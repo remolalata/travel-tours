@@ -60,8 +60,6 @@ const siteName = 'Travel & Tours';
 const defaultDescription = 'Book curated tours and travel packages with Travel & Tours.';
 const logoUrl = `${siteUrl}/img/logo.svg`;
 const defaultOgImagePath = '/img/hero/7/1.jpg';
-const defaultOgImageWidth = 1200;
-const defaultOgImageHeight = 630;
 
 const organizationJsonLd = {
   '@context': 'https://schema.org',
@@ -98,8 +96,6 @@ export const metadata: Metadata = {
     images: [
       {
         url: defaultOgImagePath,
-        width: defaultOgImageWidth,
-        height: defaultOgImageHeight,
         alt: `${siteName} preview image`,
       },
     ],
