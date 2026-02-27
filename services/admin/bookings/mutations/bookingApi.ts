@@ -1,5 +1,10 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
+import {
+  normalizeBookingSearchTerm,
+  tokenizeBookingSearchTerm,
+} from '@/services/admin/bookings/helpers/bookingSearch';
+
 export type RawBookingStatus = 'approved' | 'pending' | 'cancelled' | 'completed';
 export type RawPaymentStatus = 'unpaid' | 'partial' | 'paid' | 'refunded';
 
@@ -23,8 +28,14 @@ export type AdminBookingData = {
 
 export type FetchAdminBookingsInput = {
   statuses?: RawBookingStatus[];
+  searchTerm?: string;
   page: number;
   pageSize: number;
+};
+
+export type UpdateAdminBookingStatusInput = {
+  bookingId: number;
+  bookingStatus: RawBookingStatus;
 };
 
 export type PaginatedAdminBookings = {
@@ -73,6 +84,9 @@ type ProfileRow = {
   last_name: string | null;
 };
 
+const MAX_PROFILE_MATCH_RESULTS = 300;
+const MAX_PROFILE_FILTER_IDS = 150;
+
 function getDestination(destination: BookingRow['destinations']): { name: string | null } | null {
   if (!destination) return null;
 
@@ -93,10 +107,78 @@ function getTour(tour: BookingRow['tours']): { title: string } | null {
   return tour;
 }
 
+async function fetchMatchingProfileUserIds(
+  supabase: SupabaseClient,
+  token: string,
+): Promise<Set<string>> {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('user_id')
+    .or(`first_name.ilike.%${token}%,last_name.ilike.%${token}%`)
+    .limit(MAX_PROFILE_MATCH_RESULTS);
+
+  if (error) {
+    throw new Error(`BOOKINGS_PROFILE_SEARCH_FAILED:${error.message}`);
+  }
+
+  return new Set(
+    ((data ?? []) as Array<{ user_id: string | null }>)
+      .map((row) => row.user_id)
+      .filter((userId): userId is string => Boolean(userId)),
+  );
+}
+
+async function resolveCustomerUserIdsBySearchTerm(
+  supabase: SupabaseClient,
+  normalizedSearchTerm: string,
+): Promise<string[]> {
+  const tokens = tokenizeBookingSearchTerm(normalizedSearchTerm);
+
+  if (tokens.length === 0) {
+    return [];
+  }
+
+  const tokenMatches: Set<string>[] = [];
+
+  for (const token of tokens) {
+    const matches = await fetchMatchingProfileUserIds(supabase, token);
+    tokenMatches.push(matches);
+
+    if (matches.size === 0) {
+      return [];
+    }
+  }
+
+  const [firstTokenMatches, ...restTokenMatches] = tokenMatches;
+
+  const filteredIds = [...firstTokenMatches].filter((userId) =>
+    restTokenMatches.every((matches) => matches.has(userId)),
+  );
+
+  return filteredIds.slice(0, MAX_PROFILE_FILTER_IDS);
+}
+
+export async function updateAdminBookingStatus(
+  supabase: SupabaseClient,
+  input: UpdateAdminBookingStatusInput,
+): Promise<void> {
+  const { error } = await supabase
+    .from('bookings')
+    .update({ booking_status: input.bookingStatus })
+    .eq('id', input.bookingId)
+    .select('id')
+    .single();
+
+  if (error) {
+    throw new Error(`BOOKING_STATUS_UPDATE_FAILED:${error.message}`);
+  }
+}
+
 export async function fetchAdminBookings(
   supabase: SupabaseClient,
   input: FetchAdminBookingsInput,
 ): Promise<PaginatedAdminBookings> {
+  const normalizedSearchTerm = normalizeBookingSearchTerm(input.searchTerm ?? '');
   const from = input.page * input.pageSize;
   const to = from + input.pageSize - 1;
 
@@ -128,6 +210,21 @@ export async function fetchAdminBookings(
 
   if (input.statuses && input.statuses.length > 0) {
     query = query.in('booking_status', input.statuses);
+  }
+
+  if (normalizedSearchTerm.length > 0) {
+    const matchedCustomerUserIds = await resolveCustomerUserIdsBySearchTerm(
+      supabase,
+      normalizedSearchTerm,
+    );
+
+    if (matchedCustomerUserIds.length > 0) {
+      query = query.or(
+        `booking_reference.ilike.%${normalizedSearchTerm}%,customer_user_id.in.(${matchedCustomerUserIds.join(',')})`,
+      );
+    } else {
+      query = query.ilike('booking_reference', `%${normalizedSearchTerm}%`);
+    }
   }
 
   const { data, error, count } = await query;

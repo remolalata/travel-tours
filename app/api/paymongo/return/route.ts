@@ -27,11 +27,13 @@ function buildPaymongoAuthHeader(secretKey: string) {
   return `Basic ${basic}`;
 }
 
-function isPaidCheckout(attributes: PaymongoCheckoutSessionResponse['data'] extends infer T
-  ? T extends { attributes?: infer A }
-    ? A
-    : never
-  : never): boolean {
+function isPaidCheckout(
+  attributes: PaymongoCheckoutSessionResponse['data'] extends infer T
+    ? T extends { attributes?: infer A }
+      ? A
+      : never
+    : never,
+): boolean {
   const checkoutStatus = String(attributes?.status ?? '').toLowerCase();
   if (['paid', 'completed', 'succeeded'].includes(checkoutStatus)) {
     return true;
@@ -134,7 +136,11 @@ export async function GET(request: Request) {
         paymongo_checkout_session_id: string | null;
       }>();
 
-    if (bookingError || !booking?.paymongo_checkout_session_id || booking.payment_status === 'paid') {
+    if (
+      bookingError ||
+      !booking?.paymongo_checkout_session_id ||
+      booking.payment_status === 'paid'
+    ) {
       return NextResponse.redirect(redirectUrl);
     }
 

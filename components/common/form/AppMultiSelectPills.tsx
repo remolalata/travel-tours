@@ -1,6 +1,7 @@
 'use client';
 
 import Box from '@mui/material/Box';
+import type { SxProps, Theme } from '@mui/material/styles';
 
 type AppMultiSelectPillsProps<T extends string> = {
   options: T[];
@@ -12,6 +13,7 @@ type AppMultiSelectPillsProps<T extends string> = {
   inactiveTextColor?: string;
   inactiveBorderColor?: string;
   hoverBorderColor?: string;
+  containerSx?: SxProps<Theme>;
 };
 
 export default function AppMultiSelectPills<T extends string>({
@@ -24,9 +26,10 @@ export default function AppMultiSelectPills<T extends string>({
   inactiveTextColor = '#05073c',
   inactiveBorderColor = '#d0d5dd',
   hoverBorderColor = 'var(--color-accent-1)',
+  containerSx,
 }: AppMultiSelectPillsProps<T>) {
   return (
-    <Box sx={{ mb: 2.5, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+    <Box sx={{ mb: 2.5, display: 'flex', flexWrap: 'wrap', gap: 1, ...containerSx }}>
       {options.map((option) => {
         const isActive = value.includes(option);
 

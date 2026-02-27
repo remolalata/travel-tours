@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useId, useMemo, useState } from 'react';
 
 import AdminShell from '@/components/admin/layout/AdminShell';
+import AdminSearchInput from '@/components/admin/shared/AdminSearchInput';
 import AdminToursGrid from '@/components/admin/tours/AdminToursGrid';
 import AppButton from '@/components/common/button/AppButton';
 import Pagination from '@/components/common/Pagination';
@@ -41,30 +42,19 @@ export default function AdminListingPage() {
           className='d-flex justify-end items-center mb-20 flex-wrap'
           style={{ columnGap: '16px', rowGap: '10px' }}
         >
-          <div
-            className='d-flex items-center px-20 border rounded-12 dashboard__content_header_search'
-            style={{ paddingTop: '7px', paddingBottom: '7px' }}
-          >
-            <i className='mr-10 text-18 icon-search'></i>
-            <label className='visually-hidden' htmlFor={searchInputId}>
-              Search tours
-            </label>
-            <input
-              id={searchInputId}
-              type='text'
-              value={searchTerm}
-              onChange={(event) => {
-                setPage(0);
-                setSearchTerm(event.target.value);
-              }}
-              className='text-15 fw-500'
-              placeholder={adminContent.shell.searchPlaceholder}
-              autoComplete='off'
-              autoCorrect='off'
-              autoCapitalize='none'
-              spellCheck={false}
-            />
-          </div>
+          <AdminSearchInput
+            id={searchInputId}
+            label='Search tours'
+            value={searchTerm}
+            onChange={(nextValue) => {
+              setPage(0);
+              setSearchTerm(nextValue);
+            }}
+            placeholder={adminContent.shell.searchPlaceholder}
+            containerClassName='rounded-12'
+            containerStyle={{ paddingTop: '7px', paddingBottom: '7px' }}
+            inputClassName='text-15 fw-500'
+          />
           <AppButton
             type='button'
             size='sm'

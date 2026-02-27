@@ -124,32 +124,34 @@ export async function POST(request: Request) {
     }
 
     const supabase = createAdminClient();
-    const [bookingBySessionResult, bookingByReferenceResult, bookingByIdResult] = await Promise.all([
-      checkoutSessionId
-        ? supabase
-            .from('bookings')
-            .select('id,total_amount,paymongo_last_event_id')
-            .eq('paymongo_checkout_session_id', checkoutSessionId)
-            .limit(1)
-            .maybeSingle<BookingLookupRow>()
-        : Promise.resolve({ data: null, error: null }),
-      fallbackBookingReference
-        ? supabase
-            .from('bookings')
-            .select('id,total_amount,paymongo_last_event_id')
-            .eq('booking_reference', fallbackBookingReference)
-            .limit(1)
-            .maybeSingle<BookingLookupRow>()
-        : Promise.resolve({ data: null, error: null }),
-      hasFallbackBookingId
-        ? supabase
-            .from('bookings')
-            .select('id,total_amount,paymongo_last_event_id')
-            .eq('id', fallbackBookingId)
-            .limit(1)
-            .maybeSingle<BookingLookupRow>()
-        : Promise.resolve({ data: null, error: null }),
-    ]);
+    const [bookingBySessionResult, bookingByReferenceResult, bookingByIdResult] = await Promise.all(
+      [
+        checkoutSessionId
+          ? supabase
+              .from('bookings')
+              .select('id,total_amount,paymongo_last_event_id')
+              .eq('paymongo_checkout_session_id', checkoutSessionId)
+              .limit(1)
+              .maybeSingle<BookingLookupRow>()
+          : Promise.resolve({ data: null, error: null }),
+        fallbackBookingReference
+          ? supabase
+              .from('bookings')
+              .select('id,total_amount,paymongo_last_event_id')
+              .eq('booking_reference', fallbackBookingReference)
+              .limit(1)
+              .maybeSingle<BookingLookupRow>()
+          : Promise.resolve({ data: null, error: null }),
+        hasFallbackBookingId
+          ? supabase
+              .from('bookings')
+              .select('id,total_amount,paymongo_last_event_id')
+              .eq('id', fallbackBookingId)
+              .limit(1)
+              .maybeSingle<BookingLookupRow>()
+          : Promise.resolve({ data: null, error: null }),
+      ],
+    );
 
     if (bookingBySessionResult.error) {
       return NextResponse.json({ error: bookingBySessionResult.error.message }, { status: 500 });
@@ -162,7 +164,10 @@ export async function POST(request: Request) {
     }
 
     const booking =
-      bookingBySessionResult.data ?? bookingByReferenceResult.data ?? bookingByIdResult.data ?? null;
+      bookingBySessionResult.data ??
+      bookingByReferenceResult.data ??
+      bookingByIdResult.data ??
+      null;
     if (!booking) {
       return NextResponse.json(
         { received: true, ignored: true, reason: 'Booking not found.' },

@@ -277,11 +277,13 @@ export default function AdminTourCreateForm() {
     const destinationId = Number(formState.destinationId);
     const tourTypeId = Number(formState.tourTypeId);
     const price = Number(formState.price);
-    const originalPrice = formState.originalPrice.trim()
-      ? Number(formState.originalPrice)
-      : null;
+    const originalPrice = formState.originalPrice.trim() ? Number(formState.originalPrice) : null;
 
-    if (!Number.isFinite(destinationId) || !Number.isFinite(tourTypeId) || !Number.isFinite(price)) {
+    if (
+      !Number.isFinite(destinationId) ||
+      !Number.isFinite(tourTypeId) ||
+      !Number.isFinite(price)
+    ) {
       setToastState({
         open: true,
         message: 'Invalid numeric values detected. Please review destination, type, and price.',
@@ -371,9 +373,15 @@ export default function AdminTourCreateForm() {
     window.populate = (tour = {}) => {
       setFormState((previousValue) => {
         const destinationId =
-          tour.destinationId ?? previousValue.destinationId ?? referencesQuery.data?.destinations[0]?.value ?? '';
+          tour.destinationId ??
+          previousValue.destinationId ??
+          referencesQuery.data?.destinations[0]?.value ??
+          '';
         const tourTypeId =
-          tour.tourTypeId ?? previousValue.tourTypeId ?? referencesQuery.data?.tourTypes[0]?.value ?? '';
+          tour.tourTypeId ??
+          previousValue.tourTypeId ??
+          referencesQuery.data?.tourTypes[0]?.value ??
+          '';
 
         return {
           ...previousValue,
@@ -739,14 +747,14 @@ export default function AdminTourCreateForm() {
       </div>
 
       <div className='d-flex justify-between items-center mt-30'>
-          <AppButton
-            type='button'
-            size='sm'
-            variant='outline'
-            disabled={isCreating}
-            onClick={() => {
-              router.push('/admin/tours');
-            }}
+        <AppButton
+          type='button'
+          size='sm'
+          variant='outline'
+          disabled={isCreating}
+          onClick={() => {
+            router.push('/admin/tours');
+          }}
         >
           {content.actions.cancel}
         </AppButton>

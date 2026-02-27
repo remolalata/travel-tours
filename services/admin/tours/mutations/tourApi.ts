@@ -96,7 +96,11 @@ async function buildUniqueTourSlug(supabase: SupabaseClient, title: string): Pro
   let suffix = 2;
 
   while (true) {
-    const { data, error } = await supabase.from('tours').select('id').eq('slug', slug).maybeSingle<TourSlugRow>();
+    const { data, error } = await supabase
+      .from('tours')
+      .select('id')
+      .eq('slug', slug)
+      .maybeSingle<TourSlugRow>();
 
     if (error) {
       throw new Error(`TOUR_SLUG_LOOKUP_FAILED:${error.message}`);
