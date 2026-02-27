@@ -11,10 +11,17 @@ export type TourReviewContext = {
   slug: string;
   destinationId: number;
 };
+export type TourTypeOption = {
+  id: number;
+  name: string;
+};
 
 export type FetchToursListInput = {
   page: number;
   pageSize: number;
+  tourTypeIds?: number[];
+  minPrice?: number;
+  maxPrice?: number;
 };
 export type FetchRelatedToursInput = {
   destinationId: number;
@@ -46,6 +53,11 @@ type TourReviewContextRow = {
   id: number;
   slug: string;
   destination_id: number;
+};
+
+type TourTypeRow = {
+  id: number;
+  name: string;
 };
 
 function mapTourRowToHomeTour(tour: TourRow): TourBase & { slug: string } {
@@ -131,6 +143,22 @@ export async function fetchTopTrendingTours(
   return ((data ?? []) as TourRow[]).map(mapTourRowToHomeTour);
 }
 
+export async function fetchTourTypes(supabase: SupabaseClient): Promise<TourTypeOption[]> {
+  const { data, error } = await supabase
+    .from('tour_types')
+    .select('id,name')
+    .order('name', { ascending: true });
+
+  if (error) {
+    throw new Error(`TOUR_TYPES_FETCH_FAILED:${error.message}`);
+  }
+
+  return ((data ?? []) as TourTypeRow[]).map((row) => ({
+    id: row.id,
+    name: row.name,
+  }));
+}
+
 export async function fetchToursList(
   supabase: SupabaseClient,
   input: FetchToursListInput,
@@ -138,7 +166,7 @@ export async function fetchToursList(
   const from = input.page * input.pageSize;
   const to = from + input.pageSize - 1;
 
-  const { data, error, count } = await supabase
+  let query = supabase
     .from('tours')
     .select(
       'id,slug,title,location,image_src,duration_label,price,original_price,description,is_featured',
@@ -147,9 +175,19 @@ export async function fetchToursList(
       },
     )
     .eq('is_active', true)
-    .order('created_at', { ascending: false })
-    .order('id', { ascending: false })
-    .range(from, to);
+    .order('created_at', { ascending: false });
+
+  if ((input.tourTypeIds?.length ?? 0) > 0) {
+    query = query.in('tour_type_id', input.tourTypeIds ?? []);
+  }
+  if (typeof input.minPrice === 'number') {
+    query = query.gte('price', input.minPrice);
+  }
+  if (typeof input.maxPrice === 'number') {
+    query = query.lte('price', input.maxPrice);
+  }
+
+  const { data, error, count } = await query.order('id', { ascending: false }).range(from, to);
 
   if (error) {
     throw new Error(`TOURS_LIST_FETCH_FAILED:${error.message}`);

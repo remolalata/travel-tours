@@ -1,7 +1,7 @@
 import SiteFooter from '@/components/layout/footers/SiteFooter';
 import SiteHeader from '@/components/layout/header/SiteHeader';
 import PageHeader from '@/features/tours/components/sections/PageHeader';
-import TourList1 from '@/features/tours/components/sections/TourList1';
+import TourList from '@/features/tours/components/sections/TourList';
 import type { PaginatedToursList } from '@/services/tours/mutations/tourApi';
 import { fetchToursList } from '@/services/tours/mutations/tourApi';
 import { createClient } from '@/utils/supabase/server';
@@ -41,7 +41,7 @@ export default async function page() {
       <main>
         <SiteHeader />
         <PageHeader />
-        <TourList1 initialToursPage={initialToursPage} />
+        <TourList initialToursPage={initialToursPage} />
         <SiteFooter />
       </main>
     </>

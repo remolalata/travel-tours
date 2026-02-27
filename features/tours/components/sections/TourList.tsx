@@ -7,25 +7,42 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import Pagination from '@/components/common/Pagination';
 import Stars from '@/components/common/Stars';
 import { speedFeatures } from '@/data/tourFilteringOptions';
+import useToursListFilters from '@/features/tours/hooks/useToursListFilters';
 import useToursListQuery from '@/services/tours/hooks/useToursListQuery';
 import type { PaginatedToursList } from '@/services/tours/mutations/tourApi';
 import { formatNumber } from '@/utils/helpers/formatNumber';
 
 import Sidebar from './Sidebar';
 
-type TourList1Props = {
+type TourListProps = {
   initialToursPage: PaginatedToursList;
 };
 
-export default function TourList1({ initialToursPage }: TourList1Props) {
+export default function TourList({ initialToursPage }: TourListProps) {
   const [sortOption, setSortOption] = useState<string>('');
   const [ddActives, setDdActives] = useState(false);
   const [sidebarActive, setSidebarActive] = useState(false);
   const [page, setPage] = useState(0);
+  const {
+    selectedTourTypeIds,
+    priceRangeDraft,
+    toggleTourType,
+    setPriceRangeDraft,
+    commitPriceRange,
+    queryFilters,
+  } = useToursListFilters();
   const dropDownContainer = useRef<HTMLDivElement | null>(null);
   const toursQuery = useToursListQuery(
-    { page, pageSize: initialToursPage.pageSize || 8 },
-    { initialData: page === 0 ? initialToursPage : undefined },
+    { page, pageSize: initialToursPage.pageSize || 8, ...queryFilters },
+    {
+      initialData:
+        page === 0 &&
+        selectedTourTypeIds.length === 0 &&
+        queryFilters.minPrice === undefined &&
+        queryFilters.maxPrice === undefined
+          ? initialToursPage
+          : undefined,
+    },
   );
   const pageSize = toursQuery.data?.pageSize ?? initialToursPage.pageSize ?? 8;
   const totalResults = toursQuery.data?.total ?? initialToursPage.total ?? 0;
@@ -40,6 +57,14 @@ export default function TourList1({ initialToursPage }: TourList1Props) {
   }, [toursQuery.data]);
   const showingStart = totalResults === 0 ? 0 : page * pageSize + 1;
   const showingEnd = Math.min(totalResults, page * pageSize + tours.length);
+  const handleToggleTourType = (tourTypeId: number) => {
+    setPage(0);
+    toggleTourType(tourTypeId);
+  };
+  const handlePriceRangeCommit = (nextPriceRange: [number, number]) => {
+    setPage(0);
+    commitPriceRange(nextPriceRange);
+  };
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
@@ -59,13 +84,20 @@ export default function TourList1({ initialToursPage }: TourList1Props) {
       document.removeEventListener('click', handleClick);
     };
   }, []);
+
   return (
     <section className='layout-pb-xl'>
       <div className='container'>
         <div className='row'>
           <div className='col-xl-3 col-lg-4'>
             <div className='lg:d-none'>
-              <Sidebar />
+              <Sidebar
+                selectedTourTypeIds={selectedTourTypeIds}
+                onToggleTourType={handleToggleTourType}
+                priceRange={priceRangeDraft}
+                onPriceRangeChange={setPriceRangeDraft}
+                onPriceRangeCommit={handlePriceRangeCommit}
+              />
             </div>
 
             <div className='lg:d-flex mb-30 accordion d-none js-accordion'>
@@ -83,7 +115,13 @@ export default function TourList1({ initialToursPage }: TourList1Props) {
                   style={sidebarActive ? { maxHeight: '2000px' } : {}}
                 >
                   <div className='pt-20'>
-                    <Sidebar />
+                    <Sidebar
+                      selectedTourTypeIds={selectedTourTypeIds}
+                      onToggleTourType={handleToggleTourType}
+                      priceRange={priceRangeDraft}
+                      onPriceRangeChange={setPriceRangeDraft}
+                      onPriceRangeCommit={handlePriceRangeCommit}
+                    />
                   </div>
                 </div>
               </div>
@@ -241,19 +279,21 @@ export default function TourList1({ initialToursPage }: TourList1Props) {
               ))}
             </div>
 
-            <div className='d-flex flex-column justify-center mt-60'>
-              <Pagination
-                range={totalPages}
-                page={currentPage}
-                onPageChange={(nextPage) => {
-                  setPage(nextPage - 1);
-                }}
-              />
+            {totalResults > 0 ? (
+              <div className='d-flex flex-column justify-center mt-60'>
+                <Pagination
+                  range={totalPages}
+                  page={currentPage}
+                  onPageChange={(nextPage) => {
+                    setPage(nextPage - 1);
+                  }}
+                />
 
-              <div className='mt-20 text-14 text-center'>
-                Showing results {showingStart}-{showingEnd} of {totalResults}
+                <div className='mt-20 text-14 text-center'>
+                  Showing results {showingStart}-{showingEnd} of {totalResults}
+                </div>
               </div>
-            </div>
+            ) : null}
           </div>
         </div>
       </div>

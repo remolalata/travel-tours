@@ -6,10 +6,27 @@ import { useState } from 'react';
 import Calender from '@/components/common/dropdownSearch/Calender';
 import RangeSlider from '@/components/common/RangeSlider';
 import Stars from '@/components/common/Stars';
-import { durations, languages, rating, toursTypes } from '@/data/tourFilteringOptions';
+import { rating } from '@/data/tourFilteringOptions';
+import useTourTypesQuery from '@/services/tours/hooks/useTourTypesQuery';
 
-export default function Sidebar() {
+type SidebarProps = {
+  selectedTourTypeIds: number[];
+  onToggleTourType: (tourTypeId: number) => void;
+  priceRange: [number, number];
+  onPriceRangeChange: (priceRange: [number, number]) => void;
+  onPriceRangeCommit: (priceRange: [number, number]) => void;
+};
+
+export default function Sidebar({
+  selectedTourTypeIds,
+  onToggleTourType,
+  priceRange,
+  onPriceRangeChange,
+  onPriceRangeCommit,
+}: SidebarProps) {
   const [ddActives, setDdActives] = useState(['tourtype']);
+  const tourTypesQuery = useTourTypesQuery();
+  const tourTypes = tourTypesQuery.data ?? [];
   return (
     <div className='rounded-12 sidebar -type-1'>
       <div className='bg-accent-1 sidebar__header'>
@@ -68,11 +85,18 @@ export default function Sidebar() {
               >
                 <div className='pt-15'>
                   <div className='d-flex flex-column y-gap-15'>
-                    {toursTypes.map((elm, i) => (
-                      <div key={i}>
+                    {tourTypes.map((tourType) => (
+                      <div key={tourType.id}>
                         <div className='d-flex items-center'>
-                          <div className='form-checkbox'>
-                            <input type='checkbox' name='name' />
+                          <div className='cursor-pointer form-checkbox'>
+                            <input
+                              type='checkbox'
+                              id={`tourType-${tourType.id}`}
+                              name={`tourType-${tourType.id}`}
+                              className='cursor-pointer'
+                              checked={selectedTourTypeIds.includes(tourType.id)}
+                              onChange={() => onToggleTourType(tourType.id)}
+                            />
                             <div className='form-checkbox__mark'>
                               <div className='form-checkbox__icon'>
                                 <Image
@@ -85,15 +109,22 @@ export default function Sidebar() {
                             </div>
                           </div>
 
-                          <div className='ml-10 lh-11'>{elm}</div>
+                          <label
+                            htmlFor={`tourType-${tourType.id}`}
+                            className='ml-10 cursor-pointer lh-11'
+                          >
+                            {tourType.name}
+                          </label>
                         </div>
                       </div>
                     ))}
+                    {tourTypesQuery.isLoading ? (
+                      <div className='text-14 text-light-1 lh-11'>Loading tour types...</div>
+                    ) : null}
+                    {!tourTypesQuery.isLoading && tourTypes.length === 0 ? (
+                      <div className='text-14 text-light-1 lh-11'>No tour types available.</div>
+                    ) : null}
                   </div>
-
-                  <a href='#' className='d-flex mt-15 text-15 text-accent-2 fw-500'>
-                    See More
-                  </a>
                 </div>
               </div>
             </div>
@@ -108,7 +139,7 @@ export default function Sidebar() {
               } `}
             >
               <div
-                className='d-flex justify-between items-center mb-10 accordion__button'
+                className='d-flex justify-between items-center accordion__button'
                 onClick={() =>
                   setDdActives((pre) =>
                     pre.includes('pricerange')
@@ -130,125 +161,11 @@ export default function Sidebar() {
                 style={ddActives.includes('pricerange') ? { maxHeight: '300px' } : {}}
               >
                 <div className='pt-15'>
-                  <RangeSlider />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className='sidebar__item'>
-          <div className='accordion -simple-2 js-accordion'>
-            <div
-              className={`accordion__item js-accordion-item-active ${
-                ddActives.includes('duration') ? 'is-active' : ''
-              } `}
-            >
-              <div
-                className='d-flex justify-between items-center accordion__button'
-                onClick={() =>
-                  setDdActives((pre) =>
-                    pre.includes('duration')
-                      ? [...pre.filter((elm) => elm != 'duration')]
-                      : [...pre, 'duration'],
-                  )
-                }
-              >
-                <h5 className='text-18 fw-500'>Duration</h5>
-
-                <div className='flex-center accordion__icon'>
-                  <i className='icon-chevron-down'></i>
-                  <i className='icon-chevron-down'></i>
-                </div>
-              </div>
-
-              <div
-                className='accordion__content'
-                style={ddActives.includes('duration') ? { maxHeight: '300px' } : {}}
-              >
-                <div className='pt-15'>
-                  <div className='d-flex flex-column y-gap-15'>
-                    {durations.map((elm, i) => (
-                      <div key={i}>
-                        <div className='d-flex items-center'>
-                          <div className='form-checkbox'>
-                            <input type='checkbox' name='name' />
-                            <div className='form-checkbox__mark'>
-                              <div className='form-checkbox__icon'>
-                                <Image
-                                  width='10'
-                                  height='8'
-                                  src='/img/icons/check.svg'
-                                  alt='icon'
-                                />
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className='ml-10 lh-11'>{elm}</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className='sidebar__item'>
-          <div className='accordion -simple-2 js-accordion'>
-            <div
-              className={`accordion__item js-accordion-item-active ${
-                ddActives.includes('language') ? 'is-active' : ''
-              } `}
-            >
-              <div
-                className='d-flex justify-between items-center accordion__button'
-                onClick={() =>
-                  setDdActives((pre) =>
-                    pre.includes('language')
-                      ? [...pre.filter((elm) => elm != 'language')]
-                      : [...pre, 'language'],
-                  )
-                }
-              >
-                <h5 className='text-18 fw-500'>Language</h5>
-
-                <div className='flex-center accordion__icon'>
-                  <i className='icon-chevron-down'></i>
-                  <i className='icon-chevron-down'></i>
-                </div>
-              </div>
-
-              <div
-                className='accordion__content'
-                style={ddActives.includes('language') ? { maxHeight: '300px' } : {}}
-              >
-                <div className='pt-15'>
-                  <div className='d-flex flex-column y-gap-15'>
-                    {languages.map((elm, i) => (
-                      <div key={i}>
-                        <div className='d-flex items-center'>
-                          <div className='form-checkbox'>
-                            <input type='checkbox' name='name' />
-                            <div className='form-checkbox__mark'>
-                              <div className='form-checkbox__icon'>
-                                <Image
-                                  width='10'
-                                  height='8'
-                                  src='/img/icons/check.svg'
-                                  alt='icon'
-                                />
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className='ml-10 lh-11'>{elm}</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  <RangeSlider
+                    value={priceRange}
+                    onChange={onPriceRangeChange}
+                    onChangeCommitted={onPriceRangeCommit}
+                  />
                 </div>
               </div>
             </div>
@@ -287,18 +204,26 @@ export default function Sidebar() {
                 <div className='pt-15'>
                   <div className='d-flex flex-column y-gap-15'>
                     {rating.map((elm, i) => (
-                      <div key={i} className='d-flex'>
-                        <div className='form-checkbox'>
-                          <input type='checkbox' name='rating' />
+                      <div key={i} className='d-flex items-center'>
+                        <div className='cursor-pointer form-checkbox'>
+                          <input
+                            type='checkbox'
+                            id={`rating-${elm}`}
+                            name={`rating-${elm}`}
+                            className='cursor-pointer'
+                          />
                           <div className='form-checkbox__mark'>
                             <div className='form-checkbox__icon'>
                               <Image width='10' height='8' src='/img/icons/check.svg' alt='icon' />
                             </div>
                           </div>
                         </div>
-                        <div className='d-flex x-gap-5 ml-10'>
+                        <label
+                          htmlFor={`rating-${elm}`}
+                          className='d-flex items-center x-gap-5 ml-10 cursor-pointer'
+                        >
                           <Stars star={elm} font={13} />
-                        </div>
+                        </label>
                       </div>
                     ))}
                   </div>

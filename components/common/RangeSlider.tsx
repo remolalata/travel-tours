@@ -5,6 +5,14 @@ import { ThemeProvider } from '@mui/material/styles';
 import { createTheme } from '@mui/material/styles';
 import { useState } from 'react';
 
+type RangeSliderProps = {
+  value?: [number, number];
+  min?: number;
+  max?: number;
+  onChange?: (value: [number, number]) => void;
+  onChangeCommitted?: (value: [number, number]) => void;
+};
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -16,13 +24,35 @@ const theme = createTheme({
   },
 });
 
-export default function RangeSlider() {
-  const [value, setValue] = useState<[number, number]>([200, 60000]);
+export default function RangeSlider({
+  value: valueProp,
+  min = 0,
+  max = 100000,
+  onChange,
+  onChangeCommitted,
+}: RangeSliderProps) {
+  const [internalValue, setInternalValue] = useState<[number, number]>([200, 60000]);
+  const value = valueProp ?? internalValue;
+
   const handleChange: NonNullable<SliderProps['onChange']> = (_event, newValue) => {
     if (Array.isArray(newValue) && newValue.length === 2) {
-      setValue([newValue[0], newValue[1]]);
+      const nextValue: [number, number] = [newValue[0], newValue[1]];
+      if (valueProp === undefined) {
+        setInternalValue(nextValue);
+      }
+      onChange?.(nextValue);
     }
   };
+
+  const handleChangeCommitted: NonNullable<SliderProps['onChangeCommitted']> = (
+    _event,
+    newValue,
+  ) => {
+    if (Array.isArray(newValue) && newValue.length === 2) {
+      onChangeCommitted?.([newValue[0], newValue[1]]);
+    }
+  };
+
   return (
     <>
       <div className='js-price-rangeSlider' style={{ padding: '20px 15px' }}>
@@ -32,9 +62,10 @@ export default function RangeSlider() {
               getAriaLabel={() => 'Minimum distance'}
               value={value}
               onChange={handleChange}
+              onChangeCommitted={handleChangeCommitted}
               valueLabelDisplay='auto'
-              max={100000}
-              min={0}
+              max={max}
+              min={min}
               disableSwap
             />
           </ThemeProvider>
