@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
+import { normalizeTourSearchTerm } from '@/services/tours/helpers/tourSearch';
 import type { AdminListingItem } from '@/types/admin';
 
 export type AdminTourData = AdminListingItem;
@@ -7,6 +8,7 @@ export type AdminTourData = AdminListingItem;
 export type FetchAdminToursInput = {
   page: number;
   pageSize: number;
+  searchTerm?: string;
 };
 
 export type PaginatedAdminTours = {
@@ -30,15 +32,23 @@ export async function fetchAdminTours(
   supabase: SupabaseClient,
   input: FetchAdminToursInput,
 ): Promise<PaginatedAdminTours> {
+  const normalizedSearchTerm = normalizeTourSearchTerm(input.searchTerm ?? '');
   const from = input.page * input.pageSize;
   const to = from + input.pageSize - 1;
 
-  const { data, error, count } = await supabase
+  let query = supabase
     .from('tours')
     .select('id,title,location,image_src,duration_label,price,original_price', { count: 'exact' })
     .order('created_at', { ascending: false })
-    .order('id', { ascending: false })
-    .range(from, to);
+    .order('id', { ascending: false });
+
+  if (normalizedSearchTerm.length > 0) {
+    query = query.or(
+      `title.ilike.%${normalizedSearchTerm}%,location.ilike.%${normalizedSearchTerm}%`,
+    );
+  }
+
+  const { data, error, count } = await query.range(from, to);
 
   if (error) {
     throw new Error(`TOURS_FETCH_FAILED:${error.message}`);
