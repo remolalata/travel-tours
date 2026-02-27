@@ -1,6 +1,5 @@
-import { fetchRelatedToursByDestination } from '@/services/tours/mutations/tourApi';
 import { tourSingleContent } from '@/content/features/tourSingle';
-import { tourData } from '@/data/tours';
+import { fetchRelatedToursByDestination } from '@/services/tours/mutations/tourApi';
 import { createClient } from '@/utils/supabase/server';
 
 import TourSliderClient from './TourSliderClient';
@@ -26,11 +25,7 @@ export default async function TourSlider({ destinationId, currentTourId }: TourS
     }
   }
 
-  const fallbackTours = tourData
-    .filter((item) => (typeof currentTourId === 'number' ? item.id !== currentTourId : true))
-    .slice(0, 8);
-
-  const tours = relatedTours.length > 0 ? relatedTours : fallbackTours;
+  const tours = relatedTours;
   const sectionContent = tourSingleContent.relatedTours;
 
   return (

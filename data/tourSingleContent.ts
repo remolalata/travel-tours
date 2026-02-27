@@ -7,8 +7,6 @@ import type {
   TourContent,
 } from '@/types/tourContent';
 
-import { allTour } from './tours';
-
 export type {
   FaqItem,
   IncludedExcludedItem,
@@ -218,24 +216,3 @@ export const createTourContentTemplate = (): TourContent => ({
 });
 
 export const defaultTourContent: TourContent = createTourContentTemplate();
-
-export const tourContentById: Record<string, TourContent> = allTour.reduce(
-  (accumulator, tour) => {
-    accumulator[String(tour.id)] = createTourContentTemplate();
-    return accumulator;
-  },
-  {} as Record<string, TourContent>,
-);
-
-export const getTourContentById = (tourId: number | string): TourContent =>
-  tourContentById[String(tourId)] || defaultTourContent;
-
-// Backward-compatible exports for components that still use legacy keys.
-export const included = defaultTourContent.includedItems;
-export const excluded = defaultTourContent.excludedItems;
-export const roadmapData = defaultTourContent.itinerarySummarySteps;
-export const roadmapData2 = defaultTourContent.itinerarySteps;
-export const faqData = defaultTourContent.faqItems;
-export const overallRatingData = defaultTourContent.ratingItems;
-export const reviews = defaultTourContent.reviewItems;
-export const times = defaultTourContent.timeSlots;

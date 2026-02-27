@@ -1,26 +1,23 @@
 import Link from 'next/link';
 
-import { fetchPopularTours } from '@/services/tours/mutations/tourApi';
 import FadeIn from '@/components/common/motion/FadeIn';
 import { homeContent } from '@/content/features/home';
-import { tourData } from '@/data/tours';
 import HomeTourCard from '@/features/home/components/tours/HomeTourCard';
+import { fetchPopularTours } from '@/services/tours/mutations/tourApi';
 import type { TourBase } from '@/types/tour';
 import { createClient } from '@/utils/supabase/server';
 
 export default async function PopularToursSection() {
   const { popularTours } = homeContent;
-  let tours: TourBase[] = tourData;
+  let tours: TourBase[] = [];
 
   try {
     const supabase = await createClient();
     const popularTourRows = await fetchPopularTours(supabase);
 
-    if (popularTourRows.length > 0) {
-      tours = popularTourRows;
-    }
+    tours = popularTourRows;
   } catch {
-    tours = tourData;
+    tours = [];
   }
 
   return (

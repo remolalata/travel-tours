@@ -137,10 +137,8 @@ npm run dev
 
 Primary static content lives in:
 
-- `data/tours.js`
 - `data/tourSingleContent.js`
 - `data/destinations.js`
-- `data/testimonials.js`
 - `data/tourFilteringOptions.js`
 
 Homepage composition:

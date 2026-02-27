@@ -1,8 +1,8 @@
 import { tourSingleContent as tourSinglePageContent } from '@/content/features/tourSingle';
-import type { Tour } from '@/data/tours';
 import type { TourContent } from '@/data/tourSingleContent';
 import TourPhotoGallery from '@/features/tour-single/components/Galleries/TourPhotoGallery';
 import type { Review } from '@/types/review';
+import type { Tour } from '@/types/tour';
 import type { FaqItem } from '@/types/tourContent';
 
 import Faq from './Faq';

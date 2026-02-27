@@ -4,12 +4,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import useToursListQuery from '@/services/tours/hooks/useToursListQuery';
-import type { PaginatedToursList } from '@/services/tours/mutations/tourApi';
 import Pagination from '@/components/common/Pagination';
 import Stars from '@/components/common/Stars';
 import { speedFeatures } from '@/data/tourFilteringOptions';
-import { tourDataTwo } from '@/data/tours';
+import useToursListQuery from '@/services/tours/hooks/useToursListQuery';
+import type { PaginatedToursList } from '@/services/tours/mutations/tourApi';
 import { formatNumber } from '@/utils/helpers/formatNumber';
 
 import Sidebar from './Sidebar';
@@ -37,12 +36,8 @@ export default function TourList1({ initialToursPage }: TourList1Props) {
       return toursQuery.data!.rows;
     }
 
-    if (page === 0) {
-      return tourDataTwo;
-    }
-
     return [];
-  }, [page, toursQuery.data]);
+  }, [toursQuery.data]);
   const showingStart = totalResults === 0 ? 0 : page * pageSize + 1;
   const showingEnd = Math.min(totalResults, page * pageSize + tours.length);
 

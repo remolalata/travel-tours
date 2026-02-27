@@ -1,7 +1,7 @@
 import Stars from '@/components/common/Stars';
 import { tourSingleContent } from '@/content/features/tourSingle';
-import type { Tour } from '@/data/tours';
 import FacebookShareAction from '@/features/tour-single/components/sections/FacebookShareAction';
+import type { Tour } from '@/types/tour';
 
 interface MainInformationProps {
   tour?: Tour;

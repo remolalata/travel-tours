@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 
-import { allTour } from '@/data/tours';
 import { getSiteUrl } from '@/utils/seo';
+import { createClient } from '@/utils/supabase/server';
 
 const staticRoutes = [
   '/',
@@ -12,7 +12,7 @@ const staticRoutes = [
   '/tours',
 ];
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = getSiteUrl();
   const now = new Date();
 
@@ -23,12 +23,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: route === '/' ? 1 : 0.7,
   }));
 
-  const tourEntries: MetadataRoute.Sitemap = allTour.map((tour) => ({
-    url: `${siteUrl}/tour/${tour.id}`,
-    lastModified: now,
-    changeFrequency: 'weekly',
-    priority: 0.8,
-  }));
+  let tourEntries: MetadataRoute.Sitemap = [];
+
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from('tours')
+      .select('slug,id')
+      .eq('is_active', true)
+      .order('created_at', { ascending: false })
+      .order('id', { ascending: false });
+
+    tourEntries = (data ?? []).map((tour) => ({
+      url: `${siteUrl}/tour/${tour.slug ?? tour.id}`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    }));
+  } catch {
+    tourEntries = [];
+  }
 
   return [...staticEntries, ...tourEntries];
 }

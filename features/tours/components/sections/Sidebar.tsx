@@ -6,7 +6,7 @@ import { useState } from 'react';
 import Calender from '@/components/common/dropdownSearch/Calender';
 import RangeSlider from '@/components/common/RangeSlider';
 import Stars from '@/components/common/Stars';
-import { durations, features, languages, rating, toursTypes } from '@/data/tourFilteringOptions';
+import { durations, languages, rating, toursTypes } from '@/data/tourFilteringOptions';
 
 export default function Sidebar() {
   const [ddActives, setDdActives] = useState(['tourtype']);
@@ -308,64 +308,6 @@ export default function Sidebar() {
           </div>
         </div>
 
-        <div className='sidebar__item'>
-          <div className='accordion -simple-2 js-accordion'>
-            <div
-              className={`accordion__item js-accordion-item-active ${
-                ddActives.includes('features') ? 'is-active' : ''
-              } `}
-            >
-              <div
-                className='d-flex justify-between items-center accordion__button'
-                onClick={() =>
-                  setDdActives((pre) =>
-                    pre.includes('features')
-                      ? [...pre.filter((elm) => elm != 'features')]
-                      : [...pre, 'features'],
-                  )
-                }
-              >
-                <h5 className='text-18 fw-500'>Specials</h5>
-
-                <div className='flex-center accordion__icon'>
-                  <i className='icon-chevron-down'></i>
-                  <i className='icon-chevron-down'></i>
-                </div>
-              </div>
-
-              <div
-                className='accordion__content'
-                style={ddActives.includes('features') ? { maxHeight: '300px' } : {}}
-              >
-                <div className='pt-15'>
-                  <div className='d-flex flex-column y-gap-15'>
-                    {features.map((elm, i) => (
-                      <div key={i}>
-                        <div className='d-flex items-center'>
-                          <div className='form-checkbox'>
-                            <input type='checkbox' name='name' />
-                            <div className='form-checkbox__mark'>
-                              <div className='form-checkbox__icon'>
-                                <Image
-                                  width='10'
-                                  height='8'
-                                  src='/img/icons/check.svg'
-                                  alt='icon'
-                                />
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className='ml-10 lh-11'>{elm}</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

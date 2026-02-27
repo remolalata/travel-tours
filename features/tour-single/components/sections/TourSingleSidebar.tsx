@@ -8,10 +8,10 @@ import Location from '@/components/common/dropdownSearch/Location';
 import TourType from '@/components/common/dropdownSearch/TourType';
 import AppToast from '@/components/common/feedback/AppToast';
 import { tourSingleContent } from '@/content/features/tourSingle';
-import type { Tour } from '@/data/tours';
 import type { TourContent } from '@/data/tourSingleContent';
 import TourBookingPaymentModal from '@/features/tour-single/components/sections/TourBookingPaymentModal';
 import useTourSingleBookingPaymentFlow from '@/features/tour-single/hooks/useTourSingleBookingPaymentFlow';
+import type { Tour } from '@/types/tour';
 import { formatNumber } from '@/utils/helpers/formatNumber';
 import { createClient } from '@/utils/supabase/client';
 

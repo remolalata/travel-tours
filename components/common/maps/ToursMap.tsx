@@ -12,8 +12,7 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 
 import Stars from '@/components/common/Stars';
-import type { TourFilterItem } from '@/data/tours';
-import { tourDataThree } from '@/data/tours';
+import type { TourBase } from '@/types/tour';
 import {
   GOOGLE_MAP_CONTAINER_STYLE,
   GOOGLE_MAP_OPTIONS,
@@ -21,9 +20,13 @@ import {
 } from '@/utils/config/googleMapConfig';
 import { formatNumber } from '@/utils/helpers/formatNumber';
 
-type MappableTour = TourFilterItem & { lat: number; long: number };
+type MappableTour = TourBase & { slug?: string | null; lat: number; long: number };
 
-export default function ToursMap() {
+type ToursMapProps = {
+  tours?: MappableTour[];
+};
+
+export default function ToursMap({ tours = [] }: ToursMapProps) {
   const [selectedLocation, setSelectedLocation] = useState<MappableTour | null>(null);
 
   const { isLoaded } = useLoadScript({
@@ -34,11 +37,11 @@ export default function ToursMap() {
 
   const mappableTours = useMemo(
     () =>
-      tourDataThree.filter(
+      tours.filter(
         (tour): tour is MappableTour =>
           typeof tour.lat === 'number' && typeof tour.long === 'number',
       ),
-    [],
+    [tours],
   );
 
   const closeCardHandler = () => {
@@ -82,7 +85,7 @@ export default function ToursMap() {
               onCloseClick={closeCardHandler}
             >
               <Link
-                href={`/tour/${selectedLocation.id}`}
+                href={`/tour/${selectedLocation.slug ?? selectedLocation.id}`}
                 className='-hover-shadow px-10 py-10 border rounded-12 tourCard -type-1'
               >
                 <div className='tourCard__header'>
