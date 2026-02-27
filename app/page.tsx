@@ -42,9 +42,10 @@ export default async function Page() {
       <PopularThingsToDoSection />
       <TrendingToursCarousel />
       <CustomerTestimonials />
+      <AppPromoBanner />
       <section className='layout-pt-lg layout-pb-xl'>
         <div className='container'>
-          <div className='row justify-center text-center'>
+          <div className='justify-center text-center row'>
             <div className='col-xl-8 col-lg-10'>
               <FadeIn as='h2' className='text-30 md:text-24'>
                 {homeContent.faq.title}
@@ -52,16 +53,15 @@ export default async function Page() {
             </div>
           </div>
 
-          <div className='row justify-center pt-40 sm:pt-20'>
+          <div className='justify-center pt-40 sm:pt-20 row'>
             <div className='col-xl-8 col-lg-10'>
-              <div className='accordion -simple row y-gap-20 mt-30 js-accordion'>
+              <div className='y-gap-20 mt-30 accordion -simple row js-accordion'>
                 <Faq items={faqItems} />
               </div>
             </div>
           </div>
         </div>
       </section>
-      <AppPromoBanner />
       <SiteFooter />
     </main>
   );

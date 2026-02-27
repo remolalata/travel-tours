@@ -16,6 +16,7 @@ import { createClient } from '@/utils/supabase/server';
 
 interface TourPageProps {
   params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 const getSingleTourPageData = cache(async (routeValue: string) => {
@@ -100,6 +101,7 @@ export async function generateMetadata(props: TourPageProps): Promise<Metadata> 
 
 export default async function Page(props: TourPageProps) {
   const params = await props.params;
+  const searchParams = await props.searchParams;
   const routeValue = params.id;
   const singlePageData = await getSingleTourPageData(routeValue);
 
@@ -108,7 +110,21 @@ export default async function Page(props: TourPageProps) {
   }
 
   if (routeValue !== singlePageData.routeContext.slug && isNumericRouteValue(routeValue)) {
-    permanentRedirect(getCanonicalTourPath(singlePageData.routeContext.slug));
+    const queryParams = new URLSearchParams();
+    Object.entries(searchParams).forEach(([key, value]) => {
+      if (typeof value === 'string') {
+        queryParams.set(key, value);
+      } else if (Array.isArray(value)) {
+        value.forEach((entry) => queryParams.append(key, entry));
+      }
+    });
+
+    const canonicalPath = getCanonicalTourPath(singlePageData.routeContext.slug);
+    const redirectPath = queryParams.toString()
+      ? `${canonicalPath}?${queryParams.toString()}`
+      : canonicalPath;
+
+    permanentRedirect(redirectPath);
   }
 
   const { tour, tourContent, galleryImageUrls, overviewDescription, routeContext } = singlePageData;

@@ -75,7 +75,8 @@ export const tourSingleContent = {
       },
       toasts: {
         missingDates: 'Please select travel dates before proceeding to payment.',
-        successPrefix: 'Booking placed successfully. Reference',
+        success: 'Payment successful.',
+        successWithReference: 'Payment successful. Reference:',
         error: 'Failed to create booking. Please try again.',
       },
     },

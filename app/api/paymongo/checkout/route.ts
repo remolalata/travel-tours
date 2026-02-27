@@ -342,8 +342,8 @@ export async function POST(request: Request) {
             },
           ],
           payment_method_types: ['gcash', 'paymaya', 'card'],
-          success_url: `${siteUrl}/tour/${tourRow.id}?checkout=success&ref=${insertedBooking.booking_reference}`,
-          cancel_url: `${siteUrl}/tour/${tourRow.id}?checkout=cancelled&ref=${insertedBooking.booking_reference}`,
+          success_url: `${siteUrl}/api/paymongo/return?checkout=success&tourId=${tourRow.id}&ref=${encodeURIComponent(insertedBooking.booking_reference)}`,
+          cancel_url: `${siteUrl}/api/paymongo/return?checkout=cancelled&tourId=${tourRow.id}&ref=${encodeURIComponent(insertedBooking.booking_reference)}`,
           metadata: {
             booking_id: String(insertedBooking.id),
             booking_reference: insertedBooking.booking_reference,

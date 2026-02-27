@@ -25,7 +25,10 @@ type PaymongoWebhookPayload = {
         attributes?: {
           metadata?: {
             booking_reference?: string;
+            booking_id?: string;
           };
+          checkout_session_id?: string;
+          checkout_session?: { id?: string };
           payments?: Array<{ id?: string }>;
           payment_intent?: { id?: string };
           amount_total?: number;
@@ -103,40 +106,63 @@ export async function POST(request: Request) {
     const eventType = body?.data?.attributes?.type;
     const eventId = body?.data?.id;
     const resource = body?.data?.attributes?.data;
-    const checkoutSessionId = resource?.id;
+    const checkoutSessionId =
+      resource?.id ??
+      resource?.attributes?.checkout_session_id ??
+      resource?.attributes?.checkout_session?.id;
     const fallbackBookingReference = resource?.attributes?.metadata?.booking_reference;
+    const fallbackBookingIdRaw = resource?.attributes?.metadata?.booking_id;
+    const fallbackBookingId = fallbackBookingIdRaw ? Number(fallbackBookingIdRaw) : NaN;
+    const hasFallbackBookingId = Number.isInteger(fallbackBookingId) && fallbackBookingId > 0;
 
-    if (!eventType || !eventId || !checkoutSessionId) {
+    if (
+      !eventType ||
+      !eventId ||
+      (!checkoutSessionId && !fallbackBookingReference && !hasFallbackBookingId)
+    ) {
       return NextResponse.json({ error: 'Missing webhook event fields.' }, { status: 400 });
     }
 
     const supabase = createAdminClient();
-    const [{ data: bookingBySession, error: bookingBySessionError }, fallbackLookupResult] =
-      await Promise.all([
-        supabase
-          .from('bookings')
-          .select('id,total_amount,paymongo_last_event_id')
-          .eq('paymongo_checkout_session_id', checkoutSessionId)
-          .limit(1)
-          .maybeSingle<BookingLookupRow>(),
-        fallbackBookingReference
-          ? supabase
-              .from('bookings')
-              .select('id,total_amount,paymongo_last_event_id')
-              .eq('booking_reference', fallbackBookingReference)
-              .limit(1)
-              .maybeSingle<BookingLookupRow>()
-          : Promise.resolve({ data: null, error: null }),
-      ]);
+    const [bookingBySessionResult, bookingByReferenceResult, bookingByIdResult] = await Promise.all([
+      checkoutSessionId
+        ? supabase
+            .from('bookings')
+            .select('id,total_amount,paymongo_last_event_id')
+            .eq('paymongo_checkout_session_id', checkoutSessionId)
+            .limit(1)
+            .maybeSingle<BookingLookupRow>()
+        : Promise.resolve({ data: null, error: null }),
+      fallbackBookingReference
+        ? supabase
+            .from('bookings')
+            .select('id,total_amount,paymongo_last_event_id')
+            .eq('booking_reference', fallbackBookingReference)
+            .limit(1)
+            .maybeSingle<BookingLookupRow>()
+        : Promise.resolve({ data: null, error: null }),
+      hasFallbackBookingId
+        ? supabase
+            .from('bookings')
+            .select('id,total_amount,paymongo_last_event_id')
+            .eq('id', fallbackBookingId)
+            .limit(1)
+            .maybeSingle<BookingLookupRow>()
+        : Promise.resolve({ data: null, error: null }),
+    ]);
 
-    if (bookingBySessionError) {
-      return NextResponse.json({ error: bookingBySessionError.message }, { status: 500 });
+    if (bookingBySessionResult.error) {
+      return NextResponse.json({ error: bookingBySessionResult.error.message }, { status: 500 });
     }
-    if (fallbackLookupResult.error) {
-      return NextResponse.json({ error: fallbackLookupResult.error.message }, { status: 500 });
+    if (bookingByReferenceResult.error) {
+      return NextResponse.json({ error: bookingByReferenceResult.error.message }, { status: 500 });
+    }
+    if (bookingByIdResult.error) {
+      return NextResponse.json({ error: bookingByIdResult.error.message }, { status: 500 });
     }
 
-    const booking = bookingBySession ?? fallbackLookupResult.data ?? null;
+    const booking =
+      bookingBySessionResult.data ?? bookingByReferenceResult.data ?? bookingByIdResult.data ?? null;
     if (!booking) {
       return NextResponse.json(
         { received: true, ignored: true, reason: 'Booking not found.' },
@@ -159,14 +185,17 @@ export async function POST(request: Request) {
         ? Math.max(0, Math.round(amountCentavos) / 100)
         : Number(booking.total_amount);
 
-    if (eventType === 'checkout_session.payment.paid') {
+    const isPaidEvent =
+      eventType === 'checkout_session.payment.paid' || eventType.endsWith('.payment.paid');
+    const isFailedEvent =
+      eventType === 'checkout_session.payment.failed' || eventType.endsWith('.payment.failed');
+
+    if (isPaidEvent) {
       const { error: updatePaidError } = await supabase
         .from('bookings')
         .update({
-          booking_status: 'approved',
           payment_status: 'paid',
           amount_paid: amountPaid,
-          approved_at: new Date().toISOString(),
           payment_provider: 'paymongo',
           paymongo_payment_id: paymentId,
           paymongo_last_event_id: eventId,
@@ -176,11 +205,10 @@ export async function POST(request: Request) {
       if (updatePaidError) {
         return NextResponse.json({ error: updatePaidError.message }, { status: 500 });
       }
-    } else if (eventType === 'checkout_session.payment.failed') {
+    } else if (isFailedEvent) {
       const { error: updateFailedError } = await supabase
         .from('bookings')
         .update({
-          booking_status: 'pending',
           payment_status: 'unpaid',
           payment_provider: 'paymongo',
           paymongo_payment_id: paymentId,

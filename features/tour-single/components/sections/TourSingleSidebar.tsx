@@ -4,8 +4,6 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import Calender from '@/components/common/dropdownSearch/Calender';
-import Location from '@/components/common/dropdownSearch/Location';
-import TourType from '@/components/common/dropdownSearch/TourType';
 import AppToast from '@/components/common/feedback/AppToast';
 import { tourSingleContent } from '@/content/features/tourSingle';
 import type { TourContent } from '@/data/tourSingleContent';
@@ -58,6 +56,8 @@ const getTourTypeForQuote = (tour?: Tour & { tourTypeName?: string | null }): st
 };
 
 const CHECKOUT_RESUME_QUERY = 'resumeCheckout';
+const CHECKOUT_STATUS_QUERY = 'checkout';
+const CHECKOUT_REFERENCE_QUERY = 'ref';
 
 export default function TourSingleSidebar({ tour, destinationId }: TourSingleSidebarProps) {
   const router = useRouter();
@@ -65,13 +65,14 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
   const searchParams = useSearchParams();
   const supabaseRef = useRef(createClient());
   const hasHandledResumeRef = useRef(false);
+  const hasHandledCheckoutStatusRef = useRef(false);
   const { sidebar } = tourSingleContent;
+  const location = getTourDestinationName(tour);
+  const tourType = getTourTypeForQuote(tour);
   const dropDownContainer = useRef<HTMLDivElement | null>(null);
   const [currentActiveDD, setCurrentActiveDD] = useState('');
   const [isSubmittingCheckout, setIsSubmittingCheckout] = useState(false);
-  const [location, setLocation] = useState(() => getTourDestinationName(tour));
   const [when, setWhen] = useState('');
-  const [tourType, setTourType] = useState(() => getTourTypeForQuote(tour));
   const [toastState, setToastState] = useState<{
     open: boolean;
     message: string;
@@ -97,8 +98,6 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
         getPendingCheckoutStorageKey(),
         JSON.stringify({
           when,
-          location,
-          tourType,
           formState: bookingFlow.formState,
         }),
       );
@@ -116,8 +115,6 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
 
       const parsed = JSON.parse(rawValue) as {
         when?: string;
-        location?: string;
-        tourType?: string;
         formState?: {
           adults?: string;
           children?: string;
@@ -128,12 +125,6 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
 
       if (typeof parsed.when === 'string') {
         setWhen(parsed.when);
-      }
-      if (typeof parsed.location === 'string') {
-        setLocation(parsed.location);
-      }
-      if (typeof parsed.tourType === 'string') {
-        setTourType(parsed.tourType);
       }
 
       if (parsed.formState?.adults) {
@@ -166,6 +157,14 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
   const clearResumeQuery = useCallback(() => {
     const params = new URLSearchParams(searchParams.toString());
     params.delete(CHECKOUT_RESUME_QUERY);
+    const nextPath = `${pathname}${params.toString() ? `?${params.toString()}` : ''}`;
+    router.replace(nextPath, { scroll: false });
+  }, [pathname, router, searchParams]);
+
+  const clearCheckoutQuery = useCallback(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete(CHECKOUT_STATUS_QUERY);
+    params.delete(CHECKOUT_REFERENCE_QUERY);
     const nextPath = `${pathname}${params.toString() ? `?${params.toString()}` : ''}`;
     router.replace(nextPath, { scroll: false });
   }, [pathname, router, searchParams]);
@@ -211,6 +210,28 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
     void continueAfterLogin();
   }, [pathname, router, searchParams, clearResumeQuery, restorePendingCheckoutDraft]);
 
+  useEffect(() => {
+    if (
+      hasHandledCheckoutStatusRef.current ||
+      searchParams.get(CHECKOUT_STATUS_QUERY) !== 'success'
+    ) {
+      return;
+    }
+
+    hasHandledCheckoutStatusRef.current = true;
+    const bookingReference = searchParams.get(CHECKOUT_REFERENCE_QUERY)?.trim();
+    const successMessage = bookingReference
+      ? `${sidebar.paymentFlow.toasts.successWithReference} ${bookingReference}`
+      : sidebar.paymentFlow.toasts.success;
+
+    setToastState({
+      open: true,
+      severity: 'success',
+      message: successMessage,
+    });
+    clearCheckoutQuery();
+  }, [clearCheckoutQuery, searchParams, sidebar.paymentFlow.toasts]);
+
   return (
     <>
       <div className='tourSingleSidebar'>
@@ -222,14 +243,7 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
         <div ref={dropDownContainer} className='mt-20 searchForm -type-1 -sidebar'>
           <div className='searchForm__form'>
             <div className='js-select-control searchFormItem js-form-dd'>
-              <div
-                className='searchFormItem__button'
-                onClick={() =>
-                  setCurrentActiveDD((previousValue) =>
-                    previousValue === 'location' ? '' : 'location',
-                  )
-                }
-              >
+              <div className='searchFormItem__button'>
                 <div className='flex-center bg-light-1 rounded-12 size-50 searchFormItem__icon'>
                   <i className='text-20 icon-pin'></i>
                 </div>
@@ -240,8 +254,6 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
                   </div>
                 </div>
               </div>
-
-              <Location setLocation={setLocation} active={currentActiveDD === 'location'} />
             </div>
 
             <div className='js-select-control searchFormItem js-form-dd js-calendar'>
@@ -275,14 +287,7 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
             </div>
 
             <div className='js-select-control searchFormItem js-form-dd'>
-              <div
-                className='searchFormItem__button'
-                onClick={() =>
-                  setCurrentActiveDD((previousValue) =>
-                    previousValue === 'tourType' ? '' : 'tourType',
-                  )
-                }
-              >
+              <div className='searchFormItem__button'>
                 <div className='flex-center bg-light-1 rounded-12 size-50 searchFormItem__icon'>
                   <i className='text-20 icon-flag'></i>
                 </div>
@@ -292,12 +297,7 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
                     {tourType ? tourType : sidebar.fields.tourTypePlaceholder}
                   </div>
                 </div>
-                <div className='searchFormItem__icon_chevron'>
-                  <i className='d-flex text-18 icon-chevron-down'></i>
-                </div>
               </div>
-
-              <TourType setTourType={setTourType} active={currentActiveDD === 'tourType'} />
             </div>
           </div>
         </div>
