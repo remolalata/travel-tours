@@ -3,12 +3,12 @@
 import { useCallback, useMemo, useState } from 'react';
 
 import {
-  calculateSimulatedBookingTotals,
-  createInitialSimulatedBookingPaymentFormState,
-  type SimulatedBookingPaymentFormState,
-  type SimulatedBookingPaymentValidationErrors,
-  validateSimulatedBookingPaymentForm,
-} from '@/features/tour-single/helpers/simulatedBookingPayment';
+  calculateBookingTotals,
+  createInitialBookingPaymentFormState,
+  type BookingPaymentFormState,
+  type BookingPaymentValidationErrors,
+  validateBookingPaymentForm,
+} from '@/features/tour-single/helpers/bookingPayment';
 
 type UseTourSingleBookingPaymentFlowInput = {
   baseTourPrice: number;
@@ -20,15 +20,10 @@ export default function useTourSingleBookingPaymentFlow({
   when,
 }: UseTourSingleBookingPaymentFlowInput) {
   const [isOpen, setIsOpen] = useState(false);
-  const [formState, setFormState] = useState<SimulatedBookingPaymentFormState>(
-    createInitialSimulatedBookingPaymentFormState,
-  );
-  const [fieldErrors, setFieldErrors] = useState<SimulatedBookingPaymentValidationErrors>({});
+  const [formState, setFormState] = useState<BookingPaymentFormState>(createInitialBookingPaymentFormState);
+  const [fieldErrors, setFieldErrors] = useState<BookingPaymentValidationErrors>({});
 
-  const totals = useMemo(
-    () => calculateSimulatedBookingTotals(baseTourPrice, formState),
-    [baseTourPrice, formState],
-  );
+  const totals = useMemo(() => calculateBookingTotals(baseTourPrice, formState), [baseTourPrice, formState]);
 
   const open = useCallback(() => setIsOpen(true), []);
   const close = useCallback(() => {
@@ -37,9 +32,9 @@ export default function useTourSingleBookingPaymentFlow({
   }, []);
 
   const updateField = useCallback(
-    <Key extends keyof SimulatedBookingPaymentFormState>(
+    <Key extends keyof BookingPaymentFormState>(
       key: Key,
-      value: SimulatedBookingPaymentFormState[Key],
+      value: BookingPaymentFormState[Key],
     ) => {
       setFormState((previousValue) => ({
         ...previousValue,
@@ -51,12 +46,12 @@ export default function useTourSingleBookingPaymentFlow({
   );
 
   const reset = useCallback(() => {
-    setFormState(createInitialSimulatedBookingPaymentFormState());
+    setFormState(createInitialBookingPaymentFormState());
     setFieldErrors({});
   }, []);
 
   const validate = useCallback(() => {
-    const errors = validateSimulatedBookingPaymentForm({ when, formState });
+    const errors = validateBookingPaymentForm({ when, formState });
     setFieldErrors(errors);
     return {
       isValid: Object.keys(errors).length === 0,
@@ -76,4 +71,3 @@ export default function useTourSingleBookingPaymentFlow({
     validate,
   };
 }
-

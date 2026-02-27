@@ -4,9 +4,9 @@ import dayjs from 'dayjs';
 import { NextResponse } from 'next/server';
 
 import {
-  calculateSimulatedBookingTotals,
-  type SimulatedPaymentOption,
-} from '@/features/tour-single/helpers/simulatedBookingPayment';
+  calculateBookingTotals,
+  type BookingPaymentOption,
+} from '@/features/tour-single/helpers/bookingPayment';
 import { createAdminClient } from '@/utils/supabase/admin';
 import { createClient as createServerSupabaseClient } from '@/utils/supabase/server';
 
@@ -15,7 +15,7 @@ type CheckoutPayload = {
   travelDateRange?: string;
   adults?: string;
   children?: string;
-  paymentOption?: SimulatedPaymentOption;
+  paymentOption?: BookingPaymentOption;
   notes?: string;
   location?: string;
   tourType?: string;
@@ -78,7 +78,7 @@ function generateBookingReference() {
   return `BK-${numericPart}`;
 }
 
-function resolveStatuses(paymentOption: SimulatedPaymentOption) {
+function resolveStatuses(paymentOption: BookingPaymentOption) {
   if (paymentOption === 'full') {
     return {
       bookingStatus: 'pending' as const,
@@ -203,7 +203,7 @@ export async function POST(request: Request) {
 
   const normalizedAdults = Math.max(1, parseWholeNumber(adults, 1)).toString();
   const normalizedChildren = parseWholeNumber(children, 0).toString();
-  const totals = calculateSimulatedBookingTotals(Number(tourRow.price) || 0, {
+  const totals = calculateBookingTotals(Number(tourRow.price) || 0, {
     adults: normalizedAdults,
     children: normalizedChildren,
     paymentOption,

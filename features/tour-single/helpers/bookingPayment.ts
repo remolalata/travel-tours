@@ -1,17 +1,17 @@
-export type SimulatedPaymentOption = 'full' | 'partial' | 'reserve';
+export type BookingPaymentOption = 'full' | 'partial' | 'reserve';
 
-export type SimulatedBookingPaymentFormState = {
+export type BookingPaymentFormState = {
   adults: string;
   children: string;
-  paymentOption: SimulatedPaymentOption;
+  paymentOption: BookingPaymentOption;
   notes: string;
 };
 
-export type SimulatedBookingPaymentValidationErrors = Partial<
-  Record<keyof SimulatedBookingPaymentFormState | 'when', string>
+export type BookingPaymentValidationErrors = Partial<
+  Record<keyof BookingPaymentFormState | 'when', string>
 >;
 
-export type SimulatedBookingPaymentTotals = {
+export type BookingPaymentTotals = {
   travelers: number;
   totalAmount: number;
   amountToChargeNow: number;
@@ -27,10 +27,10 @@ function parseWholeNumber(value: string, fallback = 0): number {
   return Math.max(0, Math.floor(parsed));
 }
 
-export function calculateSimulatedBookingTotals(
+export function calculateBookingTotals(
   baseTourPrice: number,
-  formState: SimulatedBookingPaymentFormState,
-): SimulatedBookingPaymentTotals {
+  formState: BookingPaymentFormState,
+): BookingPaymentTotals {
   const adults = Math.max(1, parseWholeNumber(formState.adults, 1));
   const children = parseWholeNumber(formState.children, 0);
   const totalAmount = Math.round((baseTourPrice * adults + baseTourPrice * CHILD_RATE_MULTIPLIER * children) * 100) / 100;
@@ -49,11 +49,11 @@ export function calculateSimulatedBookingTotals(
   };
 }
 
-export function validateSimulatedBookingPaymentForm(input: {
+export function validateBookingPaymentForm(input: {
   when: string;
-  formState: SimulatedBookingPaymentFormState;
-}): SimulatedBookingPaymentValidationErrors {
-  const errors: SimulatedBookingPaymentValidationErrors = {};
+  formState: BookingPaymentFormState;
+}): BookingPaymentValidationErrors {
+  const errors: BookingPaymentValidationErrors = {};
   const adults = Number(input.formState.adults);
   const children = Number(input.formState.children);
 
@@ -76,7 +76,7 @@ export function validateSimulatedBookingPaymentForm(input: {
   return errors;
 }
 
-export function createInitialSimulatedBookingPaymentFormState(): SimulatedBookingPaymentFormState {
+export function createInitialBookingPaymentFormState(): BookingPaymentFormState {
   return {
     adults: '1',
     children: '0',
@@ -84,4 +84,3 @@ export function createInitialSimulatedBookingPaymentFormState(): SimulatedBookin
     notes: '',
   };
 }
-

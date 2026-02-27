@@ -8,9 +8,9 @@ import AppTextField from '@/components/common/form/AppTextField';
 import AppModal from '@/components/common/modal/AppModal';
 import { tourSingleContent } from '@/content/features/tourSingle';
 import type {
-  SimulatedBookingPaymentFormState,
-  SimulatedBookingPaymentValidationErrors,
-} from '@/features/tour-single/helpers/simulatedBookingPayment';
+  BookingPaymentFormState,
+  BookingPaymentValidationErrors,
+} from '@/features/tour-single/helpers/bookingPayment';
 
 type TourBookingPaymentModalProps = {
   open: boolean;
@@ -20,16 +20,16 @@ type TourBookingPaymentModalProps = {
   location: string;
   when: string;
   tourType: string;
-  formState: SimulatedBookingPaymentFormState;
-  fieldErrors: SimulatedBookingPaymentValidationErrors;
+  formState: BookingPaymentFormState;
+  fieldErrors: BookingPaymentValidationErrors;
   totals: {
     travelers: number;
     totalAmount: number;
     amountToChargeNow: number;
   };
-  onFieldChange: <Key extends keyof SimulatedBookingPaymentFormState>(
+  onFieldChange: <Key extends keyof BookingPaymentFormState>(
     key: Key,
-    value: SimulatedBookingPaymentFormState[Key],
+    value: BookingPaymentFormState[Key],
   ) => void;
 };
 
@@ -145,7 +145,7 @@ export default function TourBookingPaymentModal({
             label={content.fields.paymentOption}
             value={formState.paymentOption}
             options={paymentOptions}
-            onChange={(value) => onFieldChange('paymentOption', value as SimulatedBookingPaymentFormState['paymentOption'])}
+            onChange={(value) => onFieldChange('paymentOption', value as BookingPaymentFormState['paymentOption'])}
             required
             sx={undefined}
           />
