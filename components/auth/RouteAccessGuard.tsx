@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -16,8 +16,12 @@ type RouteAccessGuardProps = {
 
 export default function RouteAccessGuard({ mode, children }: RouteAccessGuardProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const supabase = useMemo(() => createClient(), []);
   const [isChecking, setIsChecking] = useState(true);
+  const nextParam = searchParams.get('next');
+  const redirectPath =
+    nextParam && nextParam.startsWith('/') && !nextParam.startsWith('//') ? nextParam : '/';
 
   useEffect(() => {
     let isMounted = true;
@@ -30,7 +34,7 @@ export default function RouteAccessGuard({ mode, children }: RouteAccessGuardPro
         }
 
         if (mode === 'guest-only' && viewer.isAuthenticated) {
-          router.replace('/');
+          router.replace(redirectPath);
           return;
         }
 
@@ -58,7 +62,7 @@ export default function RouteAccessGuard({ mode, children }: RouteAccessGuardPro
       isMounted = false;
       subscription.unsubscribe();
     };
-  }, [mode, router, supabase]);
+  }, [mode, redirectPath, router, supabase]);
 
   if (isChecking && mode === 'auth-required') {
     return null;

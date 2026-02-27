@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 
-import useCreateSimulatedBookingMutation from '@/services/bookings/hooks/useCreateSimulatedBookingMutation';
 import Calender from '@/components/common/dropdownSearch/Calender';
 import Location from '@/components/common/dropdownSearch/Location';
 import TourType from '@/components/common/dropdownSearch/TourType';
@@ -13,6 +13,7 @@ import type { TourContent } from '@/data/tourSingleContent';
 import TourBookingPaymentModal from '@/features/tour-single/components/sections/TourBookingPaymentModal';
 import useTourSingleBookingPaymentFlow from '@/features/tour-single/hooks/useTourSingleBookingPaymentFlow';
 import { formatNumber } from '@/utils/helpers/formatNumber';
+import { createClient } from '@/utils/supabase/client';
 
 interface TourSingleSidebarProps {
   tour?: Tour & { tourTypeName?: string | null };
@@ -56,11 +57,18 @@ const getTourTypeForQuote = (tour?: Tour & { tourTypeName?: string | null }): st
   return inferTourType(tour);
 };
 
+const CHECKOUT_RESUME_QUERY = 'resumeCheckout';
+
 export default function TourSingleSidebar({ tour, destinationId }: TourSingleSidebarProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const supabaseRef = useRef(createClient());
+  const hasHandledResumeRef = useRef(false);
   const { sidebar } = tourSingleContent;
   const dropDownContainer = useRef<HTMLDivElement | null>(null);
-  const createBookingMutation = useCreateSimulatedBookingMutation();
   const [currentActiveDD, setCurrentActiveDD] = useState('');
+  const [isSubmittingCheckout, setIsSubmittingCheckout] = useState(false);
   const [location, setLocation] = useState(() => getTourDestinationName(tour));
   const [when, setWhen] = useState('');
   const [tourType, setTourType] = useState(() => getTourTypeForQuote(tour));
@@ -77,12 +85,87 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
     baseTourPrice: tour?.price ?? 0,
     when,
   });
-  const paymentOptionLabel = useMemo(
-    () =>
-      sidebar.paymentFlow.paymentOptions.find((option) => option.value === bookingFlow.formState.paymentOption)
-        ?.label ?? bookingFlow.formState.paymentOption,
-    [bookingFlow.formState.paymentOption, sidebar.paymentFlow.paymentOptions],
-  );
+
+  const getPendingCheckoutStorageKey = () => `tour_checkout_resume:${tour?.id ?? 'unknown'}`;
+
+  const persistPendingCheckoutDraft = () => {
+    try {
+      window.sessionStorage.setItem(
+        getPendingCheckoutStorageKey(),
+        JSON.stringify({
+          when,
+          location,
+          tourType,
+          formState: bookingFlow.formState,
+        }),
+      );
+    } catch {
+      // Ignore session storage failures and continue with login redirect.
+    }
+  };
+
+  const restorePendingCheckoutDraft = () => {
+    try {
+      const rawValue = window.sessionStorage.getItem(getPendingCheckoutStorageKey());
+      if (!rawValue) {
+        return;
+      }
+
+      const parsed = JSON.parse(rawValue) as {
+        when?: string;
+        location?: string;
+        tourType?: string;
+        formState?: {
+          adults?: string;
+          children?: string;
+          paymentOption?: 'full' | 'partial' | 'reserve';
+          notes?: string;
+        };
+      };
+
+      if (typeof parsed.when === 'string') {
+        setWhen(parsed.when);
+      }
+      if (typeof parsed.location === 'string') {
+        setLocation(parsed.location);
+      }
+      if (typeof parsed.tourType === 'string') {
+        setTourType(parsed.tourType);
+      }
+
+      if (parsed.formState?.adults) {
+        bookingFlow.updateField('adults', parsed.formState.adults);
+      }
+      if (parsed.formState?.children) {
+        bookingFlow.updateField('children', parsed.formState.children);
+      }
+      if (parsed.formState?.paymentOption) {
+        bookingFlow.updateField('paymentOption', parsed.formState.paymentOption);
+      }
+      if (typeof parsed.formState?.notes === 'string') {
+        bookingFlow.updateField('notes', parsed.formState.notes);
+      }
+
+      bookingFlow.open();
+      window.sessionStorage.removeItem(getPendingCheckoutStorageKey());
+    } catch {
+      // Ignore invalid resume payload and continue.
+    }
+  };
+
+  const buildLoginRedirectPath = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set(CHECKOUT_RESUME_QUERY, '1');
+    const nextPath = `${pathname}${params.toString() ? `?${params.toString()}` : ''}`;
+    return `/login?next=${encodeURIComponent(nextPath)}`;
+  };
+
+  const clearResumeQuery = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete(CHECKOUT_RESUME_QUERY);
+    const nextPath = `${pathname}${params.toString() ? `?${params.toString()}` : ''}`;
+    router.replace(nextPath, { scroll: false });
+  };
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
@@ -103,6 +186,27 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
       document.removeEventListener('click', handleClick);
     };
   }, []);
+
+  useEffect(() => {
+    if (hasHandledResumeRef.current || searchParams.get(CHECKOUT_RESUME_QUERY) !== '1') {
+      return;
+    }
+
+    hasHandledResumeRef.current = true;
+
+    const continueAfterLogin = async () => {
+      const {
+        data: { user },
+      } = await supabaseRef.current.auth.getUser();
+
+      if (user) {
+        restorePendingCheckoutDraft();
+      }
+      clearResumeQuery();
+    };
+
+    void continueAfterLogin();
+  }, [pathname, router, searchParams]);
 
   return (
     <>
@@ -198,7 +302,7 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
         <button
           type='button'
           className='mt-20 text-white bg-accent-1 button -md -dark-1 col-12'
-          onClick={() => {
+          onClick={async () => {
             if (!when) {
               setToastState({
                 open: true,
@@ -207,6 +311,17 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
               });
               return;
             }
+
+            const {
+              data: { user },
+            } = await supabaseRef.current.auth.getUser();
+
+            if (!user) {
+              persistPendingCheckoutDraft();
+              router.push(buildLoginRedirectPath());
+              return;
+            }
+
             bookingFlow.open();
           }}
         >
@@ -220,45 +335,53 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
         onClose={bookingFlow.close}
         onConfirm={async () => {
           const { isValid } = bookingFlow.validate();
-          if (!isValid || createBookingMutation.isPending || !tour || typeof destinationId !== 'number') {
+          if (!isValid || isSubmittingCheckout || !tour || typeof destinationId !== 'number') {
             return;
           }
 
           try {
-            const result = await createBookingMutation.mutateAsync({
-              destinationId,
-              packageTitle: tour.title,
-              travelDateRange: when,
-              numberOfTravelers: bookingFlow.totals.travelers,
-              totalAmount: bookingFlow.totals.totalAmount,
-              amountToChargeNow: bookingFlow.totals.amountToChargeNow,
-              paymentOption: bookingFlow.formState.paymentOption,
-              notes: [
-                bookingFlow.formState.notes.trim(),
-                `Location: ${location || '-'}`,
-                `Tour Type: ${tourType || '-'}`,
-                `Payment Option: ${paymentOptionLabel}`,
-              ]
-                .filter(Boolean)
-                .join(' | '),
+            setIsSubmittingCheckout(true);
+
+            const response = await fetch('/api/paymongo/checkout', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                tourId: tour.id,
+                travelDateRange: when,
+                adults: bookingFlow.formState.adults,
+                children: bookingFlow.formState.children,
+                paymentOption: bookingFlow.formState.paymentOption,
+                notes: bookingFlow.formState.notes.trim(),
+                location,
+                tourType,
+                destinationId,
+              }),
             });
 
-            bookingFlow.close();
-            bookingFlow.reset();
-            setToastState({
-              open: true,
-              severity: 'success',
-              message: `${sidebar.paymentFlow.toasts.successPrefix} ${result.bookingReference}.`,
-            });
-          } catch {
+            const payload = (await response.json()) as {
+              checkoutUrl?: string;
+              bookingReference?: string;
+              error?: string;
+            };
+
+            if (!response.ok || !payload.checkoutUrl) {
+              throw new Error(payload.error || 'Checkout creation failed.');
+            }
+
+            window.location.href = payload.checkoutUrl;
+          } catch (error) {
             setToastState({
               open: true,
               severity: 'error',
-              message: sidebar.paymentFlow.toasts.error,
+              message: error instanceof Error ? error.message : sidebar.paymentFlow.toasts.error,
             });
+          } finally {
+            setIsSubmittingCheckout(false);
           }
         }}
-        isSubmitting={createBookingMutation.isPending}
+        isSubmitting={isSubmittingCheckout}
         location={location}
         when={when}
         tourType={tourType}
