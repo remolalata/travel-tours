@@ -49,6 +49,10 @@ export default function AdminSidebar({ onClose }: AdminSidebarProps) {
 
       <div className='sidebar -dashboard'>
         {adminContent.shell.navItems.map((item) => {
+          if (item.href === '/logout') {
+            return null;
+          }
+
           const hasActiveChild = (item.children ?? []).some(
             (child) => child.href && pathname === child.href,
           );
