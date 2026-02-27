@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
+import { normalizeTourSearchTerm } from '@/services/tours/helpers/tourSearch';
 import type { TourBase, TourFeaturedItem } from '@/types/tour';
 import { getDiscountPercent } from '@/utils/helpers/tourPricing';
 
@@ -14,6 +15,13 @@ export type TourReviewContext = {
 export type TourTypeOption = {
   id: number;
   name: string;
+};
+export type ToursSearchItem = {
+  id: number;
+  slug: string;
+  title: string;
+  location: string;
+  imageSrc: string;
 };
 
 export type FetchToursListInput = {
@@ -34,6 +42,10 @@ export type PaginatedToursList = {
   total: number;
   page: number;
   pageSize: number;
+};
+export type FetchToursSearchInput = {
+  searchTerm?: string;
+  limit?: number;
 };
 
 type TourRow = {
@@ -199,6 +211,41 @@ export async function fetchToursList(
     page: input.page,
     pageSize: input.pageSize,
   };
+}
+
+export async function fetchToursSearch(
+  supabase: SupabaseClient,
+  input: FetchToursSearchInput,
+): Promise<ToursSearchItem[]> {
+  const normalizedTerm = normalizeTourSearchTerm(input.searchTerm ?? '');
+  const limit = Math.min(Math.max(Math.trunc(input.limit ?? 8), 1), 20);
+  let query = supabase
+    .from('tours')
+    .select('id,slug,title,location,image_src')
+    .eq('is_active', true)
+    .order('created_at', { ascending: false })
+    .order('id', { ascending: false })
+    .limit(limit);
+
+  if (normalizedTerm.length > 0) {
+    query = query.or(`title.ilike.%${normalizedTerm}%,location.ilike.%${normalizedTerm}%`);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    throw new Error(`TOURS_SEARCH_FETCH_FAILED:${error.message}`);
+  }
+
+  return ((data ?? []) as Pick<TourRow, 'id' | 'slug' | 'title' | 'location' | 'image_src'>[]).map(
+    (row) => ({
+      id: row.id,
+      slug: row.slug,
+      title: row.title,
+      location: row.location,
+      imageSrc: row.image_src,
+    }),
+  );
 }
 
 export async function fetchTourReviewContextByRouteValue(
