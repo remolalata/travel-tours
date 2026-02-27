@@ -1,9 +1,9 @@
 'use client';
 
+import type { User } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
 import { type FormEvent, useMemo, useState } from 'react';
 
-import { authContent } from '@/content/features/auth';
 import {
   getEmailValidationMessage,
   getPasswordValidationMessage,
@@ -57,7 +57,10 @@ export default function useLoginForm() {
 
     setIsSubmitting(true);
 
-    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+    const { data: signInData, error } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    });
 
     if (error) {
       setErrorMessage(error.message);
@@ -65,30 +68,34 @@ export default function useLoginForm() {
       return;
     }
 
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
+    // Prefer the user returned from the sign-in response to avoid session-sync races on prod.
+    let user: User | null = signInData.user ?? null;
+    if (!user) {
+      const {
+        data: { user: fetchedUser },
+      } = await supabase.auth.getUser();
+      user = fetchedUser ?? null;
+    }
 
-    if (userError || !user) {
-      setErrorMessage(authContent.login.messages.userVerificationFailed);
-      setIsSubmitting(false);
+    if (!user) {
+      router.replace('/');
+      router.refresh();
       return;
     }
 
-    const { data: userRole, error: userRoleError } = await supabase
+    const { error: userRoleError } = await supabase
       .from('users')
       .select('role')
       .eq('user_id', user.id)
       .maybeSingle();
 
     if (userRoleError) {
-      setErrorMessage(authContent.login.messages.userVerificationFailed);
-      setIsSubmitting(false);
+      router.replace('/');
+      router.refresh();
       return;
     }
 
-    router.replace(userRole?.role === 'admin' ? '/admin/dashboard' : '/');
+    router.replace('/');
     router.refresh();
   };
 
