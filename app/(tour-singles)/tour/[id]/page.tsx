@@ -26,7 +26,10 @@ const getSingleTourPageData = cache(async (routeValue: string) => {
 function buildTourMetaDescription(description?: string | null): string {
   const fallbackDescription =
     'Discover curated tour packages, guided activities, and hassle-free travel planning with Travel & Tours.';
-  const rawValue = (description || fallbackDescription).trim();
+  const rawValue = (description || fallbackDescription)
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 
   if (rawValue.length <= 160) {
     return rawValue;

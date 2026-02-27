@@ -18,6 +18,15 @@ type TourListProps = {
   initialToursPage: PaginatedToursList;
 };
 
+function toPlainText(value: string | null | undefined): string {
+  return (value || '')
+    .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
+    .replace(/<style[\s\S]*?>[\s\S]*?<\/style>/gi, '')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 export default function TourList({ initialToursPage }: TourListProps) {
   const [sortOption, setSortOption] = useState<string>('');
   const [ddActives, setDdActives] = useState(false);
@@ -223,7 +232,7 @@ export default function TourList({ initialToursPage }: TourListProps) {
                         </div>
                       </div>
 
-                      <p className='mt-5 tourCard__text'>{elm.description}</p>
+                      <p className='mt-5 tourCard__text'>{toPlainText(elm.description)}</p>
 
                       <div className='x-gap-20 y-gap-5 pt-30 row'>
                         {elm.features?.map((elm2, i2) => (
