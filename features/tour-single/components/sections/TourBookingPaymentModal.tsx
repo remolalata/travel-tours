@@ -145,11 +145,15 @@ export default function TourBookingPaymentModal({
             label={content.fields.paymentOption}
             value={formState.paymentOption}
             options={paymentOptions}
-            onChange={(value) => onFieldChange('paymentOption', value as BookingPaymentFormState['paymentOption'])}
+            onChange={(value) =>
+              onFieldChange('paymentOption', value as BookingPaymentFormState['paymentOption'])
+            }
             required
             sx={undefined}
           />
-          {content.helpers.paymentOption ? <AppFieldHelper text={content.helpers.paymentOption} /> : null}
+          {content.helpers.paymentOption ? (
+            <AppFieldHelper text={content.helpers.paymentOption} />
+          ) : null}
         </div>
 
         <div className='col-12'>

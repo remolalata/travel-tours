@@ -18,7 +18,12 @@ interface QuoteFormFieldProps {
   onValueChange: (field: keyof QuoteFormState, value: string) => void;
 }
 
-function QuoteFormFieldComponent({ field, value, errorMessage, onValueChange }: QuoteFormFieldProps) {
+function QuoteFormFieldComponent({
+  field,
+  value,
+  errorMessage,
+  onValueChange,
+}: QuoteFormFieldProps) {
   const dateRangeInputId = useId();
 
   if (field.component === 'date-range') {

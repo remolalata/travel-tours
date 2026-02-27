@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import Calender from '@/components/common/dropdownSearch/Calender';
 import Location from '@/components/common/dropdownSearch/Location';
@@ -86,7 +86,10 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
     when,
   });
 
-  const getPendingCheckoutStorageKey = () => `tour_checkout_resume:${tour?.id ?? 'unknown'}`;
+  const getPendingCheckoutStorageKey = useCallback(
+    () => `tour_checkout_resume:${tour?.id ?? 'unknown'}`,
+    [tour?.id],
+  );
 
   const persistPendingCheckoutDraft = () => {
     try {
@@ -104,7 +107,7 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
     }
   };
 
-  const restorePendingCheckoutDraft = () => {
+  const restorePendingCheckoutDraft = useCallback(() => {
     try {
       const rawValue = window.sessionStorage.getItem(getPendingCheckoutStorageKey());
       if (!rawValue) {
@@ -151,7 +154,7 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
     } catch {
       // Ignore invalid resume payload and continue.
     }
-  };
+  }, [bookingFlow, getPendingCheckoutStorageKey]);
 
   const buildLoginRedirectPath = () => {
     const params = new URLSearchParams(searchParams.toString());
@@ -160,12 +163,12 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
     return `/login?next=${encodeURIComponent(nextPath)}`;
   };
 
-  const clearResumeQuery = () => {
+  const clearResumeQuery = useCallback(() => {
     const params = new URLSearchParams(searchParams.toString());
     params.delete(CHECKOUT_RESUME_QUERY);
     const nextPath = `${pathname}${params.toString() ? `?${params.toString()}` : ''}`;
     router.replace(nextPath, { scroll: false });
-  };
+  }, [pathname, router, searchParams]);
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
@@ -206,7 +209,7 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
     };
 
     void continueAfterLogin();
-  }, [pathname, router, searchParams]);
+  }, [pathname, router, searchParams, clearResumeQuery, restorePendingCheckoutDraft]);
 
   return (
     <>

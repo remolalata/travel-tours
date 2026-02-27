@@ -3,12 +3,12 @@
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
-import useAdminToursQuery from '@/services/admin/tours/hooks/useAdminToursQuery';
 import AdminShell from '@/components/admin/layout/AdminShell';
 import AdminToursGrid from '@/components/admin/tours/AdminToursGrid';
 import AppButton from '@/components/common/button/AppButton';
 import Pagination from '@/components/common/Pagination';
 import { adminContent } from '@/content/features/admin';
+import useAdminToursQuery from '@/services/admin/tours/hooks/useAdminToursQuery';
 
 const toursPageSize = 6;
 

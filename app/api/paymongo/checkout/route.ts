@@ -4,8 +4,8 @@ import dayjs from 'dayjs';
 import { NextResponse } from 'next/server';
 
 import {
-  calculateBookingTotals,
   type BookingPaymentOption,
+  calculateBookingTotals,
 } from '@/features/tour-single/helpers/bookingPayment';
 import { createAdminClient } from '@/utils/supabase/admin';
 import { createClient as createServerSupabaseClient } from '@/utils/supabase/server';
@@ -160,7 +160,11 @@ export async function POST(request: Request) {
   const children = String(body.children ?? '0');
   const travelDateRange = String(body.travelDateRange ?? '').trim();
 
-  if (!Number.isFinite(body.tourId) || !travelDateRange || !['full', 'partial', 'reserve'].includes(paymentOption)) {
+  if (
+    !Number.isFinite(body.tourId) ||
+    !travelDateRange ||
+    !['full', 'partial', 'reserve'].includes(paymentOption)
+  ) {
     return NextResponse.json({ error: 'Missing or invalid checkout fields.' }, { status: 400 });
   }
 
@@ -194,7 +198,10 @@ export async function POST(request: Request) {
     .maybeSingle();
 
   if (tourError) {
-    return NextResponse.json({ error: `Tour lookup failed: ${tourError.message}` }, { status: 500 });
+    return NextResponse.json(
+      { error: `Tour lookup failed: ${tourError.message}` },
+      { status: 500 },
+    );
   }
 
   if (!tourRow) {
@@ -232,12 +239,10 @@ export async function POST(request: Request) {
     .filter(Boolean)
     .join(' | ');
 
-  let insertedBooking:
-    | {
-        id: number;
-        booking_reference: string;
-      }
-    | null = null;
+  let insertedBooking: {
+    id: number;
+    booking_reference: string;
+  } | null = null;
 
   for (let attempt = 0; attempt < 5; attempt += 1) {
     const bookingReference = generateBookingReference();
@@ -276,11 +281,17 @@ export async function POST(request: Request) {
       continue;
     }
 
-    return NextResponse.json({ error: `Booking create failed: ${error?.message ?? 'Unknown error'}` }, { status: 500 });
+    return NextResponse.json(
+      { error: `Booking create failed: ${error?.message ?? 'Unknown error'}` },
+      { status: 500 },
+    );
   }
 
   if (!insertedBooking) {
-    return NextResponse.json({ error: 'Booking create failed: unique reference retry exhausted.' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Booking create failed: unique reference retry exhausted.' },
+      { status: 500 },
+    );
   }
 
   const siteUrl = getPublicSiteUrl(request);

@@ -33,7 +33,9 @@ export function calculateBookingTotals(
 ): BookingPaymentTotals {
   const adults = Math.max(1, parseWholeNumber(formState.adults, 1));
   const children = parseWholeNumber(formState.children, 0);
-  const totalAmount = Math.round((baseTourPrice * adults + baseTourPrice * CHILD_RATE_MULTIPLIER * children) * 100) / 100;
+  const totalAmount =
+    Math.round((baseTourPrice * adults + baseTourPrice * CHILD_RATE_MULTIPLIER * children) * 100) /
+    100;
 
   let amountToChargeNow = 0;
   if (formState.paymentOption === 'full') {

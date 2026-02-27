@@ -2,14 +2,14 @@ import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { cache } from 'react';
 
-import { fetchFaqItems } from '@/services/faqs/mutations/faqApi';
-import { fetchReviews } from '@/services/reviews/mutations/reviewApi';
-import { fetchTourSinglePageData } from '@/services/tours/mutations/tourSingleApi';
 import SiteFooter from '@/components/layout/footers/SiteFooter';
 import SiteHeader from '@/components/layout/header/SiteHeader';
 import PageHeader from '@/features/tour-single/components/sections/PageHeader';
 import TourDetailsContent from '@/features/tour-single/components/sections/TourDetailsContent';
 import TourSlider from '@/features/tour-single/components/sections/TourSlider';
+import { fetchFaqItems } from '@/services/faqs/mutations/faqApi';
+import { fetchReviews } from '@/services/reviews/mutations/reviewApi';
+import { fetchTourSinglePageData } from '@/services/tours/mutations/tourSingleApi';
 import type { Review } from '@/types/review';
 import type { FaqItem } from '@/types/tourContent';
 import { createClient } from '@/utils/supabase/server';

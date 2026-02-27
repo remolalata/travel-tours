@@ -4,10 +4,6 @@ import { IconButton } from '@mui/material';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import useAdminTourReferencesQuery from '@/services/admin/tours/hooks/useAdminTourReferencesQuery';
-import useAuthViewerQuery from '@/services/auth/hooks/useAuthViewerQuery';
-import type { AuthViewerState } from '@/services/auth/mutations/authApi';
-import useCreateQuoteRequestMutation from '@/services/quote-requests/hooks/useCreateQuoteRequestMutation';
 import AppToast from '@/components/common/feedback/AppToast';
 import AppBreadcrumb from '@/components/common/navigation/AppBreadcrumb';
 import { getQuoteContent } from '@/content/features/getQuote';
@@ -17,6 +13,10 @@ import useQuoteRequestForm, {
   type QuoteFormState,
 } from '@/features/get-quote/hooks/useQuoteRequestForm';
 import useUrgentAssistancePrompt from '@/features/get-quote/hooks/useUrgentAssistancePrompt';
+import useAdminTourReferencesQuery from '@/services/admin/tours/hooks/useAdminTourReferencesQuery';
+import useAuthViewerQuery from '@/services/auth/hooks/useAuthViewerQuery';
+import type { AuthViewerState } from '@/services/auth/mutations/authApi';
+import useCreateQuoteRequestMutation from '@/services/quote-requests/hooks/useCreateQuoteRequestMutation';
 
 const tripDetailFields: readonly (keyof QuoteFormState)[] = [
   'where',
@@ -348,7 +348,9 @@ export default function GetQuoteFormSection() {
                 <span aria-hidden='true'>&times;</span>
               </IconButton>
 
-              <p className='getQuotePage__floatingHelpTitle'>{getQuoteContent.floatingHelp.title}</p>
+              <p className='getQuotePage__floatingHelpTitle'>
+                {getQuoteContent.floatingHelp.title}
+              </p>
               <p className='getQuotePage__floatingHelpText'>
                 {getQuoteContent.floatingHelp.description}
               </p>

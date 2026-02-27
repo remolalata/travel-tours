@@ -1,4 +1,3 @@
-import { fetchFaqItems } from '@/services/faqs/mutations/faqApi';
 import FadeIn from '@/components/common/motion/FadeIn';
 import SiteFooter from '@/components/layout/footers/SiteFooter';
 import SiteHeader from '@/components/layout/header/SiteHeader';
@@ -13,6 +12,7 @@ import PopularToursSection from '@/features/home/components/tours/PopularToursSe
 import TrendingToursCarousel from '@/features/home/components/tours/TrendingToursCarousel';
 import PopularThingsToDoSection from '@/features/home/components/tourTypes/PopularThingsToDoSection';
 import Faq from '@/features/tour-single/components/sections/Faq';
+import { fetchFaqItems } from '@/services/faqs/mutations/faqApi';
 import type { FaqItem } from '@/types/tourContent';
 import { createClient } from '@/utils/supabase/server';
 

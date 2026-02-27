@@ -2,8 +2,8 @@
 
 import Image from 'next/image';
 
-import useAdminProfileQuery from '@/services/admin/profile/hooks/useAdminProfileQuery';
 import { adminContent } from '@/content/features/admin';
+import useAdminProfileQuery from '@/services/admin/profile/hooks/useAdminProfileQuery';
 
 type AdminHeaderProps = {
   onToggleSidebar: () => void;

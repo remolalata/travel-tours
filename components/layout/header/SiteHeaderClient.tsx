@@ -4,11 +4,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-import useAuthViewerQuery from '@/services/auth/hooks/useAuthViewerQuery';
-import type { AuthViewerState } from '@/services/auth/mutations/authApi';
 import HeaderAccountMenu from '@/components/layout/header/HeaderAccountMenu';
 import HeaderSerch from '@/components/layout/shared/HeaderSerch';
 import { headerAccountContent } from '@/content/shared/layoutHeaderAccount';
+import useAuthViewerQuery from '@/services/auth/hooks/useAuthViewerQuery';
+import type { AuthViewerState } from '@/services/auth/mutations/authApi';
 
 type SiteHeaderClientProps = {
   initialAuthState: AuthViewerState;

@@ -205,7 +205,10 @@ export async function POST(request: Request) {
       }
     }
 
-    return NextResponse.json({ received: true, eventId, eventType, bookingId: booking.id }, { status: 200 });
+    return NextResponse.json(
+      { received: true, eventId, eventType, bookingId: booking.id },
+      { status: 200 },
+    );
   } catch {
     return NextResponse.json({ error: 'Invalid JSON payload.' }, { status: 400 });
   }

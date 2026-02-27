@@ -2,10 +2,10 @@
 
 import Link from 'next/link';
 
-import useTrendingDestinationsQuery from '@/services/destinations/hooks/useTrendingDestinationsQuery';
 import FadeIn from '@/components/common/motion/FadeIn';
 import { homeContent } from '@/content/features/home';
 import DestinationSlider from '@/features/home/components/destinations/DestinationSlider';
+import useTrendingDestinationsQuery from '@/services/destinations/hooks/useTrendingDestinationsQuery';
 import type { FetchTrendingDestinationsInput, TrendingDestination } from '@/types/destination';
 
 type TrendingDestinationsClientProps = {

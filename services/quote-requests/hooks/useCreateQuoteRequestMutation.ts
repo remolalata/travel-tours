@@ -16,4 +16,3 @@ export default function useCreateQuoteRequestMutation() {
     mutationFn: (input: CreateQuoteRequestInput) => createQuoteRequest(supabase, input),
   });
 }
-

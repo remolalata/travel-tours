@@ -17,8 +17,6 @@ import Alert from '@mui/material/Alert';
 import Skeleton from '@mui/material/Skeleton';
 import { useState } from 'react';
 
-import useFaqItemsQuery from '@/services/faqs/hooks/useFaqItemsQuery';
-import useSaveFaqItemsMutation from '@/services/faqs/hooks/useSaveFaqItemsMutation';
 import AppButton from '@/components/common/button/AppButton';
 import AppToast from '@/components/common/feedback/AppToast';
 import { adminContent } from '@/content/features/admin';
@@ -28,6 +26,8 @@ import {
   mapManagerItemsToFaqItems,
 } from '@/features/admin/help-center/helpers/faqManager';
 import useAdminFaqManager from '@/features/admin/help-center/hooks/useAdminFaqManager';
+import useFaqItemsQuery from '@/services/faqs/hooks/useFaqItemsQuery';
+import useSaveFaqItemsMutation from '@/services/faqs/hooks/useSaveFaqItemsMutation';
 import type { FaqItem } from '@/types/tourContent';
 
 export default function AdminFaqManager() {

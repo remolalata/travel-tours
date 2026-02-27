@@ -2,10 +2,7 @@
 
 import { useCallback, useReducer } from 'react';
 
-import {
-  validateQuoteRequestForm,
-  type ValidationErrors,
-} from '@/utils/helpers/formValidation';
+import { validateQuoteRequestForm, type ValidationErrors } from '@/utils/helpers/formValidation';
 
 export interface QuoteFormState {
   where: string;

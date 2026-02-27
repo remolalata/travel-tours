@@ -5,4 +5,3 @@ export const adminQuoteRequestQueryKeys = {
   list: (input: FetchAdminQuoteRequestsInput) =>
     [...adminQuoteRequestQueryKeys.all, 'list', input] as const,
 };
-

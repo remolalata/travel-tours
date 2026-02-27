@@ -3,14 +3,7 @@ import type { MetadataRoute } from 'next';
 import { getSiteUrl } from '@/utils/seo';
 import { createClient } from '@/utils/supabase/server';
 
-const staticRoutes = [
-  '/',
-  '/about',
-  '/contact',
-  '/get-quote',
-  '/help-center',
-  '/tours',
-];
+const staticRoutes = ['/', '/about', '/contact', '/get-quote', '/help-center', '/tours'];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = getSiteUrl();

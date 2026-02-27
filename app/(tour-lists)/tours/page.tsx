@@ -1,9 +1,9 @@
-import type { PaginatedToursList } from '@/services/tours/mutations/tourApi';
-import { fetchToursList } from '@/services/tours/mutations/tourApi';
 import SiteFooter from '@/components/layout/footers/SiteFooter';
 import SiteHeader from '@/components/layout/header/SiteHeader';
 import PageHeader from '@/features/tours/components/sections/PageHeader';
 import TourList1 from '@/features/tours/components/sections/TourList1';
+import type { PaginatedToursList } from '@/services/tours/mutations/tourApi';
+import { fetchToursList } from '@/services/tours/mutations/tourApi';
 import { createClient } from '@/utils/supabase/server';
 
 export const metadata = {

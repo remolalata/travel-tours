@@ -33,11 +33,7 @@ export function getPasswordValidationMessage(password: string) {
   return '';
 }
 
-export function getRequiredTextValidationMessage(
-  value: string,
-  message: string,
-  minLength = 1,
-) {
+export function getRequiredTextValidationMessage(value: string, message: string, minLength = 1) {
   if (value.trim().length < minLength) {
     return message;
   }

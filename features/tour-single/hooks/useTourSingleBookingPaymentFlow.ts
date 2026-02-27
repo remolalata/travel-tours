@@ -3,10 +3,10 @@
 import { useCallback, useMemo, useState } from 'react';
 
 import {
-  calculateBookingTotals,
-  createInitialBookingPaymentFormState,
   type BookingPaymentFormState,
   type BookingPaymentValidationErrors,
+  calculateBookingTotals,
+  createInitialBookingPaymentFormState,
   validateBookingPaymentForm,
 } from '@/features/tour-single/helpers/bookingPayment';
 
@@ -20,10 +20,15 @@ export default function useTourSingleBookingPaymentFlow({
   when,
 }: UseTourSingleBookingPaymentFlowInput) {
   const [isOpen, setIsOpen] = useState(false);
-  const [formState, setFormState] = useState<BookingPaymentFormState>(createInitialBookingPaymentFormState);
+  const [formState, setFormState] = useState<BookingPaymentFormState>(
+    createInitialBookingPaymentFormState,
+  );
   const [fieldErrors, setFieldErrors] = useState<BookingPaymentValidationErrors>({});
 
-  const totals = useMemo(() => calculateBookingTotals(baseTourPrice, formState), [baseTourPrice, formState]);
+  const totals = useMemo(
+    () => calculateBookingTotals(baseTourPrice, formState),
+    [baseTourPrice, formState],
+  );
 
   const open = useCallback(() => setIsOpen(true), []);
   const close = useCallback(() => {
@@ -32,10 +37,7 @@ export default function useTourSingleBookingPaymentFlow({
   }, []);
 
   const updateField = useCallback(
-    <Key extends keyof BookingPaymentFormState>(
-      key: Key,
-      value: BookingPaymentFormState[Key],
-    ) => {
+    <Key extends keyof BookingPaymentFormState>(key: Key, value: BookingPaymentFormState[Key]) => {
       setFormState((previousValue) => ({
         ...previousValue,
         [key]: value,

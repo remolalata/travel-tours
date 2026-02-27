@@ -6,8 +6,15 @@ import { authContent } from '@/content/features/auth';
 import useRegisterForm from '@/utils/hooks/auth/useRegisterForm';
 
 export default function RegisterForm() {
-  const { formState, fieldErrors, errorMessage, successMessage, isSubmitting, setField, handleSubmit } =
-    useRegisterForm();
+  const {
+    formState,
+    fieldErrors,
+    errorMessage,
+    successMessage,
+    isSubmitting,
+    setField,
+    handleSubmit,
+  } = useRegisterForm();
   const registerContent = authContent.register;
 
   return (
@@ -18,7 +25,11 @@ export default function RegisterForm() {
       helpLinkLabel={registerContent.helpLinkLabel}
       helpLinkHref={registerContent.helpLinkHref}
     >
-      <form onSubmit={handleSubmit} noValidate className='px-60 md:px-25 py-60 md:py-30 border rounded-12'>
+      <form
+        onSubmit={handleSubmit}
+        noValidate
+        className='px-60 md:px-25 py-60 md:py-30 border rounded-12'
+      >
         <div className='row y-gap-30'>
           <div className='col-md-6'>
             <AppTextField
@@ -97,7 +108,9 @@ export default function RegisterForm() {
           disabled={isSubmitting}
           className='mt-30 text-white bg-accent-1 button -md -dark-1 col-12 disabled'
         >
-          {isSubmitting ? registerContent.actions.submittingLabel : registerContent.actions.submitLabel}
+          {isSubmitting
+            ? registerContent.actions.submittingLabel
+            : registerContent.actions.submitLabel}
           <i className='icon-arrow-top-right ml-10' />
         </button>
       </form>

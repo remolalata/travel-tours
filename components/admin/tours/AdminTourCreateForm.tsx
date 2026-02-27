@@ -4,7 +4,6 @@ import Box from '@mui/material/Box';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import useAdminTourReferencesQuery from '@/services/admin/tours/hooks/useAdminTourReferencesQuery';
 import AdminRichTextEditor from '@/components/admin/help-center/AdminRichTextEditor';
 import AdminInclusionBlocksManager from '@/components/admin/tours/AdminInclusionBlocksManager';
 import AdminItineraryBlocksManager from '@/components/admin/tours/AdminItineraryBlocksManager';
@@ -16,6 +15,7 @@ import AppSingleImagePicker from '@/components/common/form/AppSingleImagePicker'
 import AppTextField from '@/components/common/form/AppTextField';
 import AppSideTabs from '@/components/common/navigation/AppSideTabs';
 import { adminContent } from '@/content/features/admin';
+import useAdminTourReferencesQuery from '@/services/admin/tours/hooks/useAdminTourReferencesQuery';
 import type { AdminTourCreateValidationInput } from '@/types/admin';
 import type { AppGalleryPickerItem } from '@/types/gallery';
 import { validateAdminTourCreateForm } from '@/utils/helpers/formValidation';

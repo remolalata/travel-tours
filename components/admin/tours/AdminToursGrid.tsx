@@ -1,8 +1,8 @@
 import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 
-import type { AdminTourData } from '@/services/admin/tours/mutations/tourApi';
 import AdminListingCard from '@/components/admin/shared/AdminListingCard';
+import type { AdminTourData } from '@/services/admin/tours/mutations/tourApi';
 
 type AdminToursGridProps = {
   tours: AdminTourData[];

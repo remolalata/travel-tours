@@ -3,9 +3,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 
+import { adminContent } from '@/content/features/admin';
 import { saveCurrentAdminProfile } from '@/services/admin/profile/mutations/profileApi';
 import { adminProfileQueryKeys } from '@/services/admin/profile/queries/profileQueryKeys';
-import { adminContent } from '@/content/features/admin';
 import type { AdminProfileFormState } from '@/types/admin';
 import { validateAdminProfileForm } from '@/utils/helpers/formValidation';
 import { createClient } from '@/utils/supabase/client';
