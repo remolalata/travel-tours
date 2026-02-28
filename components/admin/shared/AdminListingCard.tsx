@@ -1,27 +1,30 @@
 import Image from 'next/image';
 
 import Stars from '@/components/common/Stars';
-import type { AdminListingItem } from '@/types/admin';
+import type { AdminListingContent, AdminListingItem } from '@/types/admin';
 import { formatNumber } from '@/utils/helpers/formatNumber';
-
-const FALLBACK_SLOTS_AVAILABLE = [
-  ['2026-03-28', '2026-03-29'],
-  ['2026-04-11', '2026-04-12', '2026-04-13'],
-];
 
 type AdminListingCardProps = {
   item: AdminListingItem;
   compact?: boolean;
   pricePrefix: string;
+  availabilityDateLabels: AdminListingContent['availabilityDateLabels'];
 };
 
 export default function AdminListingCard({
   item,
   compact = false,
   pricePrefix,
+  availabilityDateLabels,
 }: AdminListingCardProps) {
-  const slotsAvailableCount = FALLBACK_SLOTS_AVAILABLE.length;
-  const slotsAvailableLabel = `${slotsAvailableCount} slot${slotsAvailableCount === 1 ? '' : 's'} available`;
+  const currentPrice = item.price;
+  const originalPrice = item.fromPrice;
+  const hasCurrentPrice = typeof currentPrice === 'number';
+  const hasOriginalPrice = typeof originalPrice === 'number';
+  const primaryPrice = currentPrice ?? originalPrice;
+  const departureLabel =
+    item.departureCount === 1 ? availabilityDateLabels.singular : availabilityDateLabels.plural;
+  const departureSummary = `${item.departureCount} ${departureLabel}`;
 
   if (compact) {
     return (
@@ -65,11 +68,22 @@ export default function AdminListingCard({
           <div className='d-flex justify-between items-center mt-10 pt-10 border-top text-13 text-dark-1'>
             <div className='d-flex items-center'>
               <i className='mr-5 text-16 icon-calendar'></i>
-              {slotsAvailableLabel}
+              {departureSummary}
             </div>
 
             <div>
-              {pricePrefix} <span className='text-16 fw-500'>${formatNumber(item.price)}</span>
+              {hasCurrentPrice && hasOriginalPrice ? (
+                <>
+                  <div className='lh-14'>${formatNumber(currentPrice)}</div>
+                  {pricePrefix}{' '}
+                  <span className='text-16 fw-500'>${formatNumber(originalPrice)}</span>
+                </>
+              ) : primaryPrice !== null ? (
+                <>
+                  {pricePrefix}{' '}
+                  <span className='text-16 fw-500'>${formatNumber(primaryPrice)}</span>
+                </>
+              ) : null}
             </div>
           </div>
         </div>
@@ -111,15 +125,24 @@ export default function AdminListingCard({
             <div className='col-auto'>
               <div className='d-flex items-center'>
                 <i className='mr-5 icon-calendar'></i>
-                <div className='text-14'>{slotsAvailableLabel}</div>
+                <div className='text-14'>{departureSummary}</div>
               </div>
             </div>
 
             <div className='col-auto'>
               <div className='md:text-left text-right'>
-                <div className='lh-14'>${formatNumber(item.price)}</div>
-                {pricePrefix}{' '}
-                <span className='text-20 fw-500'>${formatNumber(item.fromPrice)}</span>
+                {hasCurrentPrice && hasOriginalPrice ? (
+                  <>
+                    <div className='lh-14'>${formatNumber(currentPrice)}</div>
+                    {pricePrefix}{' '}
+                    <span className='text-20 fw-500'>${formatNumber(originalPrice)}</span>
+                  </>
+                ) : primaryPrice !== null ? (
+                  <>
+                    {pricePrefix}{' '}
+                    <span className='text-20 fw-500'>${formatNumber(primaryPrice)}</span>
+                  </>
+                ) : null}
               </div>
             </div>
           </div>

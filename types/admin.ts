@@ -212,14 +212,19 @@ export interface AdminListingItem {
   title: string;
   rating: number;
   ratingCount: number;
-  price: number;
-  fromPrice: number;
+  price: number | null;
+  fromPrice: number | null;
+  departureCount: number;
 }
 
 export interface AdminListingContent {
   intro: AdminSectionIntro;
   addButtonLabel: string;
   pricePrefix: string;
+  availabilityDateLabels: {
+    singular: string;
+    plural: string;
+  };
   messages: {
     loading: string;
     loadError: string;

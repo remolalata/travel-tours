@@ -3,10 +3,12 @@ import Skeleton from '@mui/material/Skeleton';
 
 import AdminListingCard from '@/components/admin/shared/AdminListingCard';
 import type { AdminTourData } from '@/services/admin/tours/mutations/tourApi';
+import type { AdminListingContent } from '@/types/admin';
 
 type AdminToursGridProps = {
   tours: AdminTourData[];
   pricePrefix: string;
+  availabilityDateLabels: AdminListingContent['availabilityDateLabels'];
   isLoading: boolean;
   errorMessage: string | null;
   emptyMessage: string;
@@ -15,6 +17,7 @@ type AdminToursGridProps = {
 export default function AdminToursGrid({
   tours,
   pricePrefix,
+  availabilityDateLabels,
   isLoading,
   errorMessage,
   emptyMessage,
@@ -88,7 +91,11 @@ export default function AdminToursGrid({
     <div className='y-gap-30 row'>
       {tours.map((item) => (
         <div key={item.id} className='col-lg-6'>
-          <AdminListingCard item={item} pricePrefix={pricePrefix} />
+          <AdminListingCard
+            item={item}
+            pricePrefix={pricePrefix}
+            availabilityDateLabels={availabilityDateLabels}
+          />
         </div>
       ))}
     </div>

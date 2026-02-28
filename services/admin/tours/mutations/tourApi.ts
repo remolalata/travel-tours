@@ -58,8 +58,10 @@ type TourRow = {
   title: string;
   location: string;
   image_src: string;
-  price: number;
-  original_price: number | null;
+  departures?: Array<{
+    price: number;
+    original_price: number | null;
+  }> | null;
 };
 
 type TourSlugRow = {
@@ -169,7 +171,7 @@ export async function fetchAdminTours(
 
   let query = supabase
     .from('tours')
-    .select('id,title,location,image_src,price,original_price', { count: 'exact' })
+    .select('id,title,location,image_src,departures(price,original_price)', { count: 'exact' })
     .order('created_at', { ascending: false })
     .order('id', { ascending: false });
 
@@ -185,16 +187,30 @@ export async function fetchAdminTours(
     throw new Error(`TOURS_FETCH_FAILED:${error.message}`);
   }
 
-  const rows = ((data ?? []) as TourRow[]).map((tour) => ({
-    id: tour.id,
-    imageSrc: tour.image_src,
-    location: tour.location,
-    title: tour.title,
-    rating: 0,
-    ratingCount: 0,
-    price: tour.price,
-    fromPrice: tour.original_price ?? tour.price,
-  }));
+  const rows = ((data ?? []) as TourRow[]).map((tour) => {
+    const lowestDeparture = (tour.departures ?? []).reduce<{
+      price: number;
+      original_price: number | null;
+    } | null>((lowest, departure) => {
+      if (!lowest || departure.price < lowest.price) {
+        return departure;
+      }
+
+      return lowest;
+    }, null);
+
+    return {
+      id: tour.id,
+      imageSrc: tour.image_src,
+      location: tour.location,
+      title: tour.title,
+      rating: 0,
+      ratingCount: 0,
+      price: lowestDeparture?.price ?? null,
+      fromPrice: lowestDeparture?.original_price ?? null,
+      departureCount: tour.departures?.length ?? 0,
+    };
+  });
 
   return {
     rows,

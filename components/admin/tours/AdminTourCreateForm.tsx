@@ -252,11 +252,7 @@ export default function AdminTourCreateForm() {
       };
       setFieldErrors(nextErrors);
 
-      if (
-        nextErrors.title ||
-        nextErrors.description ||
-        nextErrors.location
-      ) {
+      if (nextErrors.title || nextErrors.description || nextErrors.location) {
         setActiveSection('basic');
       } else if (nextErrors.destinationId || nextErrors.tourTypeId) {
         setActiveSection('classification');

@@ -69,6 +69,7 @@ export default function AdminListingPage() {
         <AdminToursGrid
           tours={tours}
           pricePrefix={content.pricePrefix}
+          availabilityDateLabels={content.availabilityDateLabels}
           isLoading={toursQuery.isLoading}
           errorMessage={hasError ? content.messages.loadError : null}
           emptyMessage={content.messages.empty}

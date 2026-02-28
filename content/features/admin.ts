@@ -330,6 +330,10 @@ export const adminContent: AdminContent = {
       },
       addButtonLabel: 'Add Tour',
       pricePrefix: 'From',
+      availabilityDateLabels: {
+        singular: 'available date',
+        plural: 'available dates',
+      },
       messages: {
         loading: 'Loading tours...',
         loadError: 'Failed to load tours. Please refresh and try again.',
