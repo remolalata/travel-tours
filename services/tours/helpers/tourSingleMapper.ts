@@ -10,7 +10,6 @@ type TourSingleRow = {
   location: string;
   image_src: string;
   images: string[] | null;
-  duration_label: string | null;
   price: number;
   original_price: number | null;
   description: string | null;
@@ -113,7 +112,6 @@ export function mapTourSinglePageData(
       title: tour.title,
       rating: 0,
       ratingCount: 0,
-      duration: tour.duration_label ?? '',
       description: tour.description ?? '',
       price: tour.price,
       fromPrice: tour.original_price ?? tour.price,

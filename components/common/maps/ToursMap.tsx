@@ -129,11 +129,6 @@ export default function ToursMap({ tours = [] }: ToursMapProps) {
                   </div>
 
                   <div className='d-flex justify-between items-center mt-10 pt-10 border-top text-13 text-dark-1'>
-                    <div className='d-flex items-center'>
-                      <i className='mr-5 text-16 icon-clock'></i>
-                      {selectedLocation.duration}
-                    </div>
-
                     <div>
                       From{' '}
                       <span className='text-16 fw-500'>

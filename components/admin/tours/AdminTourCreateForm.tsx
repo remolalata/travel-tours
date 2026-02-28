@@ -43,7 +43,6 @@ type TourCreateFormState = {
   title: string;
   description: string;
   location: string;
-  duration: string;
   destinationId: string;
   tourTypeId: string;
   price: string;
@@ -73,7 +72,6 @@ type TourPopulateData = Partial<
     | 'title'
     | 'description'
     | 'location'
-    | 'duration'
     | 'destinationId'
     | 'tourTypeId'
     | 'price'
@@ -126,7 +124,6 @@ const initialState: TourCreateFormState = {
   title: '',
   description: '',
   location: '',
-  duration: '',
   destinationId: '',
   tourTypeId: '',
   price: '',
@@ -239,7 +236,6 @@ export default function AdminTourCreateForm() {
       title: formState.title,
       description: formState.description,
       location: formState.location,
-      duration: formState.duration,
       destinationId: formState.destinationId,
       tourTypeId: formState.tourTypeId,
       price: formState.price,
@@ -250,7 +246,6 @@ export default function AdminTourCreateForm() {
         title: mapValidationError(validationErrors.title),
         description: mapValidationError(validationErrors.description),
         location: mapValidationError(validationErrors.location),
-        duration: mapValidationError(validationErrors.duration),
         destinationId: mapValidationError(validationErrors.destinationId),
         tourTypeId: mapValidationError(validationErrors.tourTypeId),
         price: mapValidationError(validationErrors.price),
@@ -260,8 +255,7 @@ export default function AdminTourCreateForm() {
       if (
         nextErrors.title ||
         nextErrors.description ||
-        nextErrors.location ||
-        nextErrors.duration
+        nextErrors.location
       ) {
         setActiveSection('basic');
       } else if (nextErrors.destinationId || nextErrors.tourTypeId) {
@@ -297,7 +291,6 @@ export default function AdminTourCreateForm() {
         title: formState.title.trim(),
         description: formState.description.trim() || null,
         location: formState.location.trim(),
-        duration: formState.duration.trim(),
         destinationId,
         tourTypeId,
         price,
@@ -390,7 +383,6 @@ export default function AdminTourCreateForm() {
             tour.description ??
             '<p>Discover hidden lagoons, white-sand beaches, and local seafood spots in one unforgettable day.</p>',
           location: tour.location ?? 'El Nido, Palawan, Philippines',
-          duration: tour.duration ?? '3 Days 2 Nights',
           destinationId,
           tourTypeId,
           price: tour.price ?? '7499',
@@ -528,17 +520,6 @@ export default function AdminTourCreateForm() {
                   />
                   {!fieldErrors.location ? (
                     <AppFieldHelper text={content.helpers.location} />
-                  ) : null}
-                </Box>
-                <Box className='toursCreateField'>
-                  <AppTextField
-                    label={content.fields.duration}
-                    value={formState.duration}
-                    onChange={(value) => setValidatedField('duration', value)}
-                    errorMessage={fieldErrors.duration}
-                  />
-                  {!fieldErrors.duration ? (
-                    <AppFieldHelper text={content.helpers.duration} />
                   ) : null}
                 </Box>
               </Box>

@@ -96,7 +96,6 @@ export function validateAdminTourCreateForm(
   if (!input.title.trim()) errors.title = 'required_title';
   if (!input.description.trim()) errors.description = 'required_description';
   if (!input.location.trim()) errors.location = 'required_location';
-  if (!input.duration.trim()) errors.duration = 'required_duration';
   if (!input.destinationId.trim()) errors.destinationId = 'required_destination_id';
   if (!input.tourTypeId.trim()) errors.tourTypeId = 'required_tour_type_id';
   if (!input.price.trim()) errors.price = 'required_price';

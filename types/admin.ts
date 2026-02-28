@@ -212,7 +212,6 @@ export interface AdminListingItem {
   title: string;
   rating: number;
   ratingCount: number;
-  duration: string;
   price: number;
   fromPrice: number;
 }
@@ -245,7 +244,6 @@ export interface AdminListingContent {
       title: string;
       description: string;
       location: string;
-      duration: string;
       destinationId: string;
       tourTypeId: string;
       price: string;
@@ -268,7 +266,6 @@ export interface AdminListingContent {
       title: string;
       description: string;
       location: string;
-      duration: string;
       destinationId: string;
       tourTypeId: string;
       price: string;
@@ -497,7 +494,6 @@ export interface AdminTourCreateValidationInput {
   title: string;
   description: string;
   location: string;
-  duration: string;
   destinationId: string;
   tourTypeId: string;
   price: string;

@@ -4,6 +4,11 @@ import Stars from '@/components/common/Stars';
 import type { AdminListingItem } from '@/types/admin';
 import { formatNumber } from '@/utils/helpers/formatNumber';
 
+const FALLBACK_SLOTS_AVAILABLE = [
+  ['2026-03-28', '2026-03-29'],
+  ['2026-04-11', '2026-04-12', '2026-04-13'],
+];
+
 type AdminListingCardProps = {
   item: AdminListingItem;
   compact?: boolean;
@@ -15,6 +20,9 @@ export default function AdminListingCard({
   compact = false,
   pricePrefix,
 }: AdminListingCardProps) {
+  const slotsAvailableCount = FALLBACK_SLOTS_AVAILABLE.length;
+  const slotsAvailableLabel = `${slotsAvailableCount} slot${slotsAvailableCount === 1 ? '' : 's'} available`;
+
   if (compact) {
     return (
       <div className='-hover-shadow px-10 py-10 border rounded-12 tourCard -type-1'>
@@ -56,8 +64,8 @@ export default function AdminListingCard({
 
           <div className='d-flex justify-between items-center mt-10 pt-10 border-top text-13 text-dark-1'>
             <div className='d-flex items-center'>
-              <i className='mr-5 text-16 icon-clock'></i>
-              {item.duration}
+              <i className='mr-5 text-16 icon-calendar'></i>
+              {slotsAvailableLabel}
             </div>
 
             <div>
@@ -102,8 +110,8 @@ export default function AdminListingCard({
           <div className='justify-between items-end y-gap-15 pt-5 row'>
             <div className='col-auto'>
               <div className='d-flex items-center'>
-                <i className='mr-5 icon-clock'></i>
-                <div className='text-14'>{item.duration}</div>
+                <i className='mr-5 icon-calendar'></i>
+                <div className='text-14'>{slotsAvailableLabel}</div>
               </div>
             </div>
 

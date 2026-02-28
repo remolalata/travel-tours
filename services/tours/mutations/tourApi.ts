@@ -54,7 +54,6 @@ type TourRow = {
   title: string;
   location: string;
   image_src: string;
-  duration_label: string | null;
   price: number;
   original_price: number | null;
   description: string | null;
@@ -81,7 +80,6 @@ function mapTourRowToHomeTour(tour: TourRow): TourBase & { slug: string } {
     title: tour.title,
     rating: 0,
     ratingCount: 0,
-    duration: tour.duration_label ?? '',
     price: tour.price,
   };
 }
@@ -97,7 +95,6 @@ function mapTourRowToToursListItem(tour: TourRow): ToursListItem {
     title: tour.title,
     rating: 0,
     ratingCount: 0,
-    duration: tour.duration_label ?? '',
     description: tour.description ?? '',
     price: tour.price,
     fromPrice: tour.original_price ?? tour.price,
@@ -120,9 +117,7 @@ function mapTourRowToToursListItem(tour: TourRow): ToursListItem {
 export async function fetchPopularTours(supabase: SupabaseClient): Promise<HomePopularTourItem[]> {
   const { data, error } = await supabase
     .from('tours')
-    .select(
-      'id,slug,title,location,image_src,duration_label,price,original_price,description,is_featured',
-    )
+    .select('id,slug,title,location,image_src,price,original_price,description,is_featured')
     .eq('is_popular', true)
     .order('created_at', { ascending: false })
     .order('id', { ascending: false })
@@ -140,9 +135,7 @@ export async function fetchTopTrendingTours(
 ): Promise<HomeTrendingTourItem[]> {
   const { data, error } = await supabase
     .from('tours')
-    .select(
-      'id,slug,title,location,image_src,duration_label,price,original_price,description,is_featured',
-    )
+    .select('id,slug,title,location,image_src,price,original_price,description,is_featured')
     .eq('is_top_trending', true)
     .order('created_at', { ascending: false })
     .order('id', { ascending: false })
@@ -180,13 +173,10 @@ export async function fetchToursList(
 
   let query = supabase
     .from('tours')
-    .select(
-      'id,slug,title,location,image_src,duration_label,price,original_price,description,is_featured',
-      {
-        count: 'exact',
-      },
-    )
-    .eq('is_active', true)
+    .select('id,slug,title,location,image_src,price,original_price,description,is_featured', {
+      count: 'exact',
+    })
+    .eq('status', 'open')
     .order('created_at', { ascending: false });
 
   if ((input.tourTypeIds?.length ?? 0) > 0) {
@@ -222,7 +212,7 @@ export async function fetchToursSearch(
   let query = supabase
     .from('tours')
     .select('id,slug,title,location,image_src')
-    .eq('is_active', true)
+    .eq('status', 'open')
     .order('created_at', { ascending: false })
     .order('id', { ascending: false })
     .limit(limit);
@@ -282,10 +272,8 @@ export async function fetchRelatedToursByDestination(
 ): Promise<HomePopularTourItem[]> {
   let query = supabase
     .from('tours')
-    .select(
-      'id,slug,title,location,image_src,duration_label,price,original_price,description,is_featured',
-    )
-    .eq('is_active', true)
+    .select('id,slug,title,location,image_src,price,original_price,description,is_featured')
+    .eq('status', 'open')
     .eq('destination_id', input.destinationId)
     .order('created_at', { ascending: false })
     .order('id', { ascending: false });

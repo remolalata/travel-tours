@@ -23,7 +23,6 @@ export type CreateAdminTourInput = {
   title: string;
   description: string | null;
   location: string;
-  duration: string;
   destinationId: number;
   tourTypeId: number;
   price: number;
@@ -59,7 +58,6 @@ type TourRow = {
   title: string;
   location: string;
   image_src: string;
-  duration_label: string | null;
   price: number;
   original_price: number | null;
 };
@@ -171,7 +169,7 @@ export async function fetchAdminTours(
 
   let query = supabase
     .from('tours')
-    .select('id,title,location,image_src,duration_label,price,original_price', { count: 'exact' })
+    .select('id,title,location,image_src,price,original_price', { count: 'exact' })
     .order('created_at', { ascending: false })
     .order('id', { ascending: false });
 
@@ -194,7 +192,6 @@ export async function fetchAdminTours(
     title: tour.title,
     rating: 0,
     ratingCount: 0,
-    duration: tour.duration_label ?? '',
     price: tour.price,
     fromPrice: tour.original_price ?? tour.price,
   }));
@@ -254,7 +251,6 @@ export async function createAdminTour(
         location: input.location,
         image_src: resolvedMainImageSrc,
         images: resolvedGalleryImageUrls,
-        duration_label: input.duration,
         price: input.price,
         original_price: input.originalPrice,
         description: input.description,

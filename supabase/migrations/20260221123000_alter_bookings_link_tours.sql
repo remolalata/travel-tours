@@ -29,7 +29,7 @@ with destination_tours as (
     row_number() over (partition by t.destination_id order by t.id) as destination_tour_rank,
     count(*) over (partition by t.destination_id) as destination_tour_count
   from public.tours t
-  where t.is_active = true
+  where t.status = 'active'
 ),
 ranked_matches as (
   select
