@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -59,7 +58,13 @@ export default function SiteHeaderClient({ initialAuthState }: SiteHeaderClientP
         <div className='header__container container'>
           <div className='header__logo'>
             <Link href='/' className='header__logo'>
-              <Image width='167' height='32' src='/img/logo.svg' alt='logo icon' priority />
+              <img
+                width={167}
+                height={32}
+                src='/img/logo.svg'
+                alt='logo icon'
+                style={{ height: 'auto' }}
+              />
             </Link>
 
             <div className='xl:d-none ml-30'>

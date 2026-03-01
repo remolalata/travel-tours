@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
@@ -36,13 +35,14 @@ export default function AdminSidebar({ onClose }: AdminSidebarProps) {
         >
           &times;
         </button>
-        <Link href='/' className='text-white text-20 fw-500'>
-          <Image
+        <Link href='/' className='text-20 text-white fw-500'>
+          {/* eslint-disable @next/next/no-img-element */}
+          <img
             width={167}
             height={32}
             src='/img/logo.svg'
             alt={adminContent.shell.brandLabel}
-            priority
+            style={{ height: 'auto' }}
           />
         </Link>
       </div>
@@ -91,7 +91,7 @@ export default function AdminSidebar({ onClose }: AdminSidebarProps) {
                       transition: 'max-height 0.2s ease',
                     }}
                   >
-                    <div className='pl-40 pr-15 pb-10 pt-5'>
+                    <div className='pt-5 pr-15 pb-10 pl-40'>
                       {(item.children ?? []).map((child) => {
                         const isChildActive = Boolean(child.href && pathname === child.href);
 
