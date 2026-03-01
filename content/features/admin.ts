@@ -329,6 +329,10 @@ export const adminContent: AdminContent = {
         description: 'Review and manage tour packages.',
       },
       addButtonLabel: 'Add Tour',
+      actions: {
+        editLabel: 'Edit tour',
+        deleteLabel: 'Delete tour',
+      },
       pricePrefix: 'From',
       availabilityDateLabels: {
         singular: 'available date',
@@ -338,11 +342,27 @@ export const adminContent: AdminContent = {
         loading: 'Loading tours...',
         loadError: 'Failed to load tours. Please refresh and try again.',
         empty: 'No tours found.',
+        deleteFailedPrefix: 'Failed to delete tour',
+        deleteSuccess: 'Tour deleted successfully.',
       },
       summary: {
         showing: 'Showing',
         of: 'of',
         itemSuffix: 'tour(s)',
+      },
+      deleteModal: {
+        title: 'Delete Tour',
+        description: 'Are you sure you want to delete this tour? This action cannot be undone.',
+        actions: {
+          cancel: 'Cancel',
+          confirm: 'Delete',
+        },
+      },
+      editPage: {
+        intro: {
+          title: 'Edit Tour',
+          description: 'Update an existing tour package.',
+        },
       },
       createPage: {
         intro: {
@@ -423,6 +443,9 @@ export const adminContent: AdminContent = {
         actions: {
           cancel: 'Cancel',
           create: 'Create Tour',
+          update: 'Update Tour',
+          creating: 'Creating...',
+          updating: 'Updating...',
           addItinerary: 'Add Itinerary Item',
           removeItinerary: 'Remove',
           addInclusion: 'Add Inclusion Item',
@@ -432,6 +455,10 @@ export const adminContent: AdminContent = {
           selectEmpty: 'Select an option',
           referencesLoading: 'Loading options...',
           referencesLoadError: 'Failed to load reference options. Please refresh and try again.',
+          createSuccess: 'Tour created successfully.',
+          updateSuccess: 'Tour updated successfully.',
+          createFailedPrefix: 'Unable to create tour',
+          updateFailedPrefix: 'Unable to update tour',
         },
         richTextToolbar: {
           paragraph: 'Paragraph',

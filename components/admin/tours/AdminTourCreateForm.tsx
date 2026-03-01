@@ -21,6 +21,8 @@ import AppSideTabs from '@/components/common/navigation/AppSideTabs';
 import { adminContent } from '@/content/features/admin';
 import useAdminTourReferencesQuery from '@/services/admin/tours/hooks/useAdminTourReferencesQuery';
 import useCreateAdminTourMutation from '@/services/admin/tours/hooks/useCreateAdminTourMutation';
+import useUpdateAdminTourMutation from '@/services/admin/tours/hooks/useUpdateAdminTourMutation';
+import type { AdminTourEditorData } from '@/services/admin/tours/mutations/tourApi';
 import type { AdminTourCreateValidationInput } from '@/types/admin';
 import type { AppGalleryPickerItem } from '@/types/gallery';
 import { validateAdminTourCreateForm } from '@/utils/helpers/formValidation';
@@ -190,11 +192,44 @@ const initialState: TourCreateFormState = {
   ],
 };
 
-export default function AdminTourCreateForm() {
+function buildInitialState(
+  initialData?: AdminTourCreateFormProps['initialData'],
+): TourCreateFormState {
+  if (!initialData) {
+    return initialState;
+  }
+
+  return {
+    ...initialState,
+    ...initialData,
+    mainImage: initialData.mainImage ?? initialState.mainImage,
+    images: initialData.images ?? initialState.images,
+    itineraries:
+      (initialData.itineraries?.length ?? 0) > 0
+        ? initialData.itineraries
+        : initialState.itineraries,
+    inclusions:
+      (initialData.inclusions?.length ?? 0) > 0 ? initialData.inclusions : initialState.inclusions,
+  };
+}
+
+type AdminTourCreateFormProps = {
+  mode?: 'create' | 'edit';
+  tourId?: number;
+  initialData?: AdminTourEditorData | null;
+};
+
+export default function AdminTourCreateForm({
+  mode = 'create',
+  tourId,
+  initialData,
+}: AdminTourCreateFormProps) {
   const router = useRouter();
   const content = adminContent.pages.listing.createPage;
   const [activeSection, setActiveSection] = useState<TourCreateSectionKey>('basic');
-  const [formState, setFormState] = useState<TourCreateFormState>(initialState);
+  const [formState, setFormState] = useState<TourCreateFormState>(() =>
+    buildInitialState(initialData),
+  );
   const [fieldErrors, setFieldErrors] = useState<
     Partial<Record<TourCreateValidatableField, string>>
   >({});
@@ -205,7 +240,9 @@ export default function AdminTourCreateForm() {
   }>({ open: false, message: '', severity: 'info' });
   const referencesQuery = useAdminTourReferencesQuery();
   const createTourMutation = useCreateAdminTourMutation();
-  const isCreating = createTourMutation.isPending;
+  const updateTourMutation = useUpdateAdminTourMutation();
+  const isEditing = mode === 'edit';
+  const isSubmitting = createTourMutation.isPending || updateTourMutation.isPending;
   const booleanOptions = [
     { value: 'true', label: 'Yes' },
     { value: 'false', label: 'No' },
@@ -280,7 +317,7 @@ export default function AdminTourCreateForm() {
     return code ? (content.validationMessages[code] ?? code) : undefined;
   }
 
-  async function handleCreate() {
+  async function handleSubmit() {
     const validationErrors = validateAdminTourCreateForm({
       title: formState.title,
       description: formState.description,
@@ -362,7 +399,7 @@ export default function AdminTourCreateForm() {
     }
 
     try {
-      await createTourMutation.mutateAsync({
+      const payload = {
         title: formState.title.trim(),
         description: formState.description.trim() || null,
         location: formState.location.trim(),
@@ -402,16 +439,32 @@ export default function AdminTourCreateForm() {
             itemOrder: Number(item.itemOrder) || index + 1,
             content: item.content.trim(),
           })),
-      });
+      };
+
+      if (isEditing) {
+        if (!tourId) {
+          throw new Error('TOUR_ID_REQUIRED');
+        }
+
+        await updateTourMutation.mutateAsync({
+          id: tourId,
+          ...payload,
+        });
+      } else {
+        await createTourMutation.mutateAsync(payload);
+      }
 
       setToastState({
         open: true,
-        message: 'Tour created successfully.',
+        message: isEditing ? content.messages.updateSuccess : content.messages.createSuccess,
         severity: 'success',
       });
       router.push('/admin/tours');
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unable to create tour.';
+      const failedPrefix = isEditing
+        ? content.messages.updateFailedPrefix
+        : content.messages.createFailedPrefix;
+      const message = error instanceof Error ? `${failedPrefix}: ${error.message}` : failedPrefix;
       setToastState({
         open: true,
         message,
@@ -949,7 +1002,7 @@ export default function AdminTourCreateForm() {
           type='button'
           size='sm'
           variant='outline'
-          disabled={isCreating}
+          disabled={isSubmitting}
           onClick={() => {
             router.push('/admin/tours');
           }}
@@ -961,10 +1014,16 @@ export default function AdminTourCreateForm() {
           type='button'
           size='sm'
           className='toursCreateSubmitButton'
-          disabled={isCreating}
-          onClick={handleCreate}
+          disabled={isSubmitting}
+          onClick={handleSubmit}
         >
-          {isCreating ? 'Creating...' : content.actions.create}
+          {isSubmitting
+            ? isEditing
+              ? content.actions.updating
+              : content.actions.creating
+            : isEditing
+              ? content.actions.update
+              : content.actions.create}
         </AppButton>
       </div>
       <AppToast

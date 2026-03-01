@@ -1,3 +1,4 @@
+import Box from '@mui/material/Box';
 import Image from 'next/image';
 
 import Stars from '@/components/common/Stars';
@@ -7,15 +8,21 @@ import { formatNumber } from '@/utils/helpers/formatNumber';
 type AdminListingCardProps = {
   item: AdminListingItem;
   compact?: boolean;
+  actionLabels: AdminListingContent['actions'];
   pricePrefix: string;
   availabilityDateLabels: AdminListingContent['availabilityDateLabels'];
+  onEditClick?: (item: AdminListingItem) => void;
+  onDeleteClick?: (item: AdminListingItem) => void;
 };
 
 export default function AdminListingCard({
   item,
   compact = false,
+  actionLabels,
   pricePrefix,
   availabilityDateLabels,
+  onEditClick,
+  onDeleteClick,
 }: AdminListingCardProps) {
   const currentPrice = item.price;
   const originalPrice = item.fromPrice;
@@ -92,7 +99,83 @@ export default function AdminListingCard({
   }
 
   return (
-    <div className='px-20 py-20 border rounded-12'>
+    <Box
+      sx={{
+        position: 'relative',
+        border: '1px solid rgba(229, 231, 235, 1)',
+        borderRadius: '12px',
+        px: '20px',
+        py: '20px',
+        transition: 'box-shadow 0.2s ease, border-color 0.2s ease',
+        '&:hover': {
+          borderColor: 'rgba(235, 102, 43, 0.28)',
+          boxShadow: '0 14px 32px rgba(5, 7, 60, 0.08)',
+        },
+        '&:hover .adminListingCard__actions': {
+          opacity: 1,
+          transform: 'translateY(0)',
+          pointerEvents: 'auto',
+        },
+      }}
+    >
+      <Box
+        className='adminListingCard__actions'
+        sx={{
+          position: 'absolute',
+          top: 12,
+          right: 12,
+          display: 'flex',
+          gap: 1,
+          opacity: 0,
+          transform: 'translateY(-4px)',
+          pointerEvents: 'none',
+          transition: 'opacity 0.18s ease, transform 0.18s ease',
+          zIndex: 2,
+        }}
+      >
+        <button
+          type='button'
+          aria-label={actionLabels.editLabel}
+          title={actionLabels.editLabel}
+          onClick={() => onEditClick?.(item)}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 36,
+            height: 36,
+            borderRadius: 10,
+            border: '1px solid rgba(5, 7, 60, 0.08)',
+            background: '#fff',
+            color: '#05073c',
+            boxShadow: '0 10px 24px rgba(5, 7, 60, 0.08)',
+          }}
+        >
+          <i className='icon-pencil text-14' aria-hidden='true'></i>
+        </button>
+
+        <button
+          type='button'
+          aria-label={actionLabels.deleteLabel}
+          title={actionLabels.deleteLabel}
+          onClick={() => onDeleteClick?.(item)}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 36,
+            height: 36,
+            borderRadius: 10,
+            border: '1px solid rgba(179, 38, 30, 0.12)',
+            background: '#fff',
+            color: '#b3261e',
+            boxShadow: '0 10px 24px rgba(5, 7, 60, 0.08)',
+          }}
+        >
+          <i className='icon-delete text-14' aria-hidden='true'></i>
+        </button>
+      </Box>
+
       <div className='items-center x-gap-20 y-gap-20 row'>
         <div className='col-12 col-xl-auto'>
           <Image
@@ -148,6 +231,6 @@ export default function AdminListingCard({
           </div>
         </div>
       </div>
-    </div>
+    </Box>
   );
 }

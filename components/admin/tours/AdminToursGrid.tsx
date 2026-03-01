@@ -7,20 +7,26 @@ import type { AdminListingContent } from '@/types/admin';
 
 type AdminToursGridProps = {
   tours: AdminTourData[];
+  actionLabels: AdminListingContent['actions'];
   pricePrefix: string;
   availabilityDateLabels: AdminListingContent['availabilityDateLabels'];
   isLoading: boolean;
   errorMessage: string | null;
   emptyMessage: string;
+  onEditClick: (tour: AdminTourData) => void;
+  onDeleteClick: (tour: AdminTourData) => void;
 };
 
 export default function AdminToursGrid({
   tours,
+  actionLabels,
   pricePrefix,
   availabilityDateLabels,
   isLoading,
   errorMessage,
   emptyMessage,
+  onEditClick,
+  onDeleteClick,
 }: AdminToursGridProps) {
   if (isLoading) {
     return (
@@ -93,8 +99,11 @@ export default function AdminToursGrid({
         <div key={item.id} className='col-lg-6'>
           <AdminListingCard
             item={item}
+            actionLabels={actionLabels}
             pricePrefix={pricePrefix}
             availabilityDateLabels={availabilityDateLabels}
+            onEditClick={onEditClick}
+            onDeleteClick={onDeleteClick}
           />
         </div>
       ))}

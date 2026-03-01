@@ -220,6 +220,10 @@ export interface AdminListingItem {
 export interface AdminListingContent {
   intro: AdminSectionIntro;
   addButtonLabel: string;
+  actions: {
+    editLabel: string;
+    deleteLabel: string;
+  };
   pricePrefix: string;
   availabilityDateLabels: {
     singular: string;
@@ -229,11 +233,24 @@ export interface AdminListingContent {
     loading: string;
     loadError: string;
     empty: string;
+    deleteFailedPrefix: string;
+    deleteSuccess: string;
   };
   summary: {
     showing: string;
     of: string;
     itemSuffix: string;
+  };
+  deleteModal: {
+    title: string;
+    description: string;
+    actions: {
+      cancel: string;
+      confirm: string;
+    };
+  };
+  editPage: {
+    intro: AdminSectionIntro;
   };
   createPage: {
     intro: AdminSectionIntro;
@@ -292,6 +309,9 @@ export interface AdminListingContent {
     actions: {
       cancel: string;
       create: string;
+      update: string;
+      creating: string;
+      updating: string;
       addItinerary: string;
       removeItinerary: string;
       addInclusion: string;
@@ -301,6 +321,10 @@ export interface AdminListingContent {
       selectEmpty: string;
       referencesLoading: string;
       referencesLoadError: string;
+      createSuccess: string;
+      updateSuccess: string;
+      createFailedPrefix: string;
+      updateFailedPrefix: string;
     };
     richTextToolbar: {
       paragraph: string;
