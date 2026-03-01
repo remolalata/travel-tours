@@ -25,15 +25,22 @@ export type CreateAdminTourInput = {
   location: string;
   destinationId: number;
   tourTypeId: number;
-  price: number;
-  originalPrice: number | null;
   imageSrc: string;
   mainImage: AppGalleryPickerItem | null;
   images: AppGalleryPickerItem[];
-  isActive: boolean;
+  status: 'active' | 'inactive';
   isFeatured?: boolean;
   isPopular?: boolean;
   isTopTrending?: boolean;
+  departure: {
+    startDate: string;
+    endDate: string;
+    bookingDeadline: string;
+    maximumCapacity: number;
+    price: number;
+    originalPrice: number | null;
+    status: 'open' | 'sold_out' | 'closed' | 'cancelled';
+  };
   itineraries: Array<{
     dayNumber: number;
     title: string;
@@ -267,10 +274,8 @@ export async function createAdminTour(
         location: input.location,
         image_src: resolvedMainImageSrc,
         images: resolvedGalleryImageUrls,
-        price: input.price,
-        original_price: input.originalPrice,
         description: input.description,
-        is_active: input.isActive,
+        status: input.status,
         is_featured: input.isFeatured ?? false,
         is_popular: input.isPopular ?? false,
         is_top_trending: input.isTopTrending ?? false,
@@ -298,6 +303,21 @@ export async function createAdminTour(
       if (itineraryError) {
         throw new Error(`TOUR_ITINERARY_CREATE_FAILED:${itineraryError.message}`);
       }
+    }
+
+    const { error: departureError } = await supabase.from('departures').insert({
+      tour_id: createdTour.id,
+      start_date: input.departure.startDate,
+      end_date: input.departure.endDate,
+      booking_deadline: input.departure.bookingDeadline,
+      maximum_capacity: input.departure.maximumCapacity,
+      original_price: input.departure.originalPrice,
+      price: input.departure.price,
+      status: input.departure.status,
+    });
+
+    if (departureError) {
+      throw new Error(`TOUR_DEPARTURE_CREATE_FAILED:${departureError.message}`);
     }
 
     if (input.inclusions.length > 0) {

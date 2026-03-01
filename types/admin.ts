@@ -501,5 +501,9 @@ export interface AdminTourCreateValidationInput {
   location: string;
   destinationId: string;
   tourTypeId: string;
-  price: string;
+  departureStartDate: string;
+  departureEndDate: string;
+  departureBookingDeadline: string;
+  departureMaximumCapacity: string;
+  departurePrice: string;
 }

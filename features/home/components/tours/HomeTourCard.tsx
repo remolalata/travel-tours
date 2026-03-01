@@ -26,6 +26,8 @@ export default function HomeTourCard({
   className,
   currencySymbol = '₱',
 }: HomeTourCardProps) {
+  const durationLabel = item.duration ?? 'See dates';
+
   return (
     <Link
       href={`/tour/${item.slug ?? item.id}`}
@@ -75,7 +77,7 @@ export default function HomeTourCard({
         <div className='d-flex justify-between items-center mt-10 pt-10 border-top text-13 text-dark-1'>
           <div className='d-flex items-center'>
             <i className='mr-5 text-16 icon-clock'></i>
-            {item.duration}
+            {durationLabel}
           </div>
 
           <div>

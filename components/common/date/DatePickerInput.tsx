@@ -5,12 +5,10 @@ import type { TextFieldProps } from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import type { PickersDayProps } from '@mui/x-date-pickers/PickersDay';
-import { PickersDay } from '@mui/x-date-pickers/PickersDay';
 import dayjs, { type Dayjs } from 'dayjs';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-interface DateRangePickerInputProps {
+interface DatePickerInputProps {
   inputId?: string;
   inputClassName?: string;
   containerClassName?: string;
@@ -25,12 +23,12 @@ interface DateRangePickerInputProps {
   muiInputError?: boolean;
   muiInputHelperText?: string;
   muiInputSx?: TextFieldProps['sx'];
-  initialSelectedDates?: [Dayjs | null, Dayjs | null];
+  initialSelectedDate?: Dayjs | null;
   allowEmpty?: boolean;
-  onValueChange?: (displayValue: string, selectedDates: [Dayjs, Dayjs]) => void;
+  onValueChange?: (displayValue: string, selectedDate: Dayjs) => void;
 }
 
-const DEFAULT_FORMAT = 'MMMM DD';
+const DEFAULT_FORMAT = 'MMMM DD, YYYY';
 const ACCENT_COLOR = 'var(--color-accent-1)';
 const CALENDAR_ROW_HEIGHT = 40;
 
@@ -61,9 +59,19 @@ function buildCalendarSx(minHeightPx: number) {
     },
     '& .MuiPickersDay-root': {
       transition: 'background-color 0.22s ease, color 0.22s ease',
+      borderRadius: '10px',
     },
     '& .MuiPickersDay-root:hover': {
       backgroundColor: 'rgba(235, 102, 43, 0.14)',
+    },
+    '& .MuiPickersDay-root.Mui-selected, & .MuiPickersDay-root.Mui-selected:hover, & .MuiPickersDay-root.Mui-selected:focus':
+      {
+        backgroundColor: `${ACCENT_COLOR} !important`,
+        color: '#fff !important',
+        borderRadius: '10px',
+      },
+    '& .MuiPickersDay-root.Mui-focusVisible': {
+      backgroundColor: 'rgba(235, 102, 43, 0.2)',
     },
     '& .MuiDayCalendar-weekDayLabel': {
       color: ACCENT_COLOR,
@@ -83,49 +91,24 @@ function normalizeDate(value: Dayjs | null | undefined, fallback: Dayjs): Dayjs 
   return value && value.isValid() ? value.startOf('day') : fallback.startOf('day');
 }
 
-function resolveRange(firstDate: Dayjs, secondDate: Dayjs): [Dayjs, Dayjs] {
-  if (secondDate.isBefore(firstDate, 'day')) {
-    return [secondDate, firstDate];
-  }
-
-  return [firstDate, secondDate];
-}
-
-function parseMonthDayValue(value: string, year: number): Dayjs | null {
-  const parsed = dayjs(new Date(`${value}, ${year}`));
-  return parsed.isValid() ? parsed.startOf('day') : null;
-}
-
-function parseDisplayRange(
-  displayValue: string | undefined,
-  fallbackStartDate: Dayjs,
-): [Dayjs, Dayjs] | null {
+function parseDisplayDate(displayValue: string | undefined, fallbackDate: Dayjs): Dayjs | null {
   if (!displayValue) {
     return null;
   }
 
-  const [rawStart, rawEnd] = displayValue.split(' - ').map((part) => part.trim());
-  if (!rawStart || !rawEnd) {
-    return null;
+  const parsed = dayjs(displayValue);
+
+  if (parsed.isValid()) {
+    return parsed.startOf('day');
   }
 
-  const baseYear = fallbackStartDate.year();
-  const parsedStart = parseMonthDayValue(rawStart, baseYear);
-  let parsedEnd = parseMonthDayValue(rawEnd, baseYear);
+  const fallbackYear = fallbackDate.year();
+  const fallbackParsed = dayjs(new Date(`${displayValue}, ${fallbackYear}`));
 
-  if (!parsedStart || !parsedEnd) {
-    return null;
-  }
-
-  // The UI display omits year, so ranges crossing New Year can appear reversed when parsed.
-  if (parsedEnd.isBefore(parsedStart, 'day')) {
-    parsedEnd = parsedEnd.add(1, 'year');
-  }
-
-  return resolveRange(parsedStart, parsedEnd);
+  return fallbackParsed.isValid() ? fallbackParsed.startOf('day') : null;
 }
 
-export default function DateRangePickerInput({
+export default function DatePickerInput({
   inputId,
   inputClassName = 'custom_input-picker',
   containerClassName = 'custom_container-picker',
@@ -140,23 +123,21 @@ export default function DateRangePickerInput({
   muiInputError,
   muiInputHelperText,
   muiInputSx,
-  initialSelectedDates,
+  initialSelectedDate,
   allowEmpty = false,
   onValueChange,
-}: DateRangePickerInputProps) {
+}: DatePickerInputProps) {
   const muiInputLabelProps = muiInputRequired ? { required: true } : undefined;
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   const today = useMemo(() => dayjs().startOf('day'), []);
-  const initialRange = useMemo(() => {
-    const [rawStartDate, rawEndDate] = initialSelectedDates ?? [];
-
-    if (rawStartDate && rawEndDate) {
-      return resolveRange(normalizeDate(rawStartDate, today), normalizeDate(rawEndDate, today));
+  const normalizedInitialDate = useMemo(() => {
+    if (initialSelectedDate) {
+      return normalizeDate(initialSelectedDate, today);
     }
 
-    return parseDisplayRange(initialDisplayValue, today);
-  }, [initialDisplayValue, initialSelectedDates, today]);
+    return parseDisplayDate(initialDisplayValue, today);
+  }, [initialDisplayValue, initialSelectedDate, today]);
   const maxSelectableDate = useMemo(
     () =>
       dayjs()
@@ -167,49 +148,35 @@ export default function DateRangePickerInput({
 
   const [anchorElement, setAnchorElement] = useState<HTMLElement | null>(null);
   const [popoverPlacement, setPopoverPlacement] = useState<'top' | 'bottom'>('bottom');
-  const [startDate, setStartDate] = useState<Dayjs>(initialRange?.[0] ?? today);
-  const [endDate, setEndDate] = useState<Dayjs>(initialRange?.[1] ?? today.add(1, 'day'));
-  const [isSelectingRangeEnd, setIsSelectingRangeEnd] = useState(false);
-  const [hoveredInlineDate, setHoveredInlineDate] = useState<Dayjs | null>(null);
-
-  const [draftStartDate, setDraftStartDate] = useState<Dayjs>(initialRange?.[0] ?? today);
-  const [draftEndDate, setDraftEndDate] = useState<Dayjs>(initialRange?.[1] ?? today.add(1, 'day'));
-  const [isSelectingDraftRangeEnd, setIsSelectingDraftRangeEnd] = useState(false);
-  const [hoveredDraftDate, setHoveredDraftDate] = useState<Dayjs | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Dayjs>(normalizedInitialDate ?? today);
+  const [draftDate, setDraftDate] = useState<Dayjs>(normalizedInitialDate ?? today);
   const [hasCommittedSelection, setHasCommittedSelection] = useState(
-    !allowEmpty || Boolean(initialRange),
+    !allowEmpty || Boolean(normalizedInitialDate),
   );
 
   const displayValue = useMemo(
-    () => (hasCommittedSelection ? `${startDate.format(format)} - ${endDate.format(format)}` : ''),
-    [startDate, endDate, format, hasCommittedSelection],
+    () => (hasCommittedSelection ? selectedDate.format(format) : ''),
+    [selectedDate, format, hasCommittedSelection],
   );
 
-  const emitValueChange = useCallback(
-    (nextStartDate: Dayjs, nextEndDate: Dayjs) => {
-      onValueChange?.(`${nextStartDate.format(format)} - ${nextEndDate.format(format)}`, [
-        nextStartDate,
-        nextEndDate,
-      ]);
+  const emitDateChange = useCallback(
+    (nextDate: Dayjs) => {
+      onValueChange?.(nextDate.format(format), nextDate);
     },
     [format, onValueChange],
   );
 
-  const setDraftFromCommitted = useCallback(() => {
-    setDraftStartDate(startDate);
-    setDraftEndDate(endDate);
-    setIsSelectingDraftRangeEnd(false);
-    setHoveredDraftDate(null);
-  }, [startDate, endDate]);
+  const syncDraftFromCommitted = useCallback(() => {
+    setDraftDate(selectedDate);
+  }, [selectedDate]);
 
-  const applyCommittedRange = useCallback(
-    (nextStartDate: Dayjs, nextEndDate: Dayjs) => {
-      setStartDate(nextStartDate);
-      setEndDate(nextEndDate);
+  const applyCommittedDate = useCallback(
+    (nextDate: Dayjs) => {
+      setSelectedDate(nextDate);
       setHasCommittedSelection(true);
-      emitValueChange(nextStartDate, nextEndDate);
+      emitDateChange(nextDate);
     },
-    [emitValueChange],
+    [emitDateChange],
   );
 
   useEffect(() => {
@@ -221,57 +188,21 @@ export default function DateRangePickerInput({
       return;
     }
 
-    emitValueChange(startDate, endDate);
-  }, [emitInitialValue, onValueChange, emitValueChange, startDate, endDate, hasCommittedSelection]);
-
-  const handleInlineRangeChange = useCallback(
-    (selectedDate: Dayjs) => {
-      if (!isSelectingRangeEnd) {
-        applyCommittedRange(selectedDate, selectedDate);
-        setIsSelectingRangeEnd(true);
-        setHoveredInlineDate(selectedDate);
-        return;
-      }
-
-      const [nextStartDate, nextEndDate] = resolveRange(startDate, selectedDate);
-      applyCommittedRange(nextStartDate, nextEndDate);
-      setIsSelectingRangeEnd(false);
-      setHoveredInlineDate(null);
-    },
-    [isSelectingRangeEnd, startDate, applyCommittedRange],
-  );
-
-  const handleDraftRangeChange = useCallback(
-    (selectedDate: Dayjs) => {
-      if (!isSelectingDraftRangeEnd) {
-        setDraftStartDate(selectedDate);
-        setDraftEndDate(selectedDate);
-        setIsSelectingDraftRangeEnd(true);
-        setHoveredDraftDate(selectedDate);
-        return;
-      }
-
-      const [nextStartDate, nextEndDate] = resolveRange(draftStartDate, selectedDate);
-      setDraftStartDate(nextStartDate);
-      setDraftEndDate(nextEndDate);
-      setIsSelectingDraftRangeEnd(false);
-      setHoveredDraftDate(null);
-    },
-    [isSelectingDraftRangeEnd, draftStartDate],
-  );
+    emitDateChange(selectedDate);
+  }, [emitInitialValue, onValueChange, emitDateChange, selectedDate, hasCommittedSelection]);
 
   const handleDateChange = useCallback(
     (dateValue: Dayjs | null) => {
-      const selectedDate = normalizeDate(dateValue, today);
+      const nextDate = normalizeDate(dateValue, today);
 
       if (variant === 'inline') {
-        handleInlineRangeChange(selectedDate);
+        applyCommittedDate(nextDate);
         return;
       }
 
-      handleDraftRangeChange(selectedDate);
+      setDraftDate(nextDate);
     },
-    [variant, today, handleInlineRangeChange, handleDraftRangeChange],
+    [variant, today, applyCommittedDate],
   );
 
   const handleOpenPicker = useCallback(() => {
@@ -279,7 +210,7 @@ export default function DateRangePickerInput({
       return;
     }
 
-    setDraftFromCommitted();
+    syncDraftFromCommitted();
     const currentInput = inputRef.current;
     if (!currentInput) {
       return;
@@ -298,44 +229,34 @@ export default function DateRangePickerInput({
 
     setPopoverPlacement(hasSpaceBelow || !hasSpaceAbove ? 'bottom' : 'top');
     setAnchorElement(resolvedAnchor);
-  }, [variant, setDraftFromCommitted]);
+  }, [variant, syncDraftFromCommitted]);
 
   const handleClosePicker = useCallback(() => {
-    setDraftFromCommitted();
+    syncDraftFromCommitted();
     setAnchorElement(null);
-  }, [setDraftFromCommitted]);
+  }, [syncDraftFromCommitted]);
 
   const handleCancelPicker = useCallback(() => {
-    setDraftFromCommitted();
+    syncDraftFromCommitted();
     setAnchorElement(null);
-  }, [setDraftFromCommitted]);
+  }, [syncDraftFromCommitted]);
 
   const handleApplyPicker = useCallback(() => {
-    applyCommittedRange(draftStartDate, draftEndDate);
-    setIsSelectingRangeEnd(false);
-    setIsSelectingDraftRangeEnd(false);
-    setHoveredDraftDate(null);
+    applyCommittedDate(draftDate);
     setAnchorElement(null);
-  }, [draftStartDate, draftEndDate, applyCommittedRange]);
+  }, [draftDate, applyCommittedDate]);
 
   const handleClearPicker = useCallback(() => {
-    const defaultStartDate = today;
-    const defaultEndDate = today.add(1, 'day');
+    const defaultDate = today;
 
-    setDraftStartDate(defaultStartDate);
-    setDraftEndDate(defaultEndDate);
-    setStartDate(defaultStartDate);
-    setEndDate(defaultEndDate);
+    setDraftDate(defaultDate);
+    setSelectedDate(defaultDate);
     setHasCommittedSelection(!allowEmpty);
-    setIsSelectingRangeEnd(false);
-    setIsSelectingDraftRangeEnd(false);
-    setHoveredInlineDate(null);
-    setHoveredDraftDate(null);
 
     if (!allowEmpty) {
-      emitValueChange(defaultStartDate, defaultEndDate);
+      emitDateChange(defaultDate);
     }
-  }, [today, emitValueChange, allowEmpty]);
+  }, [today, emitDateChange, allowEmpty]);
 
   const isOpen = Boolean(anchorElement);
 
@@ -354,7 +275,6 @@ export default function DateRangePickerInput({
       const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
       const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
 
-      // Close as soon as the anchor is no longer fully visible to avoid Popover re-position flicker.
       return (
         rect.top >= 0 &&
         rect.bottom <= viewportHeight &&
@@ -378,82 +298,7 @@ export default function DateRangePickerInput({
     };
   }, [isOpen, variant, anchorElement, handleClosePicker]);
 
-  const rangeStartDate = variant === 'inline' ? startDate : draftStartDate;
-  const rangeEndDate = variant === 'inline' ? endDate : draftEndDate;
-  const isSelectingRangeEndDate =
-    variant === 'inline' ? isSelectingRangeEnd : isSelectingDraftRangeEnd;
-  const hoveredRangeDate = variant === 'inline' ? hoveredInlineDate : hoveredDraftDate;
-  const previewRangeEndDate =
-    isSelectingRangeEndDate && hoveredRangeDate ? hoveredRangeDate : rangeEndDate;
-  const [visualRangeStartDate, visualRangeEndDate] = useMemo(
-    () => resolveRange(rangeStartDate, previewRangeEndDate),
-    [rangeStartDate, previewRangeEndDate],
-  );
-  const setHoveredRangeDate = variant === 'inline' ? setHoveredInlineDate : setHoveredDraftDate;
-  const activeCalendarDate = rangeEndDate;
-
-  const RangeDay = useCallback(
-    (dayProps: PickersDayProps) => {
-      const dayValue = dayjs(dayProps.day).startOf('day');
-      const isRangeStart = dayValue.isSame(visualRangeStartDate, 'day');
-      const isRangeEnd = dayValue.isSame(visualRangeEndDate, 'day');
-      const isInRange =
-        dayValue.isAfter(visualRangeStartDate, 'day') &&
-        dayValue.isBefore(visualRangeEndDate, 'day');
-      const isSingleDayRange = isRangeStart && isRangeEnd;
-      const isRangeDay = isRangeStart || isRangeEnd || isInRange;
-
-      return (
-        <PickersDay
-          {...dayProps}
-          disableMargin
-          onMouseEnter={(event) => {
-            dayProps.onMouseEnter?.(event, dayProps.day);
-
-            if (isSelectingRangeEndDate) {
-              setHoveredRangeDate(dayValue);
-            }
-          }}
-          sx={{
-            borderRadius: '10px',
-            ...(isRangeDay && {
-              borderRadius: 0,
-            }),
-            ...(isInRange && {
-              '&, &:hover, &:focus, &.Mui-selected, &.Mui-selected:hover, &.Mui-selected:focus': {
-                backgroundColor: `${ACCENT_COLOR} !important`,
-                color: '#fff !important',
-              },
-            }),
-            ...(isRangeStart && {
-              '&, &:hover, &:focus, &.Mui-selected, &.Mui-selected:hover, &.Mui-selected:focus': {
-                backgroundColor: `${ACCENT_COLOR} !important`,
-                color: '#fff !important',
-              },
-              fontWeight: 700,
-              borderTopLeftRadius: '10px',
-              borderBottomLeftRadius: '10px',
-              borderTopRightRadius: isSingleDayRange ? '10px' : 0,
-              borderBottomRightRadius: isSingleDayRange ? '10px' : 0,
-            }),
-            ...(isRangeEnd && {
-              '&, &:hover, &:focus, &.Mui-selected, &.Mui-selected:hover, &.Mui-selected:focus': {
-                backgroundColor: `${ACCENT_COLOR} !important`,
-                color: '#fff !important',
-              },
-              fontWeight: 700,
-              borderTopRightRadius: '10px',
-              borderBottomRightRadius: '10px',
-              borderTopLeftRadius: isSingleDayRange ? '10px' : 0,
-              borderBottomLeftRadius: isSingleDayRange ? '10px' : 0,
-            }),
-          }}
-        />
-      );
-    },
-    [visualRangeStartDate, visualRangeEndDate, isSelectingRangeEndDate, setHoveredRangeDate],
-  );
-
+  const activeCalendarDate = variant === 'inline' ? selectedDate : draftDate;
   const calendarSx = useMemo(
     () => buildCalendarSx(getVisibleWeekCount(activeCalendarDate) * CALENDAR_ROW_HEIGHT),
     [activeCalendarDate],
@@ -471,7 +316,6 @@ export default function DateRangePickerInput({
           minDate={today}
           maxDate={maxSelectableDate}
           sx={calendarSx}
-          slots={{ day: RangeDay }}
         />
       </Box>
 

@@ -352,19 +352,19 @@ export const adminContent: AdminContent = {
         sections: {
           basic: {
             title: 'Basic Info',
-            description: 'Core details that identify the tour.',
+            description: 'Core identity and marketing copy for the tour.',
           },
           classification: {
-            title: 'Classification',
-            description: 'Map this tour to destination and taxonomy records.',
+            title: 'Destination & Type',
+            description: 'Set the destination relationship, display location, and tour taxonomy.',
           },
           pricing: {
-            title: 'Pricing',
-            description: 'Set base and optional original price.',
+            title: 'Departure & Pricing',
+            description: 'Create the first departure with schedule, capacity, and price.',
           },
           media: {
-            title: 'Media and Status',
-            description: 'Provide image source and active state.',
+            title: 'Media & Visibility',
+            description: 'Upload images and control customer visibility and homepage placement.',
           },
           itinerary: {
             title: 'Itinerary',
@@ -512,7 +512,11 @@ export const adminContent: AdminContent = {
           required_location: 'Location is required.',
           required_destination_id: 'Destination is required.',
           required_tour_type_id: 'Tour type is required.',
-          required_price: 'Price is required.',
+          required_departure_start_date: 'Departure start date is required.',
+          required_departure_end_date: 'Departure end date is required.',
+          required_departure_booking_deadline: 'Booking deadline is required.',
+          required_departure_maximum_capacity: 'Maximum capacity is required.',
+          required_departure_price: 'Departure price is required.',
         },
       },
     },

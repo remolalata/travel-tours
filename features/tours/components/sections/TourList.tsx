@@ -250,7 +250,7 @@ export default function TourList({ initialToursPage }: TourListProps) {
                       <div>
                         <div className='d-flex items-center text-14'>
                           <i className='mr-10 icon-clock'></i>
-                          {elm.duration}
+                          {elm.duration ?? 'See dates'}
                         </div>
 
                         <div className='tourCard__price'>
