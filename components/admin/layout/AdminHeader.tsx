@@ -110,6 +110,9 @@ export default function AdminHeader({ onToggleSidebar }: AdminHeaderProps) {
                 },
                 '&:hover': {
                   bgcolor: '#05073c',
+                  '& i': {
+                    color: '#fff',
+                  },
                   '& .MuiListItemText-primary': {
                     color: '#fff',
                   },
@@ -139,6 +142,9 @@ export default function AdminHeader({ onToggleSidebar }: AdminHeaderProps) {
                   },
                   '&:hover': {
                     bgcolor: '#05073c',
+                    '& i': {
+                      color: '#fff',
+                    },
                     '& .MuiListItemText-primary': {
                       color: '#fff',
                     },
