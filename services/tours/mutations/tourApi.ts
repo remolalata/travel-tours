@@ -54,10 +54,12 @@ type TourRow = {
   title: string;
   location: string;
   image_src: string;
-  price: number;
-  original_price: number | null;
   description: string | null;
   is_featured: boolean;
+  departures?: Array<{
+    price: number;
+    original_price: number | null;
+  }> | null;
 };
 
 type TourReviewContextRow = {
@@ -72,6 +74,12 @@ type TourTypeRow = {
 };
 
 function mapTourRowToHomeTour(tour: TourRow): TourBase & { slug: string } {
+  const lowestDeparture = getLowestDeparture(tour.departures);
+
+  if (!lowestDeparture) {
+    throw new Error('TOUR_HAS_NO_OPEN_DEPARTURES');
+  }
+
   return {
     id: tour.id,
     slug: tour.slug,
@@ -80,12 +88,18 @@ function mapTourRowToHomeTour(tour: TourRow): TourBase & { slug: string } {
     title: tour.title,
     rating: 0,
     ratingCount: 0,
-    price: tour.price,
+    price: lowestDeparture.price,
   };
 }
 
 function mapTourRowToToursListItem(tour: TourRow): ToursListItem {
-  const discountPercent = getDiscountPercent(tour.price, tour.original_price);
+  const lowestDeparture = getLowestDeparture(tour.departures);
+
+  if (!lowestDeparture) {
+    throw new Error('TOUR_HAS_NO_OPEN_DEPARTURES');
+  }
+
+  const discountPercent = getDiscountPercent(lowestDeparture.price, lowestDeparture.original_price);
 
   return {
     id: tour.id,
@@ -96,8 +110,8 @@ function mapTourRowToToursListItem(tour: TourRow): ToursListItem {
     rating: 0,
     ratingCount: 0,
     description: tour.description ?? '',
-    price: tour.price,
-    fromPrice: tour.original_price ?? tour.price,
+    price: lowestDeparture.price,
+    fromPrice: lowestDeparture.original_price ?? lowestDeparture.price,
     featured: tour.is_featured,
     badgeText: discountPercent ? `${discountPercent}% OFF` : '',
     badgeClass: discountPercent ? 'bg-accent-1' : '',
@@ -114,10 +128,28 @@ function mapTourRowToToursListItem(tour: TourRow): ToursListItem {
   };
 }
 
+function getLowestDeparture(
+  departures: TourRow['departures'],
+): { price: number; original_price: number | null } | null {
+  return (departures ?? []).reduce<{ price: number; original_price: number | null } | null>(
+    (lowest, departure) => {
+      if (!lowest || departure.price < lowest.price) {
+        return departure;
+      }
+
+      return lowest;
+    },
+    null,
+  );
+}
+
 export async function fetchPopularTours(supabase: SupabaseClient): Promise<HomePopularTourItem[]> {
   const { data, error } = await supabase
     .from('tours')
-    .select('id,slug,title,location,image_src,price,original_price,description,is_featured')
+    .select(
+      'id,slug,title,location,image_src,description,is_featured,departures(price,original_price)',
+    )
+    .eq('status', 'active')
     .eq('is_popular', true)
     .order('created_at', { ascending: false })
     .order('id', { ascending: false })
@@ -127,7 +159,9 @@ export async function fetchPopularTours(supabase: SupabaseClient): Promise<HomeP
     throw new Error(`POPULAR_TOURS_FETCH_FAILED:${error.message}`);
   }
 
-  return ((data ?? []) as TourRow[]).map(mapTourRowToHomeTour);
+  return ((data ?? []) as TourRow[])
+    .filter((tour) => Boolean(getLowestDeparture(tour.departures)))
+    .map(mapTourRowToHomeTour);
 }
 
 export async function fetchTopTrendingTours(
@@ -135,7 +169,10 @@ export async function fetchTopTrendingTours(
 ): Promise<HomeTrendingTourItem[]> {
   const { data, error } = await supabase
     .from('tours')
-    .select('id,slug,title,location,image_src,price,original_price,description,is_featured')
+    .select(
+      'id,slug,title,location,image_src,description,is_featured,departures(price,original_price)',
+    )
+    .eq('status', 'active')
     .eq('is_top_trending', true)
     .order('created_at', { ascending: false })
     .order('id', { ascending: false })
@@ -145,7 +182,9 @@ export async function fetchTopTrendingTours(
     throw new Error(`TOP_TRENDING_TOURS_FETCH_FAILED:${error.message}`);
   }
 
-  return ((data ?? []) as TourRow[]).map(mapTourRowToHomeTour);
+  return ((data ?? []) as TourRow[])
+    .filter((tour) => Boolean(getLowestDeparture(tour.departures)))
+    .map(mapTourRowToHomeTour);
 }
 
 export async function fetchTourTypes(supabase: SupabaseClient): Promise<TourTypeOption[]> {
@@ -168,36 +207,50 @@ export async function fetchToursList(
   supabase: SupabaseClient,
   input: FetchToursListInput,
 ): Promise<PaginatedToursList> {
-  const from = input.page * input.pageSize;
-  const to = from + input.pageSize - 1;
-
   let query = supabase
     .from('tours')
-    .select('id,slug,title,location,image_src,price,original_price,description,is_featured', {
-      count: 'exact',
-    })
-    .eq('status', 'open')
-    .order('created_at', { ascending: false });
+    .select(
+      'id,slug,title,location,image_src,description,is_featured,departures(price,original_price)',
+    )
+    .eq('status', 'active')
+    .order('created_at', { ascending: false })
+    .order('id', { ascending: false });
 
   if ((input.tourTypeIds?.length ?? 0) > 0) {
     query = query.in('tour_type_id', input.tourTypeIds ?? []);
   }
-  if (typeof input.minPrice === 'number') {
-    query = query.gte('price', input.minPrice);
-  }
-  if (typeof input.maxPrice === 'number') {
-    query = query.lte('price', input.maxPrice);
-  }
 
-  const { data, error, count } = await query.order('id', { ascending: false }).range(from, to);
+  const { data, error } = await query;
 
   if (error) {
     throw new Error(`TOURS_LIST_FETCH_FAILED:${error.message}`);
   }
 
+  const filteredRows = ((data ?? []) as TourRow[])
+    .filter((tour) => {
+      const lowestDeparture = getLowestDeparture(tour.departures);
+
+      if (!lowestDeparture) {
+        return false;
+      }
+      if (typeof input.minPrice === 'number' && lowestDeparture.price < input.minPrice) {
+        return false;
+      }
+      if (typeof input.maxPrice === 'number' && lowestDeparture.price > input.maxPrice) {
+        return false;
+      }
+
+      return true;
+    })
+    .map(mapTourRowToToursListItem);
+
+  const total = filteredRows.length;
+  const from = input.page * input.pageSize;
+  const rows = filteredRows.slice(from, from + input.pageSize);
+
   return {
-    rows: ((data ?? []) as TourRow[]).map(mapTourRowToToursListItem),
-    total: count ?? 0,
+    rows,
+    total,
     page: input.page,
     pageSize: input.pageSize,
   };
@@ -212,7 +265,7 @@ export async function fetchToursSearch(
   let query = supabase
     .from('tours')
     .select('id,slug,title,location,image_src')
-    .eq('status', 'open')
+    .eq('status', 'active')
     .order('created_at', { ascending: false })
     .order('id', { ascending: false })
     .limit(limit);
@@ -272,8 +325,10 @@ export async function fetchRelatedToursByDestination(
 ): Promise<HomePopularTourItem[]> {
   let query = supabase
     .from('tours')
-    .select('id,slug,title,location,image_src,price,original_price,description,is_featured')
-    .eq('status', 'open')
+    .select(
+      'id,slug,title,location,image_src,description,is_featured,departures(price,original_price)',
+    )
+    .eq('status', 'active')
     .eq('destination_id', input.destinationId)
     .order('created_at', { ascending: false })
     .order('id', { ascending: false });
@@ -292,5 +347,7 @@ export async function fetchRelatedToursByDestination(
     throw new Error(`RELATED_TOURS_FETCH_FAILED:${error.message}`);
   }
 
-  return ((data ?? []) as TourRow[]).map(mapTourRowToHomeTour);
+  return ((data ?? []) as TourRow[])
+    .filter((tour) => Boolean(getLowestDeparture(tour.departures)))
+    .map(mapTourRowToHomeTour);
 }

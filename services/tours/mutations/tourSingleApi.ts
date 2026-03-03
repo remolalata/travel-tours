@@ -20,8 +20,9 @@ export async function fetchTourSinglePageData(
   let query = supabase
     .from('tours')
     .select(
-      'id,slug,destination_id,title,location,image_src,images,price,original_price,description,is_featured,tour_types(name)',
+      'id,slug,destination_id,title,location,image_src,images,description,is_featured,departures(price,original_price),tour_types(name)',
     )
+    .eq('status', 'active')
     .limit(1);
 
   query = Number.isFinite(parsedId) ? query.eq('id', parsedId) : query.eq('slug', input.routeValue);

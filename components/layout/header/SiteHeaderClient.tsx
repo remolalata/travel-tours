@@ -58,6 +58,7 @@ export default function SiteHeaderClient({ initialAuthState }: SiteHeaderClientP
         <div className='header__container container'>
           <div className='header__logo'>
             <Link href='/' className='header__logo'>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 width={167}
                 height={32}
@@ -67,7 +68,7 @@ export default function SiteHeaderClient({ initialAuthState }: SiteHeaderClientP
               />
             </Link>
 
-            <div className='xl:d-none ml-30'>
+            <div className='ml-30 xl:d-none'>
               <HeaderSerch />
             </div>
           </div>
@@ -79,7 +80,7 @@ export default function SiteHeaderClient({ initialAuthState }: SiteHeaderClientP
               aria-label={headerAccountContent.aria.toggleSearch}
               aria-expanded={mobileSearchOpen}
             >
-              <i className='icon-search text-18'></i>
+              <i className='text-18 icon-search'></i>
             </button>
           </div>
 

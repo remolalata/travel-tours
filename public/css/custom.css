@@ -27,6 +27,33 @@
   cursor: pointer;
 }
 
+.homeTourCard.tourCard.-type-1.-hover-shadow {
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.homeTourCard.tourCard.-type-1.-hover-shadow:hover {
+  border-color: var(--color-accent-1);
+  box-shadow: 0px 12px 30px 0px rgba(235, 102, 43, 0.08);
+}
+
+.toursPageTourCard.tourCard.-type-2 {
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.toursPageTourCard.tourCard.-type-2:hover {
+  border-color: var(--color-accent-1);
+  box-shadow: 0px 12px 30px 0px rgba(235, 102, 43, 0.08);
+}
+
+.toursPageTourCard.tourCard.-type-2 .tourCard__title span {
+  background-image: none;
+  background-size: 0 0;
+}
+
 @supports (height: 100svh) {
   :root {
     --app-vh: 100svh;

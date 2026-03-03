@@ -358,6 +358,33 @@ export const adminContent: AdminContent = {
           confirm: 'Delete',
         },
       },
+      filters: {
+        triggerLabel: 'Filter tours',
+        title: 'Filter Tours',
+        description: 'UI only for now. These selections do not affect the list yet.',
+        groups: {
+          status: {
+            label: 'Status',
+            options: {
+              all: 'All',
+              active: 'Active',
+              inactive: 'Inactive',
+            },
+          },
+          visibility: {
+            label: 'Visibility',
+            options: {
+              featured: 'Featured',
+              popular: 'Popular',
+              topTrending: 'Top Trending',
+            },
+          },
+        },
+        actions: {
+          reset: 'Reset',
+          apply: 'Apply',
+        },
+      },
       editPage: {
         intro: {
           title: 'Edit Tour',
@@ -380,7 +407,7 @@ export const adminContent: AdminContent = {
           },
           pricing: {
             title: 'Departure & Pricing',
-            description: 'Create the first departure with schedule, capacity, and price.',
+            description: 'Add one or more departures with schedule, capacity, and price.',
           },
           media: {
             title: 'Media & Visibility',
@@ -509,6 +536,40 @@ export const adminContent: AdminContent = {
           typeOptions: [
             { value: 'included', label: 'Included' },
             { value: 'excluded', label: 'Excluded' },
+          ],
+        },
+        departureBlocks: {
+          title: 'Departure Blocks',
+          description: 'Add and reorder departure schedules, pricing, and availability.',
+          fields: {
+            dateRange: 'Departure Dates',
+            bookingDeadline: 'Booking Deadline',
+            maximumCapacity: 'Maximum Capacity',
+            price: 'Price',
+            originalPrice: 'Original Price',
+            status: 'Departure Status',
+          },
+          helpers: {
+            dateRange: 'Select the start and end dates for this departure.',
+            bookingDeadline: 'Bookings must close on or before the departure start date.',
+            maximumCapacity: 'Set how many seats are available for this departure.',
+            price: 'Set the selling price for this departure.',
+            originalPrice: 'Optional: add an old price to show a discount.',
+            status: 'Set the availability state for this departure.',
+          },
+          actions: {
+            addItem: 'Add Block',
+            removeItem: 'Remove',
+          },
+          item: {
+            titlePrefix: 'Departure',
+            expandIconAriaLabel: 'Toggle departure block',
+          },
+          statusOptions: [
+            { value: 'open', label: 'Open' },
+            { value: 'sold_out', label: 'Sold Out' },
+            { value: 'closed', label: 'Closed' },
+            { value: 'cancelled', label: 'Cancelled' },
           ],
         },
         mediaPickers: {

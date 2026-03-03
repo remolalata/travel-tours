@@ -3,13 +3,28 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { normalizeTourSearchTerm } from '@/services/tours/helpers/tourSearch';
 import type { AdminListingItem } from '@/types/admin';
 import type { AppGalleryPickerItem } from '@/types/gallery';
+import type { AdminListingVisibilityFilter } from '@/utils/helpers/adminListingFilters';
 
 export type AdminTourData = AdminListingItem;
+
+export type AdminTourDepartureEditorData = {
+  id: string;
+  rowId: number | null;
+  startDate: string;
+  endDate: string;
+  bookingDeadline: string;
+  maximumCapacity: string;
+  price: string;
+  originalPrice: string;
+  status: 'open' | 'sold_out' | 'closed' | 'cancelled';
+};
 
 export type FetchAdminToursInput = {
   page: number;
   pageSize: number;
   searchTerm?: string;
+  status?: 'active' | 'inactive';
+  visibility?: AdminListingVisibilityFilter[];
 };
 
 export type PaginatedAdminTours = {
@@ -32,13 +47,7 @@ export type AdminTourEditorData = {
   isFeatured: boolean;
   isPopular: boolean;
   isTopTrending: boolean;
-  departureStartDate: string;
-  departureEndDate: string;
-  departureBookingDeadline: string;
-  departureMaximumCapacity: string;
-  departurePrice: string;
-  departureOriginalPrice: string;
-  departureStatus: 'open' | 'sold_out' | 'closed' | 'cancelled';
+  departures: AdminTourDepartureEditorData[];
   itineraries: Array<{
     id: string;
     dayNumber: string;
@@ -68,7 +77,8 @@ export type CreateAdminTourInput = {
   isFeatured?: boolean;
   isPopular?: boolean;
   isTopTrending?: boolean;
-  departure: {
+  departures: Array<{
+    id?: number | null;
     startDate: string;
     endDate: string;
     bookingDeadline: string;
@@ -76,7 +86,7 @@ export type CreateAdminTourInput = {
     price: number;
     originalPrice: number | null;
     status: 'open' | 'sold_out' | 'closed' | 'cancelled';
-  };
+  }>;
   itineraries: Array<{
     dayNumber: number;
     title: string;
@@ -244,6 +254,24 @@ function mapItineraryItems(
     }));
 }
 
+function mapDepartureItems(
+  rows: DepartureRow[] | null | undefined,
+): AdminTourEditorData['departures'] {
+  return (rows ?? [])
+    .sort((left, right) => left.start_date.localeCompare(right.start_date))
+    .map((row) => ({
+      id: `departure-${row.id}`,
+      rowId: row.id,
+      startDate: row.start_date,
+      endDate: row.end_date,
+      bookingDeadline: row.booking_deadline,
+      maximumCapacity: String(row.maximum_capacity),
+      price: String(row.price),
+      originalPrice: typeof row.original_price === 'number' ? String(row.original_price) : '',
+      status: row.status,
+    }));
+}
+
 function mapInclusionItems(
   rows: InclusionRow[] | null | undefined,
 ): AdminTourEditorData['inclusions'] {
@@ -301,6 +329,21 @@ export async function fetchAdminTours(
     query = query.or(
       `title.ilike.%${normalizedSearchTerm}%,location.ilike.%${normalizedSearchTerm}%`,
     );
+  }
+
+  if (input.status) {
+    query = query.eq('status', input.status);
+  }
+
+  const visibilityFilters = input.visibility ?? [];
+  if (visibilityFilters.includes('featured')) {
+    query = query.eq('is_featured', true);
+  }
+  if (visibilityFilters.includes('popular')) {
+    query = query.eq('is_popular', true);
+  }
+  if (visibilityFilters.includes('top-trending')) {
+    query = query.eq('is_top_trending', true);
   }
 
   const { data, error, count } = await query.range(from, to);
@@ -373,8 +416,7 @@ export async function fetchAdminTourById(
         'id,start_date,end_date,booking_deadline,maximum_capacity,price,original_price,status',
       )
       .eq('tour_id', tourRow.id)
-      .order('start_date', { ascending: true })
-      .limit(1),
+      .order('start_date', { ascending: true }),
     supabase
       .from('tour_itinerary_steps')
       .select('id,day_number,title,content,icon,is_summary')
@@ -396,9 +438,6 @@ export async function fetchAdminTourById(
   if (inclusionError) {
     throw new Error(`TOUR_INCLUSIONS_FETCH_FAILED:${inclusionError.message}`);
   }
-
-  const departure = ((departures ?? []) as DepartureRow[])[0] ?? null;
-
   return {
     id: tourRow.id,
     title: tourRow.title,
@@ -420,16 +459,7 @@ export async function fetchAdminTourById(
     isFeatured: tourRow.is_featured,
     isPopular: tourRow.is_popular,
     isTopTrending: tourRow.is_top_trending,
-    departureStartDate: departure?.start_date ?? '',
-    departureEndDate: departure?.end_date ?? '',
-    departureBookingDeadline: departure?.booking_deadline ?? '',
-    departureMaximumCapacity: departure ? String(departure.maximum_capacity) : '10',
-    departurePrice: departure ? String(departure.price) : '',
-    departureOriginalPrice:
-      departure && typeof departure.original_price === 'number'
-        ? String(departure.original_price)
-        : '',
-    departureStatus: departure?.status ?? 'open',
+    departures: mapDepartureItems((departures ?? []) as DepartureRow[]),
     itineraries: mapItineraryItems((itineraryRows ?? []) as ItineraryRow[]),
     inclusions: mapInclusionItems((inclusionRows ?? []) as InclusionRow[]),
   };
@@ -513,19 +543,23 @@ export async function createAdminTour(
       }
     }
 
-    const { error: departureError } = await supabase.from('departures').insert({
-      tour_id: createdTour.id,
-      start_date: input.departure.startDate,
-      end_date: input.departure.endDate,
-      booking_deadline: input.departure.bookingDeadline,
-      maximum_capacity: input.departure.maximumCapacity,
-      original_price: input.departure.originalPrice,
-      price: input.departure.price,
-      status: input.departure.status,
-    });
+    if (input.departures.length > 0) {
+      const { error: departureError } = await supabase.from('departures').insert(
+        input.departures.map((departure) => ({
+          tour_id: createdTour.id,
+          start_date: departure.startDate,
+          end_date: departure.endDate,
+          booking_deadline: departure.bookingDeadline,
+          maximum_capacity: departure.maximumCapacity,
+          original_price: departure.originalPrice,
+          price: departure.price,
+          status: departure.status,
+        })),
+      );
 
-    if (departureError) {
-      throw new Error(`TOUR_DEPARTURE_CREATE_FAILED:${departureError.message}`);
+      if (departureError) {
+        throw new Error(`TOUR_DEPARTURE_CREATE_FAILED:${departureError.message}`);
+      }
     }
 
     if (input.inclusions.length > 0) {
@@ -627,19 +661,22 @@ export async function updateAdminTour(
       throw new Error(`TOUR_UPDATE_FAILED:${updateTourError.message}`);
     }
 
-    const [
-      { error: deleteDepartureError },
-      { error: deleteItineraryError },
-      { error: deleteInclusionError },
-    ] = await Promise.all([
-      supabase.from('departures').delete().eq('tour_id', input.id),
+    const { data: existingDepartureRows, error: existingDepartureFetchError } = await supabase
+      .from('departures')
+      .select(
+        'id,start_date,end_date,booking_deadline,maximum_capacity,price,original_price,status',
+      )
+      .eq('tour_id', input.id);
+
+    if (existingDepartureFetchError) {
+      throw new Error(`TOUR_DEPARTURE_UPDATE_FAILED:${existingDepartureFetchError.message}`);
+    }
+
+    const [{ error: deleteItineraryError }, { error: deleteInclusionError }] = await Promise.all([
       supabase.from('tour_itinerary_steps').delete().eq('tour_id', input.id),
       supabase.from('tour_inclusions').delete().eq('tour_id', input.id),
     ]);
 
-    if (deleteDepartureError) {
-      throw new Error(`TOUR_DEPARTURE_UPDATE_FAILED:${deleteDepartureError.message}`);
-    }
     if (deleteItineraryError) {
       throw new Error(`TOUR_ITINERARY_UPDATE_FAILED:${deleteItineraryError.message}`);
     }
@@ -647,19 +684,99 @@ export async function updateAdminTour(
       throw new Error(`TOUR_INCLUSIONS_UPDATE_FAILED:${deleteInclusionError.message}`);
     }
 
-    const { error: departureError } = await supabase.from('departures').insert({
-      tour_id: input.id,
-      start_date: input.departure.startDate,
-      end_date: input.departure.endDate,
-      booking_deadline: input.departure.bookingDeadline,
-      maximum_capacity: input.departure.maximumCapacity,
-      original_price: input.departure.originalPrice,
-      price: input.departure.price,
-      status: input.departure.status,
-    });
+    const existingDepartures = (existingDepartureRows ?? []) as DepartureRow[];
+    const existingDepartureById = new Map(
+      existingDepartures.map((departure) => [departure.id, departure]),
+    );
+    const incomingDepartureIds = new Set<number>();
+    const departuresToInsert = input.departures.filter(
+      (departure) => typeof departure.id !== 'number' || !Number.isFinite(departure.id),
+    );
+    const departuresToUpdate = input.departures.filter(
+      (departure) => typeof departure.id === 'number' && Number.isFinite(departure.id),
+    );
 
-    if (departureError) {
-      throw new Error(`TOUR_DEPARTURE_UPDATE_FAILED:${departureError.message}`);
+    for (const departure of departuresToUpdate) {
+      const existingDeparture = existingDepartureById.get(departure.id as number);
+
+      if (!existingDeparture) {
+        throw new Error(`TOUR_DEPARTURE_UPDATE_FAILED:Missing departure ${departure.id}`);
+      }
+
+      incomingDepartureIds.add(departure.id as number);
+    }
+
+    const departureIdsToDelete = existingDepartures
+      .filter((departure) => !incomingDepartureIds.has(departure.id))
+      .map((departure) => departure.id);
+
+    if (departureIdsToDelete.length > 0) {
+      const { error: deleteDepartureError } = await supabase
+        .from('departures')
+        .delete()
+        .in('id', departureIdsToDelete);
+
+      if (deleteDepartureError) {
+        throw new Error(`TOUR_DEPARTURE_UPDATE_FAILED:${deleteDepartureError.message}`);
+      }
+    }
+
+    for (const departure of departuresToUpdate) {
+      const existingDeparture = existingDepartureById.get(departure.id as number);
+
+      if (!existingDeparture) {
+        continue;
+      }
+
+      const hasChanges =
+        existingDeparture.start_date !== departure.startDate ||
+        existingDeparture.end_date !== departure.endDate ||
+        existingDeparture.booking_deadline !== departure.bookingDeadline ||
+        existingDeparture.maximum_capacity !== departure.maximumCapacity ||
+        existingDeparture.price !== departure.price ||
+        existingDeparture.original_price !== departure.originalPrice ||
+        existingDeparture.status !== departure.status;
+
+      if (!hasChanges) {
+        continue;
+      }
+
+      const { error: departureUpdateError } = await supabase
+        .from('departures')
+        .update({
+          start_date: departure.startDate,
+          end_date: departure.endDate,
+          booking_deadline: departure.bookingDeadline,
+          maximum_capacity: departure.maximumCapacity,
+          original_price: departure.originalPrice,
+          price: departure.price,
+          status: departure.status,
+        })
+        .eq('id', departure.id as number)
+        .eq('tour_id', input.id);
+
+      if (departureUpdateError) {
+        throw new Error(`TOUR_DEPARTURE_UPDATE_FAILED:${departureUpdateError.message}`);
+      }
+    }
+
+    if (departuresToInsert.length > 0) {
+      const { error: departureError } = await supabase.from('departures').insert(
+        departuresToInsert.map((departure) => ({
+          tour_id: input.id,
+          start_date: departure.startDate,
+          end_date: departure.endDate,
+          booking_deadline: departure.bookingDeadline,
+          maximum_capacity: departure.maximumCapacity,
+          original_price: departure.originalPrice,
+          price: departure.price,
+          status: departure.status,
+        })),
+      );
+
+      if (departureError) {
+        throw new Error(`TOUR_DEPARTURE_UPDATE_FAILED:${departureError.message}`);
+      }
     }
 
     if (input.itineraries.length > 0) {

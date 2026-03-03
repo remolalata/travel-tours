@@ -1,16 +1,14 @@
 'use client';
 
 import Box from '@mui/material/Box';
-import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import AdminRichTextEditor from '@/components/admin/help-center/AdminRichTextEditor';
+import AdminDepartureBlocksManager from '@/components/admin/tours/AdminDepartureBlocksManager';
 import AdminInclusionBlocksManager from '@/components/admin/tours/AdminInclusionBlocksManager';
 import AdminItineraryBlocksManager from '@/components/admin/tours/AdminItineraryBlocksManager';
 import AppButton from '@/components/common/button/AppButton';
-import DatePickerInput from '@/components/common/date/DatePickerInput';
-import DateRangePickerInput from '@/components/common/date/DateRangePickerInput';
 import AppToast from '@/components/common/feedback/AppToast';
 import AppFieldHelper from '@/components/common/form/AppFieldHelper';
 import AppImageGalleryPicker from '@/components/common/form/AppImageGalleryPicker';
@@ -23,11 +21,8 @@ import useAdminTourReferencesQuery from '@/services/admin/tours/hooks/useAdminTo
 import useCreateAdminTourMutation from '@/services/admin/tours/hooks/useCreateAdminTourMutation';
 import useUpdateAdminTourMutation from '@/services/admin/tours/hooks/useUpdateAdminTourMutation';
 import type { AdminTourEditorData } from '@/services/admin/tours/mutations/tourApi';
-import type { AdminTourCreateValidationInput } from '@/types/admin';
 import type { AppGalleryPickerItem } from '@/types/gallery';
-import { validateAdminTourCreateForm } from '@/utils/helpers/formValidation';
 import useAdminTextBlocksManager from '@/utils/hooks/admin/useAdminTextBlocksManager';
-import { muiFieldSx } from '@/utils/styles/muiFieldSx';
 
 type TourItineraryFormItem = {
   id: string;
@@ -47,6 +42,24 @@ type TourInclusionFormItem = {
 
 type TourStatus = 'active' | 'inactive';
 type TourDepartureStatus = 'open' | 'sold_out' | 'closed' | 'cancelled';
+type TourDepartureFormItem = {
+  id: string;
+  rowId: number | null;
+  startDate: string;
+  endDate: string;
+  bookingDeadline: string;
+  maximumCapacity: string;
+  price: string;
+  originalPrice: string;
+  status: TourDepartureStatus;
+};
+type DepartureFieldKey = 'startDate' | 'endDate' | 'bookingDeadline' | 'maximumCapacity' | 'price';
+type TourCreateValidatableField =
+  | 'title'
+  | 'description'
+  | 'location'
+  | 'destinationId'
+  | 'tourTypeId';
 
 type TourCreateFormState = {
   title: string;
@@ -61,13 +74,7 @@ type TourCreateFormState = {
   isFeatured: boolean;
   isPopular: boolean;
   isTopTrending: boolean;
-  departureStartDate: string;
-  departureEndDate: string;
-  departureBookingDeadline: string;
-  departureMaximumCapacity: string;
-  departurePrice: string;
-  departureOriginalPrice: string;
-  departureStatus: TourDepartureStatus;
+  departures: TourDepartureFormItem[];
   itineraries: TourItineraryFormItem[];
   inclusions: TourInclusionFormItem[];
 };
@@ -79,7 +86,6 @@ type TourCreateSectionKey =
   | 'media'
   | 'itinerary'
   | 'inclusions';
-type TourCreateValidatableField = keyof AdminTourCreateValidationInput;
 type TourPopulateData = Partial<
   Pick<
     TourCreateFormState,
@@ -95,13 +101,7 @@ type TourPopulateData = Partial<
     | 'isFeatured'
     | 'isPopular'
     | 'isTopTrending'
-    | 'departureStartDate'
-    | 'departureEndDate'
-    | 'departureBookingDeadline'
-    | 'departureMaximumCapacity'
-    | 'departurePrice'
-    | 'departureOriginalPrice'
-    | 'departureStatus'
+    | 'departures'
     | 'itineraries'
     | 'inclusions'
   >
@@ -152,6 +152,24 @@ function normalizeInclusionItems(items: TourInclusionFormItem[]): TourInclusionF
   }));
 }
 
+function createDepartureItem(
+  index: number,
+  overrides: Partial<Omit<TourDepartureFormItem, 'id'>> = {},
+): TourDepartureFormItem {
+  return {
+    id: `departure-${Date.now()}-${index}`,
+    rowId: null,
+    startDate: '',
+    endDate: '',
+    bookingDeadline: '',
+    maximumCapacity: '10',
+    price: '',
+    originalPrice: '',
+    status: 'open',
+    ...overrides,
+  };
+}
+
 const initialState: TourCreateFormState = {
   title: '',
   description: '',
@@ -165,13 +183,7 @@ const initialState: TourCreateFormState = {
   isFeatured: false,
   isPopular: false,
   isTopTrending: false,
-  departureStartDate: '',
-  departureEndDate: '',
-  departureBookingDeadline: '',
-  departureMaximumCapacity: '10',
-  departurePrice: '',
-  departureOriginalPrice: '',
-  departureStatus: 'open',
+  departures: [createDepartureItem(1)],
   itineraries: [
     {
       id: 'itinerary-1',
@@ -204,6 +216,8 @@ function buildInitialState(
     ...initialData,
     mainImage: initialData.mainImage ?? initialState.mainImage,
     images: initialData.images ?? initialState.images,
+    departures:
+      (initialData.departures?.length ?? 0) > 0 ? initialData.departures : initialState.departures,
     itineraries:
       (initialData.itineraries?.length ?? 0) > 0
         ? initialData.itineraries
@@ -233,6 +247,9 @@ export default function AdminTourCreateForm({
   const [fieldErrors, setFieldErrors] = useState<
     Partial<Record<TourCreateValidatableField, string>>
   >({});
+  const [departureErrors, setDepartureErrors] = useState<
+    Record<string, Partial<Record<DepartureFieldKey, string>>>
+  >({});
   const [toastState, setToastState] = useState<{
     open: boolean;
     message: string;
@@ -250,12 +267,6 @@ export default function AdminTourCreateForm({
   const tourStatusOptions = [
     { value: 'active', label: 'Active' },
     { value: 'inactive', label: 'Inactive' },
-  ] as const;
-  const departureStatusOptions = [
-    { value: 'open', label: 'Open' },
-    { value: 'sold_out', label: 'Sold Out' },
-    { value: 'closed', label: 'Closed' },
-    { value: 'cancelled', label: 'Cancelled' },
   ] as const;
 
   const sectionItems: Array<{
@@ -317,35 +328,137 @@ export default function AdminTourCreateForm({
     return code ? (content.validationMessages[code] ?? code) : undefined;
   }
 
-  async function handleSubmit() {
-    const validationErrors = validateAdminTourCreateForm({
-      title: formState.title,
-      description: formState.description,
-      location: formState.location,
-      destinationId: formState.destinationId,
-      tourTypeId: formState.tourTypeId,
-      departureStartDate: formState.departureStartDate,
-      departureEndDate: formState.departureEndDate,
-      departureBookingDeadline: formState.departureBookingDeadline,
-      departureMaximumCapacity: formState.departureMaximumCapacity,
-      departurePrice: formState.departurePrice,
+  function setDepartureField<Key extends keyof TourDepartureFormItem>(
+    departureId: string,
+    key: Key,
+    value: TourDepartureFormItem[Key],
+  ) {
+    setFormState((previousValue) => ({
+      ...previousValue,
+      departures: previousValue.departures.map((departure) =>
+        departure.id === departureId ? { ...departure, [key]: value } : departure,
+      ),
+    }));
+
+    const validatableKeys: DepartureFieldKey[] = [
+      'startDate',
+      'endDate',
+      'bookingDeadline',
+      'maximumCapacity',
+      'price',
+    ];
+
+    if (validatableKeys.includes(key as DepartureFieldKey)) {
+      const errorKey = key as DepartureFieldKey;
+
+      setDepartureErrors((previousValue) => {
+        if (!previousValue[departureId]?.[errorKey]) {
+          return previousValue;
+        }
+
+        return {
+          ...previousValue,
+          [departureId]: {
+            ...previousValue[departureId],
+            [errorKey]: undefined,
+          },
+        };
+      });
+    }
+  }
+
+  function addDeparture() {
+    setFormState((previousValue) => ({
+      ...previousValue,
+      departures: [
+        ...previousValue.departures,
+        createDepartureItem(previousValue.departures.length + 1),
+      ],
+    }));
+  }
+
+  function removeDeparture(departureId: string) {
+    setFormState((previousValue) => {
+      if (previousValue.departures.length <= 1) {
+        return previousValue;
+      }
+
+      return {
+        ...previousValue,
+        departures: previousValue.departures.filter((departure) => departure.id !== departureId),
+      };
     });
 
-    if (Object.keys(validationErrors).length > 0) {
-      const nextErrors: Partial<Record<TourCreateValidatableField, string>> = {
-        title: mapValidationError(validationErrors.title),
-        description: mapValidationError(validationErrors.description),
-        location: mapValidationError(validationErrors.location),
-        destinationId: mapValidationError(validationErrors.destinationId),
-        tourTypeId: mapValidationError(validationErrors.tourTypeId),
-        departureStartDate: mapValidationError(validationErrors.departureStartDate),
-        departureEndDate: mapValidationError(validationErrors.departureEndDate),
-        departureBookingDeadline: mapValidationError(validationErrors.departureBookingDeadline),
-        departureMaximumCapacity: mapValidationError(validationErrors.departureMaximumCapacity),
-        departurePrice: mapValidationError(validationErrors.departurePrice),
-      };
-      setFieldErrors(nextErrors);
+    setDepartureErrors((previousValue) => {
+      if (!previousValue[departureId]) {
+        return previousValue;
+      }
 
+      const nextValue = { ...previousValue };
+      delete nextValue[departureId];
+      return nextValue;
+    });
+  }
+
+  async function handleSubmit() {
+    const nextErrors: Partial<Record<TourCreateValidatableField, string>> = {};
+
+    if (!formState.title.trim()) {
+      nextErrors.title = mapValidationError('required_title');
+    }
+    if (!formState.description.trim()) {
+      nextErrors.description = mapValidationError('required_description');
+    }
+    if (!formState.location.trim()) {
+      nextErrors.location = mapValidationError('required_location');
+    }
+    if (!formState.destinationId.trim()) {
+      nextErrors.destinationId = mapValidationError('required_destination_id');
+    }
+    if (!formState.tourTypeId.trim()) {
+      nextErrors.tourTypeId = mapValidationError('required_tour_type_id');
+    }
+
+    const nextDepartureErrors: Record<string, Partial<Record<DepartureFieldKey, string>>> = {};
+
+    if (formState.departures.length === 0) {
+      setToastState({
+        open: true,
+        message: 'Add at least one departure before saving this tour.',
+        severity: 'error',
+      });
+      setActiveSection('pricing');
+      return;
+    }
+
+    formState.departures.forEach((departure) => {
+      const errors: Partial<Record<DepartureFieldKey, string>> = {};
+
+      if (!departure.startDate.trim()) {
+        errors.startDate = mapValidationError('required_departure_start_date');
+      }
+      if (!departure.endDate.trim()) {
+        errors.endDate = mapValidationError('required_departure_end_date');
+      }
+      if (!departure.bookingDeadline.trim()) {
+        errors.bookingDeadline = mapValidationError('required_departure_booking_deadline');
+      }
+      if (!departure.maximumCapacity.trim()) {
+        errors.maximumCapacity = mapValidationError('required_departure_maximum_capacity');
+      }
+      if (!departure.price.trim()) {
+        errors.price = mapValidationError('required_departure_price');
+      }
+
+      if (Object.keys(errors).length > 0) {
+        nextDepartureErrors[departure.id] = errors;
+      }
+    });
+
+    setFieldErrors(nextErrors);
+    setDepartureErrors(nextDepartureErrors);
+
+    if (Object.keys(nextErrors).length > 0 || Object.keys(nextDepartureErrors).length > 0) {
       if (nextErrors.title || nextErrors.description || nextErrors.location) {
         setActiveSection('basic');
       } else if (nextErrors.destinationId || nextErrors.tourTypeId) {
@@ -356,49 +469,55 @@ export default function AdminTourCreateForm({
       return;
     }
 
-    setFieldErrors({});
-
     const destinationId = Number(formState.destinationId);
     const tourTypeId = Number(formState.tourTypeId);
-    const departureMaximumCapacity = Number(formState.departureMaximumCapacity);
-    const departurePrice = Number(formState.departurePrice);
-    const departureOriginalPrice = formState.departureOriginalPrice.trim()
-      ? Number(formState.departureOriginalPrice)
-      : null;
 
-    if (
-      !Number.isFinite(destinationId) ||
-      !Number.isFinite(tourTypeId) ||
-      !Number.isFinite(departureMaximumCapacity) ||
-      departureMaximumCapacity < 1 ||
-      !Number.isFinite(departurePrice) ||
-      departurePrice < 0 ||
-      (departureOriginalPrice !== null && departureOriginalPrice < 0) ||
-      (departureOriginalPrice !== null && !Number.isFinite(departureOriginalPrice))
-    ) {
+    if (!Number.isFinite(destinationId) || !Number.isFinite(tourTypeId)) {
       setToastState({
         open: true,
-        message:
-          'Invalid numeric values detected. Please review destination, type, capacity, and pricing.',
-        severity: 'error',
-      });
-      return;
-    }
-
-    if (
-      formState.departureEndDate < formState.departureStartDate ||
-      formState.departureBookingDeadline > formState.departureStartDate
-    ) {
-      setToastState({
-        open: true,
-        message:
-          'Departure dates are invalid. End date must be on or after start date, and booking deadline must be on or before start date.',
+        message: 'Invalid numeric values detected. Please review destination and tour type.',
         severity: 'error',
       });
       return;
     }
 
     try {
+      const normalizedDepartures = formState.departures.map((departure, index) => {
+        const maximumCapacity = Number(departure.maximumCapacity);
+        const price = Number(departure.price);
+        const originalPrice = departure.originalPrice.trim()
+          ? Number(departure.originalPrice)
+          : null;
+
+        if (
+          !Number.isFinite(maximumCapacity) ||
+          maximumCapacity < 1 ||
+          !Number.isFinite(price) ||
+          price < 0 ||
+          (originalPrice !== null && (!Number.isFinite(originalPrice) || originalPrice < 0))
+        ) {
+          throw new Error(`DEPARTURE_NUMERIC_INVALID:${index + 1}`);
+        }
+
+        if (
+          departure.endDate < departure.startDate ||
+          departure.bookingDeadline > departure.startDate
+        ) {
+          throw new Error(`DEPARTURE_DATES_INVALID:${index + 1}`);
+        }
+
+        return {
+          startDate: departure.startDate,
+          endDate: departure.endDate,
+          bookingDeadline: departure.bookingDeadline,
+          maximumCapacity,
+          price,
+          originalPrice,
+          status: departure.status,
+          id: departure.rowId,
+        };
+      });
+
       const payload = {
         title: formState.title.trim(),
         description: formState.description.trim() || null,
@@ -416,15 +535,7 @@ export default function AdminTourCreateForm({
         isFeatured: formState.isFeatured ?? false,
         isPopular: formState.isPopular ?? false,
         isTopTrending: formState.isTopTrending ?? false,
-        departure: {
-          startDate: formState.departureStartDate,
-          endDate: formState.departureEndDate,
-          bookingDeadline: formState.departureBookingDeadline,
-          maximumCapacity: departureMaximumCapacity,
-          price: departurePrice,
-          originalPrice: departureOriginalPrice,
-          status: formState.departureStatus,
-        },
+        departures: normalizedDepartures,
         itineraries: normalizeItineraryItems(formState.itineraries).map((item, index) => ({
           dayNumber: Number(item.dayNumber) || index + 1,
           title: item.title.trim() || `Day ${index + 1}`,
@@ -461,6 +572,28 @@ export default function AdminTourCreateForm({
       });
       router.push('/admin/tours');
     } catch (error) {
+      if (error instanceof Error && error.message.startsWith('DEPARTURE_NUMERIC_INVALID:')) {
+        const departureIndex = Number(error.message.split(':')[1] ?? '0');
+        setActiveSection('pricing');
+        setToastState({
+          open: true,
+          message: `Departure ${departureIndex} has invalid numeric values. Review capacity and pricing.`,
+          severity: 'error',
+        });
+        return;
+      }
+
+      if (error instanceof Error && error.message.startsWith('DEPARTURE_DATES_INVALID:')) {
+        const departureIndex = Number(error.message.split(':')[1] ?? '0');
+        setActiveSection('pricing');
+        setToastState({
+          open: true,
+          message: `Departure ${departureIndex} has invalid dates. End date must be on or after start date, and booking deadline must be on or before start date.`,
+          severity: 'error',
+        });
+        return;
+      }
+
       const failedPrefix = isEditing
         ? content.messages.updateFailedPrefix
         : content.messages.createFailedPrefix;
@@ -510,6 +643,43 @@ export default function AdminTourCreateForm({
           previousValue.tourTypeId ??
           referencesQuery.data?.tourTypes[0]?.value ??
           '';
+        const fallbackDeparture = tour.departure
+          ? [
+              createDepartureItem(1, {
+                startDate: tour.departure.startDate ?? '',
+                endDate: tour.departure.endDate ?? '',
+                bookingDeadline: tour.departure.bookingDeadline ?? '',
+                maximumCapacity: tour.departure.maximumCapacity ?? '10',
+                price: tour.departure.price ?? '',
+                originalPrice: tour.departure.originalPrice ?? '',
+                status: tour.departure.status ?? 'open',
+              }),
+            ]
+          : null;
+        const defaultDepartures = [
+          createDepartureItem(1, {
+            startDate: '2026-04-10',
+            endDate: '2026-04-12',
+            bookingDeadline: '2026-04-03',
+            maximumCapacity: '12',
+            price: '7499',
+            originalPrice: '8999',
+            status: 'open',
+          }),
+          createDepartureItem(2, {
+            startDate: '2026-05-08',
+            endDate: '2026-05-10',
+            bookingDeadline: '2026-05-01',
+            maximumCapacity: '12',
+            price: '7699',
+            originalPrice: '9199',
+            status: 'open',
+          }),
+        ];
+        const populatedDepartures =
+          tour.departures && tour.departures.length > 0
+            ? tour.departures
+            : (fallbackDeparture ?? defaultDepartures);
 
         return {
           ...previousValue,
@@ -524,16 +694,7 @@ export default function AdminTourCreateForm({
           isFeatured: tour.isFeatured ?? true,
           isPopular: tour.isPopular ?? true,
           isTopTrending: tour.isTopTrending ?? false,
-          departureStartDate: tour.departureStartDate ?? tour.departure?.startDate ?? '2026-04-10',
-          departureEndDate: tour.departureEndDate ?? tour.departure?.endDate ?? '2026-04-12',
-          departureBookingDeadline:
-            tour.departureBookingDeadline ?? tour.departure?.bookingDeadline ?? '2026-04-03',
-          departureMaximumCapacity:
-            tour.departureMaximumCapacity ?? tour.departure?.maximumCapacity ?? '12',
-          departurePrice: tour.departurePrice ?? tour.departure?.price ?? '7499',
-          departureOriginalPrice:
-            tour.departureOriginalPrice ?? tour.departure?.originalPrice ?? '8999',
-          departureStatus: tour.departureStatus ?? tour.departure?.status ?? 'open',
+          departures: populatedDepartures,
           itineraries: normalizeItineraryItems(
             tour.itineraries ?? [
               {
@@ -591,6 +752,7 @@ export default function AdminTourCreateForm({
       });
 
       setFieldErrors({});
+      setDepartureErrors({});
     };
 
     return () => {
@@ -741,116 +903,14 @@ export default function AdminTourCreateForm({
 
           {activeSection === 'pricing' ? (
             <div className='px-20 py-20 border rounded-12 toursCreateSection'>
-              <div className='toursCreateSection__header'>
-                <h4 className='text-18 fw-500'>{content.sections.pricing.title}</h4>
-                <p className='mt-5 text-14 text-light-1'>{content.sections.pricing.description}</p>
-              </div>
-              <Box
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-                  gap: 2.5,
-                }}
-              >
-                <Box
-                  className='toursCreateField'
-                  sx={{ gridColumn: { xs: '1 / -1', md: '1 / -1' } }}
-                >
-                  <DateRangePickerInput
-                    key={`${formState.departureStartDate}-${formState.departureEndDate}`}
-                    useMuiInput
-                    allowEmpty
-                    muiInputLabel='Departure Dates'
-                    muiInputRequired
-                    muiInputSx={muiFieldSx}
-                    muiInputError={Boolean(
-                      fieldErrors.departureStartDate || fieldErrors.departureEndDate,
-                    )}
-                    muiInputHelperText={
-                      fieldErrors.departureStartDate ||
-                      fieldErrors.departureEndDate ||
-                      'Select the start and end dates for the first departure.'
-                    }
-                    initialSelectedDates={[
-                      formState.departureStartDate ? dayjs(formState.departureStartDate) : null,
-                      formState.departureEndDate ? dayjs(formState.departureEndDate) : null,
-                    ]}
-                    onValueChange={(_, [startDate, endDate]) => {
-                      setValidatedField('departureStartDate', startDate.format('YYYY-MM-DD'));
-                      setValidatedField('departureEndDate', endDate.format('YYYY-MM-DD'));
-                    }}
-                  />
-                </Box>
-                <Box className='toursCreateField'>
-                  <DatePickerInput
-                    key={formState.departureBookingDeadline}
-                    useMuiInput
-                    allowEmpty
-                    muiInputLabel='Booking Deadline'
-                    muiInputRequired
-                    muiInputSx={muiFieldSx}
-                    muiInputError={Boolean(fieldErrors.departureBookingDeadline)}
-                    muiInputHelperText={
-                      fieldErrors.departureBookingDeadline ||
-                      'Bookings must close on or before the departure start date.'
-                    }
-                    initialSelectedDate={
-                      formState.departureBookingDeadline
-                        ? dayjs(formState.departureBookingDeadline)
-                        : null
-                    }
-                    onValueChange={(_, selectedDate) => {
-                      setValidatedField(
-                        'departureBookingDeadline',
-                        selectedDate.format('YYYY-MM-DD'),
-                      );
-                    }}
-                  />
-                </Box>
-                <Box className='toursCreateField'>
-                  <AppTextField
-                    label='Maximum Capacity'
-                    value={formState.departureMaximumCapacity}
-                    onChange={(value) => setValidatedField('departureMaximumCapacity', value)}
-                    type='number'
-                    errorMessage={fieldErrors.departureMaximumCapacity}
-                    inputProps={{ min: 1 }}
-                  />
-                  {!fieldErrors.departureMaximumCapacity ? (
-                    <AppFieldHelper text='Set how many seats are available for this departure.' />
-                  ) : null}
-                </Box>
-                <Box className='toursCreateField'>
-                  <AppTextField
-                    label={content.fields.price}
-                    value={formState.departurePrice}
-                    onChange={(value) => setValidatedField('departurePrice', value)}
-                    type='number'
-                    errorMessage={fieldErrors.departurePrice}
-                  />
-                  {!fieldErrors.departurePrice ? (
-                    <AppFieldHelper text='Set the selling price for this departure.' />
-                  ) : null}
-                </Box>
-                <Box className='toursCreateField'>
-                  <AppTextField
-                    label={content.fields.originalPrice}
-                    value={formState.departureOriginalPrice}
-                    onChange={(value) => setField('departureOriginalPrice', value)}
-                    type='number'
-                  />
-                  <AppFieldHelper text='Optional: add an old price to show a discount.' />
-                </Box>
-                <Box className='toursCreateField'>
-                  <AppSelectField
-                    label='Departure Status'
-                    value={formState.departureStatus}
-                    onChange={(value) => setField('departureStatus', value as TourDepartureStatus)}
-                    options={departureStatusOptions}
-                  />
-                  <AppFieldHelper text='Set the availability state for this departure.' />
-                </Box>
-              </Box>
+              <AdminDepartureBlocksManager
+                items={formState.departures}
+                fieldErrors={departureErrors}
+                onAddItem={addDeparture}
+                onRemoveItem={removeDeparture}
+                onUpdateItem={(id, key, value) => setDepartureField(id, key, value)}
+                content={content}
+              />
             </div>
           ) : null}
 

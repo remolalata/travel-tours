@@ -249,6 +249,33 @@ export interface AdminListingContent {
       confirm: string;
     };
   };
+  filters: {
+    triggerLabel: string;
+    title: string;
+    description: string;
+    groups: {
+      status: {
+        label: string;
+        options: {
+          all: string;
+          active: string;
+          inactive: string;
+        };
+      };
+      visibility: {
+        label: string;
+        options: {
+          featured: string;
+          popular: string;
+          topTrending: string;
+        };
+      };
+    };
+    actions: {
+      reset: string;
+      apply: string;
+    };
+  };
   editPage: {
     intro: AdminSectionIntro;
   };
@@ -373,6 +400,38 @@ export interface AdminListingContent {
         expandIconAriaLabel: string;
       };
       typeOptions: Array<{
+        value: string;
+        label: string;
+      }>;
+    };
+    departureBlocks: {
+      title: string;
+      description: string;
+      fields: {
+        dateRange: string;
+        bookingDeadline: string;
+        maximumCapacity: string;
+        price: string;
+        originalPrice: string;
+        status: string;
+      };
+      helpers: {
+        dateRange: string;
+        bookingDeadline: string;
+        maximumCapacity: string;
+        price: string;
+        originalPrice: string;
+        status: string;
+      };
+      actions: {
+        addItem: string;
+        removeItem: string;
+      };
+      item: {
+        titlePrefix: string;
+        expandIconAriaLabel: string;
+      };
+      statusOptions: Array<{
         value: string;
         label: string;
       }>;

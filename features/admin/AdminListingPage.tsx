@@ -1,9 +1,11 @@
 'use client';
 
+import { Filter } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useId, useMemo, useState } from 'react';
 
 import AdminShell from '@/components/admin/layout/AdminShell';
+import AdminListingFiltersPopover from '@/components/admin/shared/AdminListingFiltersPopover';
 import AdminSearchInput from '@/components/admin/shared/AdminSearchInput';
 import AdminToursGrid from '@/components/admin/tours/AdminToursGrid';
 import AppButton from '@/components/common/button/AppButton';
@@ -11,10 +13,12 @@ import AppToast from '@/components/common/feedback/AppToast';
 import AppConfirmModal from '@/components/common/modal/AppConfirmModal';
 import Pagination from '@/components/common/Pagination';
 import { adminContent } from '@/content/features/admin';
+import useAdminListingFilters from '@/features/admin/hooks/useAdminListingFilters';
 import useAdminToursSearch from '@/features/admin/hooks/useAdminToursSearch';
 import useAdminToursQuery from '@/services/admin/tours/hooks/useAdminToursQuery';
 import useDeleteAdminTourMutation from '@/services/admin/tours/hooks/useDeleteAdminTourMutation';
 import type { AdminTourData } from '@/services/admin/tours/mutations/tourApi';
+import type { AdminListingStatusFilter } from '@/utils/helpers/adminListingFilters';
 import useConfirmDialogState from '@/utils/hooks/useConfirmDialogState';
 
 const toursPageSize = 6;
@@ -30,11 +34,17 @@ export default function AdminListingPage() {
     severity: 'success' | 'error' | 'warning' | 'info';
   }>({ open: false, message: '', severity: 'info' });
   const searchInputId = useId();
+  const listingFilters = useAdminListingFilters();
   const { searchTerm, normalizedSearchTerm, setSearchTerm } = useAdminToursSearch();
+  const appliedStatusFilter = listingFilters.statusFilters.find(
+    (value): value is Exclude<AdminListingStatusFilter, 'all'> => value !== 'all',
+  );
   const toursQuery = useAdminToursQuery({
     page,
     pageSize: toursPageSize,
     searchTerm: normalizedSearchTerm,
+    status: appliedStatusFilter,
+    visibility: listingFilters.visibilityFilters,
   });
   const deleteTourMutation = useDeleteAdminTourMutation();
   const totalPages = useMemo(
@@ -72,34 +82,71 @@ export default function AdminListingPage() {
 
   return (
     <AdminShell title={content.intro.title} description={content.intro.description}>
-      <div className='rounded-12 bg-white shadow-2 px-40 pt-40 pb-30 md:px-20 md:pt-20 md:pb-20 mt-60 md:mt-30'>
+      <div className='bg-white shadow-2 mt-60 md:mt-30 px-40 md:px-20 pt-40 md:pt-20 pb-30 md:pb-20 rounded-12'>
         <div
-          className='d-flex justify-end items-center mb-20 flex-wrap'
+          className='d-flex flex-wrap justify-between items-center mb-20'
           style={{ columnGap: '16px', rowGap: '10px' }}
         >
-          <AdminSearchInput
-            id={searchInputId}
-            label='Search tours'
-            value={searchTerm}
-            onChange={(nextValue) => {
-              setPage(0);
-              setSearchTerm(nextValue);
-            }}
-            placeholder={adminContent.shell.searchPlaceholder}
-            containerClassName='rounded-12'
-            containerStyle={{ paddingTop: '7px', paddingBottom: '7px' }}
-            inputClassName='text-15 fw-500'
-          />
-          <AppButton
+          <button
             type='button'
-            size='sm'
-            onClick={() => {
-              router.push('/admin/tours/new');
+            aria-label={content.filters.triggerLabel}
+            aria-expanded={listingFilters.isOpen}
+            aria-haspopup='dialog'
+            className='d-inline-flex justify-center items-center bg-white border rounded-12'
+            style={{
+              width: '44px',
+              height: '44px',
+              borderColor: listingFilters.hasActiveFilters ? '#05073c' : '#e8edf5',
+              color: '#05073c',
+              backgroundColor: listingFilters.hasActiveFilters ? 'rgba(5, 7, 60, 0.06)' : '#fff',
             }}
+            onClick={listingFilters.open}
           >
-            {content.addButtonLabel}
-          </AppButton>
+            <Filter size={18} strokeWidth={2} aria-hidden='true' />
+          </button>
+          <div
+            className='d-flex flex-wrap items-center'
+            style={{ columnGap: '16px', rowGap: '10px' }}
+          >
+            <AdminSearchInput
+              id={searchInputId}
+              label='Search tours'
+              value={searchTerm}
+              onChange={(nextValue) => {
+                setPage(0);
+                setSearchTerm(nextValue);
+              }}
+              placeholder={adminContent.shell.searchPlaceholder}
+              containerClassName='rounded-12'
+              containerStyle={{ paddingTop: '7px', paddingBottom: '7px' }}
+              inputClassName='text-15 fw-500'
+            />
+            <AppButton
+              type='button'
+              size='sm'
+              onClick={() => {
+                router.push('/admin/tours/new');
+              }}
+            >
+              {content.addButtonLabel}
+            </AppButton>
+          </div>
         </div>
+        <AdminListingFiltersPopover
+          open={listingFilters.isOpen}
+          anchorEl={listingFilters.anchorEl}
+          draftStatusFilters={listingFilters.draftStatusFilters}
+          draftVisibilityFilters={listingFilters.draftVisibilityFilters}
+          onClose={listingFilters.close}
+          onDraftStatusFiltersChange={listingFilters.setDraftStatusFilters}
+          onDraftVisibilityFiltersChange={listingFilters.setDraftVisibilityFilters}
+          onResetDraft={listingFilters.resetDraft}
+          onApply={() => {
+            setPage(0);
+            listingFilters.apply();
+          }}
+          content={content}
+        />
 
         <AdminToursGrid
           tours={tours}
@@ -125,7 +172,7 @@ export default function AdminListingPage() {
               }}
             />
           ) : null}
-          <div className='text-14 text-center mt-20'>
+          <div className='mt-20 text-14 text-center'>
             {!hasError
               ? `${content.summary.showing} ${tours.length} ${content.summary.of} ${totalTours} ${isSearchActive ? 'matched' : content.summary.itemSuffix}`
               : null}

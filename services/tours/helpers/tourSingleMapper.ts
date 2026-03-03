@@ -10,10 +10,12 @@ type TourSingleRow = {
   location: string;
   image_src: string;
   images: string[] | null;
-  price: number;
-  original_price: number | null;
   description: string | null;
   is_featured: boolean;
+  departures?: Array<{
+    price: number;
+    original_price: number | null;
+  }> | null;
   tour_types:
     | {
         name: string | null;
@@ -85,6 +87,21 @@ function getTourType(row: TourSingleRow['tour_types']): { name: string | null } 
   return row;
 }
 
+function getLowestDeparture(
+  departures: TourSingleRow['departures'],
+): { price: number; original_price: number | null } | null {
+  return (departures ?? []).reduce<{ price: number; original_price: number | null } | null>(
+    (lowest, departure) => {
+      if (!lowest || departure.price < lowest.price) {
+        return departure;
+      }
+
+      return lowest;
+    },
+    null,
+  );
+}
+
 export function mapTourSinglePageData(
   tour: TourSingleRow,
   inclusionRows: TourInclusionRow[],
@@ -96,6 +113,11 @@ export function mapTourSinglePageData(
   const itinerarySummarySteps = mapItineraryRows(itineraryRows, true);
   const itinerarySteps = mapItineraryRows(itineraryRows, false);
   const tourType = getTourType(tour.tour_types);
+  const lowestDeparture = getLowestDeparture(tour.departures);
+
+  if (!lowestDeparture) {
+    throw new Error('TOUR_HAS_NO_OPEN_DEPARTURES');
+  }
 
   return {
     routeContext: {
@@ -113,8 +135,8 @@ export function mapTourSinglePageData(
       rating: 0,
       ratingCount: 0,
       description: tour.description ?? '',
-      price: tour.price,
-      fromPrice: tour.original_price ?? tour.price,
+      price: lowestDeparture.price,
+      fromPrice: lowestDeparture.original_price ?? lowestDeparture.price,
       featured: tour.is_featured,
       badgeText: '',
       badgeClass: '',

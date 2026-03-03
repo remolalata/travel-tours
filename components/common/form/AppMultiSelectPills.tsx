@@ -8,6 +8,7 @@ type AppMultiSelectPillsProps<T extends string> = {
   value: T[];
   onChange: (value: T[]) => void;
   activeBackgroundColor?: string;
+  activeBorderColor?: string;
   activeTextColor?: string;
   inactiveBackgroundColor?: string;
   inactiveTextColor?: string;
@@ -21,6 +22,7 @@ export default function AppMultiSelectPills<T extends string>({
   value,
   onChange,
   activeBackgroundColor = '#05073c',
+  activeBorderColor = activeBackgroundColor,
   activeTextColor = '#fff',
   inactiveBackgroundColor = '#fff',
   inactiveTextColor = '#05073c',
@@ -56,7 +58,7 @@ export default function AppMultiSelectPills<T extends string>({
                 alignItems: 'center',
                 justifyContent: 'center',
                 border: '1px solid',
-                borderColor: isActive ? activeBackgroundColor : inactiveBorderColor,
+                borderColor: isActive ? activeBorderColor : inactiveBorderColor,
                 backgroundColor: isActive ? activeBackgroundColor : inactiveBackgroundColor,
                 color: isActive ? activeTextColor : inactiveTextColor,
                 fontSize: 14,
@@ -65,7 +67,7 @@ export default function AppMultiSelectPills<T extends string>({
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
                 '&:hover': {
-                  borderColor: isActive ? activeBackgroundColor : hoverBorderColor,
+                  borderColor: isActive ? activeBorderColor : hoverBorderColor,
                 },
               }}
             >

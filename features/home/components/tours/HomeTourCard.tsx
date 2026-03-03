@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Stars from '@/components/common/Stars';
 import type { TourBase } from '@/types/tour';
 import { formatNumber } from '@/utils/helpers/formatNumber';
+import { getMultiLineClampStyle, getNoUnderlineHoverStyle } from '@/utils/helpers/textClamp';
 
 type HomeTourCardItem = TourBase & {
   slug?: string | null;
@@ -27,12 +28,11 @@ export default function HomeTourCard({
   currencySymbol = '₱',
 }: HomeTourCardProps) {
   const durationLabel = item.duration ?? 'See dates';
+  const resolvedClassName =
+    className ?? '-hover-shadow px-10 py-10 border rounded-12 tourCard -type-1';
 
   return (
-    <Link
-      href={`/tour/${item.slug ?? item.id}`}
-      className={className ?? '-hover-shadow px-10 py-10 border rounded-12 tourCard -type-1'}
-    >
+    <Link href={`/tour/${item.slug ?? item.id}`} className={`${resolvedClassName} homeTourCard`}>
       <div className='tourCard__header'>
         <div className='tourCard__image ratio ratio-28:20'>
           <Image
@@ -60,8 +60,10 @@ export default function HomeTourCard({
           {item.location}
         </div>
 
-        <h3 className='mt-5 text-16 tourCard__title fw-500'>
-          <span>{item.title}</span>
+        <h3 className='mt-5 text-16 tourCard__title fw-500' title={item.title}>
+          <span style={{ ...getMultiLineClampStyle(2), ...getNoUnderlineHoverStyle() }}>
+            {item.title}
+          </span>
         </h3>
 
         <div className='d-flex items-center mt-5 text-13 tourCard__rating'>

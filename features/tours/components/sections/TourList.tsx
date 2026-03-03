@@ -181,7 +181,7 @@ export default function TourList({ initialToursPage }: TourListProps) {
             <div className='y-gap-30 pt-30 row'>
               {tours.map((elm, i) => (
                 <div className='col-12' key={elm.id ?? i}>
-                  <div className='tourCard -type-2'>
+                  <div className='tourCard -type-2 toursPageTourCard'>
                     <div className='tourCard__image'>
                       <Image width={420} height={390} src={elm.imageSrc} alt='image' />
 

@@ -15,14 +15,15 @@ as $$
     d.slug,
     d.name,
     d.image_src,
-    count(b.id)::bigint as tour_count
+    count(t.id)::bigint as tour_count
   from public.destinations d
-  left join public.bookings b
-    on b.destination_id = d.id
+  left join public.tours t
+    on t.destination_id = d.id
+    and t.status = 'active'
   where d.is_active = true
     and d.image_src is not null
   group by d.id, d.slug, d.name, d.image_src
-  order by count(b.id) desc, d.name asc
+  order by count(t.id) desc, d.name asc
   limit greatest(coalesce(max_items, 12), 1);
 $$;
 
