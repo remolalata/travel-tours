@@ -10,11 +10,6 @@ import AppMultiSelectPills from '@/components/common/form/AppMultiSelectPills';
 import type { DataTableColumn } from '@/components/common/table/AppDataTable';
 import AppDataTable from '@/components/common/table/AppDataTable';
 import { adminContent } from '@/content/features/admin';
-import {
-  bookingStatusLabelMap,
-  bookingStatusValueMap,
-} from '@/features/admin/helpers/bookingStatus';
-import useAdminBookingsSearch from '@/features/admin/hooks/useAdminBookingsSearch';
 import useAdminBookingsQuery from '@/services/admin/bookings/hooks/useAdminBookingsQuery';
 import useUpdateAdminBookingStatusMutation from '@/services/admin/bookings/hooks/useUpdateAdminBookingStatusMutation';
 import type {
@@ -22,6 +17,8 @@ import type {
   RawBookingStatus,
 } from '@/services/admin/bookings/mutations/bookingApi';
 import type { BookingStatus } from '@/types/admin';
+import { bookingStatusLabelMap, bookingStatusValueMap } from '@/utils/helpers/admin/bookingStatus';
+import useAdminBookingsSearch from '@/utils/hooks/admin/useAdminBookingsSearch';
 
 const bookedDateFormatter = new Intl.DateTimeFormat('en-PH', {
   dateStyle: 'medium',

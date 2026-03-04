@@ -6,7 +6,7 @@ import { NextResponse } from 'next/server';
 import {
   type BookingPaymentOption,
   calculateBookingTotals,
-} from '@/features/tour-single/helpers/bookingPayment';
+} from '@/utils/helpers/tour-single/bookingPayment';
 import { createAdminClient } from '@/utils/supabase/admin';
 import { createClient as createServerSupabaseClient } from '@/utils/supabase/server';
 

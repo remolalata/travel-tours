@@ -1,6 +1,6 @@
+import AdminFaqManager from '@/components/admin/help-center/AdminFaqManager';
 import AdminShell from '@/components/admin/layout/AdminShell';
 import { adminContent } from '@/content/features/admin';
-import AdminFaqManager from '@/features/admin/help-center/components/AdminFaqManager';
 
 export default function AdminHelpCenterPage() {
   const content = adminContent.pages.helpCenter;

@@ -13,12 +13,12 @@ import AppToast from '@/components/common/feedback/AppToast';
 import AppConfirmModal from '@/components/common/modal/AppConfirmModal';
 import Pagination from '@/components/common/Pagination';
 import { adminContent } from '@/content/features/admin';
-import useAdminListingFilters from '@/features/admin/hooks/useAdminListingFilters';
-import useAdminToursSearch from '@/features/admin/hooks/useAdminToursSearch';
 import useAdminToursQuery from '@/services/admin/tours/hooks/useAdminToursQuery';
 import useDeleteAdminTourMutation from '@/services/admin/tours/hooks/useDeleteAdminTourMutation';
 import type { AdminTourData } from '@/services/admin/tours/mutations/tourApi';
 import type { AdminListingStatusFilter } from '@/utils/helpers/adminListingFilters';
+import useAdminListingFilters from '@/utils/hooks/admin/useAdminListingFilters';
+import useAdminToursSearch from '@/utils/hooks/admin/useAdminToursSearch';
 import useConfirmDialogState from '@/utils/hooks/useConfirmDialogState';
 
 const toursPageSize = 6;

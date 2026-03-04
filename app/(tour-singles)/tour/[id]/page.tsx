@@ -2,11 +2,7 @@ import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { cache } from 'react';
 
-import SiteFooter from '@/components/layout/footers/SiteFooter';
-import SiteHeader from '@/components/layout/header/SiteHeader';
-import PageHeader from '@/features/tour-single/components/sections/PageHeader';
-import TourDetailsContent from '@/features/tour-single/components/sections/TourDetailsContent';
-import TourSlider from '@/features/tour-single/components/sections/TourSlider';
+import TourSinglePage from '@/features/tour-single/TourSinglePage';
 import { fetchFaqItems } from '@/services/faqs/mutations/faqApi';
 import { fetchReviews } from '@/services/reviews/mutations/reviewApi';
 import { fetchTourSinglePageData } from '@/services/tours/mutations/tourSingleApi';
@@ -127,7 +123,7 @@ export default async function Page(props: TourPageProps) {
     permanentRedirect(redirectPath);
   }
 
-  const { tour, tourContent, galleryImageUrls, overviewDescription, routeContext } = singlePageData;
+  const { routeContext } = singlePageData;
   let reviews: Review[] = [];
   let faqItems: FaqItem[] = [];
 
@@ -147,30 +143,5 @@ export default async function Page(props: TourPageProps) {
     faqItems = [];
   }
 
-  return (
-    <>
-      <main>
-        <SiteHeader />
-        <PageHeader
-          breadcrumbs={[
-            { label: 'Home', href: '/' },
-            { label: 'Tours', href: '/tours' },
-            { label: tour.title },
-          ]}
-        />
-
-        <TourDetailsContent
-          tour={tour}
-          tourContent={tourContent}
-          destinationId={routeContext.destinationId}
-          reviews={reviews}
-          galleryImageUrls={galleryImageUrls}
-          overviewDescription={overviewDescription}
-          faqItems={faqItems}
-        />
-        <TourSlider destinationId={routeContext.destinationId} currentTourId={routeContext.id} />
-        <SiteFooter />
-      </main>
-    </>
-  );
+  return <TourSinglePage singlePageData={singlePageData} reviews={reviews} faqItems={faqItems} />;
 }
