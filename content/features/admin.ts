@@ -331,6 +331,7 @@ export const adminContent: AdminContent = {
       addButtonLabel: 'Add Tour',
       actions: {
         editLabel: 'Edit tour',
+        viewLabel: 'View live tour',
         deleteLabel: 'Delete tour',
       },
       pricePrefix: 'From',

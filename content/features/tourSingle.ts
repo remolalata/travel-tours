@@ -12,6 +12,7 @@ export const tourSingleContent = {
         label: 'Share',
         ariaLabelPrefix: 'Share this tour on Facebook',
       },
+      editTourLabel: 'Edit this tour',
       wishlist: {
         label: 'Wishlist',
         href: '#',
@@ -31,6 +32,7 @@ export const tourSingleContent = {
       whereLabel: 'Where',
       wherePlaceholder: 'Search destinations',
       whenLabel: 'When',
+      whenPlaceholder: 'Select departure',
       tourTypeLabel: 'Tour Type',
       tourTypePlaceholder: 'All tour',
     },

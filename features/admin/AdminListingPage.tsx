@@ -156,9 +156,6 @@ export default function AdminListingPage() {
           isLoading={toursQuery.isLoading}
           errorMessage={hasError ? content.messages.loadError : null}
           emptyMessage={content.messages.empty}
-          onEditClick={(tour) => {
-            router.push(`/admin/tours/edit/${tour.id}`);
-          }}
           onDeleteClick={deleteDialog.open}
         />
 

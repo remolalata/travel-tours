@@ -207,6 +207,7 @@ export interface AdminDestinationsContent {
 
 export interface AdminListingItem {
   id: number;
+  slug?: string;
   imageSrc: string;
   location: string;
   title: string;
@@ -222,6 +223,7 @@ export interface AdminListingContent {
   addButtonLabel: string;
   actions: {
     editLabel: string;
+    viewLabel: string;
     deleteLabel: string;
   };
   pricePrefix: string;

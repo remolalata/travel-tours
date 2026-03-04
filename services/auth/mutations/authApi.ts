@@ -11,6 +11,15 @@ export type AuthViewerState = {
   phone: string | null;
 };
 
+export const unauthenticatedAuthViewerState: AuthViewerState = {
+  isAuthenticated: false,
+  role: null,
+  avatarUrl: null,
+  fullName: null,
+  email: null,
+  phone: null,
+};
+
 type UserRoleRow = {
   role: AuthRole;
 };
@@ -33,14 +42,7 @@ export async function fetchAuthViewerState(supabase: SupabaseClient): Promise<Au
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return {
-      isAuthenticated: false,
-      role: null,
-      avatarUrl: null,
-      fullName: null,
-      email: null,
-      phone: null,
-    };
+    return unauthenticatedAuthViewerState;
   }
 
   const [{ data: roleData }, { data: profileData }] = await Promise.all([

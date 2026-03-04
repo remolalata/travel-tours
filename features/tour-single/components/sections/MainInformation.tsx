@@ -1,10 +1,11 @@
 import Stars from '@/components/common/Stars';
+import AdminTourRouteAction from '@/components/common/tours/AdminTourRouteAction';
 import { tourSingleContent } from '@/content/features/tourSingle';
 import FacebookShareAction from '@/features/tour-single/components/sections/FacebookShareAction';
 import type { Tour } from '@/types/tour';
 
 interface MainInformationProps {
-  tour?: Tour;
+  tour?: Tour & { slug?: string };
 }
 
 function getTitleLines(title?: string): { firstLine: string; secondLine: string } {
@@ -72,6 +73,16 @@ export default function MainInformation({ tour }: MainInformationProps) {
 
         <div className='col-auto'>
           <div className='d-flex x-gap-30 y-gap-10'>
+            {tour?.id ? (
+              <AdminTourRouteAction
+                mode='edit'
+                tourId={tour.id}
+                publicRouteValue={tour.slug ?? tour.id}
+                label={content.actions.editTourLabel}
+                className='d-flex items-center'
+              />
+            ) : null}
+
             <FacebookShareAction
               label={content.actions.share.label}
               ariaLabelPrefix={content.actions.share.ariaLabelPrefix}

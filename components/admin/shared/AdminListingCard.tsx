@@ -2,6 +2,7 @@ import Box from '@mui/material/Box';
 import Image from 'next/image';
 
 import Stars from '@/components/common/Stars';
+import AdminTourRouteAction from '@/components/common/tours/AdminTourRouteAction';
 import type { AdminListingContent, AdminListingItem } from '@/types/admin';
 import { formatNumber } from '@/utils/helpers/formatNumber';
 
@@ -11,7 +12,6 @@ type AdminListingCardProps = {
   actionLabels: AdminListingContent['actions'];
   pricePrefix: string;
   availabilityDateLabels: AdminListingContent['availabilityDateLabels'];
-  onEditClick?: (item: AdminListingItem) => void;
   onDeleteClick?: (item: AdminListingItem) => void;
 };
 
@@ -21,7 +21,6 @@ export default function AdminListingCard({
   actionLabels,
   pricePrefix,
   availabilityDateLabels,
-  onEditClick,
   onDeleteClick,
 }: AdminListingCardProps) {
   const currentPrice = item.price;
@@ -133,26 +132,21 @@ export default function AdminListingCard({
           zIndex: 2,
         }}
       >
-        <button
-          type='button'
-          aria-label={actionLabels.editLabel}
-          title={actionLabels.editLabel}
-          onClick={() => onEditClick?.(item)}
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: 36,
-            height: 36,
-            borderRadius: 10,
-            border: '1px solid rgba(5, 7, 60, 0.08)',
-            background: '#fff',
-            color: '#05073c',
-            boxShadow: '0 10px 24px rgba(5, 7, 60, 0.08)',
-          }}
-        >
-          <i className='icon-pencil text-14' aria-hidden='true'></i>
-        </button>
+        <AdminTourRouteAction
+          mode='edit'
+          compact
+          tourId={item.id}
+          publicRouteValue={item.slug ?? item.id}
+          label={actionLabels.editLabel}
+        />
+
+        <AdminTourRouteAction
+          mode='view'
+          compact
+          tourId={item.id}
+          publicRouteValue={item.slug ?? item.id}
+          label={actionLabels.viewLabel}
+        />
 
         <button
           type='button'

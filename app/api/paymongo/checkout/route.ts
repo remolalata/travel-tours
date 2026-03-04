@@ -12,6 +12,7 @@ import { createClient as createServerSupabaseClient } from '@/utils/supabase/ser
 
 type CheckoutPayload = {
   tourId?: number;
+  departureId?: number;
   travelDateRange?: string;
   adults?: string;
   children?: string;
@@ -42,32 +43,6 @@ function parseWholeNumber(value: string, fallback = 0): number {
   const parsed = Number(value);
   if (!Number.isFinite(parsed)) return fallback;
   return Math.max(0, Math.floor(parsed));
-}
-
-function parseMonthDayValue(value: string, year: number) {
-  const parsed = dayjs(new Date(`${value}, ${year}`));
-  return parsed.isValid() ? parsed.startOf('day') : null;
-}
-
-function parseTravelDateRange(travelDateRange: string) {
-  const [rawStart, rawEnd] = travelDateRange.split(' - ').map((part) => part.trim());
-  if (!rawStart || !rawEnd) {
-    throw new Error('INVALID_TRAVEL_DATE_RANGE');
-  }
-
-  const currentYear = dayjs().year();
-  const startDate = parseMonthDayValue(rawStart, currentYear);
-  let endDate = parseMonthDayValue(rawEnd, currentYear);
-
-  if (!startDate || !endDate) {
-    throw new Error('INVALID_TRAVEL_DATE_RANGE');
-  }
-
-  if (endDate.isBefore(startDate, 'day')) {
-    endDate = endDate.add(1, 'year');
-  }
-
-  return { startDate, endDate };
 }
 
 function generateBookingReference() {
@@ -158,10 +133,12 @@ export async function POST(request: Request) {
   const paymentOption = body.paymentOption ?? 'partial';
   const adults = String(body.adults ?? '');
   const children = String(body.children ?? '0');
+  const departureId = Number(body.departureId);
   const travelDateRange = String(body.travelDateRange ?? '').trim();
 
   if (
     !Number.isFinite(body.tourId) ||
+    !Number.isFinite(departureId) ||
     !travelDateRange ||
     !['full', 'partial', 'reserve'].includes(paymentOption)
   ) {
@@ -191,9 +168,9 @@ export async function POST(request: Request) {
 
   const { data: tourRow, error: tourError } = await supabase
     .from('tours')
-    .select('id,title,price,destination_id')
+    .select('id,title,destination_id')
     .eq('id', body.tourId)
-    .eq('is_active', true)
+    .eq('status', 'active')
     .limit(1)
     .maybeSingle();
 
@@ -208,9 +185,29 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Tour not found.' }, { status: 404 });
   }
 
+  const { data: departureRow, error: departureError } = await supabase
+    .from('departures')
+    .select('id,tour_id,start_date,end_date,price,status')
+    .eq('id', departureId)
+    .eq('tour_id', body.tourId)
+    .eq('status', 'open')
+    .limit(1)
+    .maybeSingle();
+
+  if (departureError) {
+    return NextResponse.json(
+      { error: `Departure lookup failed: ${departureError.message}` },
+      { status: 500 },
+    );
+  }
+
+  if (!departureRow) {
+    return NextResponse.json({ error: 'Departure not found.' }, { status: 404 });
+  }
+
   const normalizedAdults = Math.max(1, parseWholeNumber(adults, 1)).toString();
   const normalizedChildren = parseWholeNumber(children, 0).toString();
-  const totals = calculateBookingTotals(Number(tourRow.price) || 0, {
+  const totals = calculateBookingTotals(Number(departureRow.price) || 0, {
     adults: normalizedAdults,
     children: normalizedChildren,
     paymentOption,
@@ -220,11 +217,14 @@ export async function POST(request: Request) {
   let startDate: dayjs.Dayjs;
   let endDate: dayjs.Dayjs;
   try {
-    const parsed = parseTravelDateRange(travelDateRange);
-    startDate = parsed.startDate;
-    endDate = parsed.endDate;
+    startDate = dayjs(departureRow.start_date).startOf('day');
+    endDate = dayjs(departureRow.end_date).startOf('day');
+
+    if (!startDate.isValid() || !endDate.isValid()) {
+      throw new Error('INVALID_TRAVEL_DATE_RANGE');
+    }
   } catch {
-    return NextResponse.json({ error: 'Invalid travel date range format.' }, { status: 400 });
+    return NextResponse.json({ error: 'Selected departure has invalid dates.' }, { status: 400 });
   }
 
   const statusPayload = resolveStatuses(paymentOption);

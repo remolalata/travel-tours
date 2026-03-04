@@ -1,20 +1,24 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import Calender from '@/components/common/dropdownSearch/Calender';
 import AppToast from '@/components/common/feedback/AppToast';
 import { tourSingleContent } from '@/content/features/tourSingle';
 import type { TourContent } from '@/data/tourSingleContent';
 import TourBookingPaymentModal from '@/features/tour-single/components/sections/TourBookingPaymentModal';
 import useTourSingleBookingPaymentFlow from '@/features/tour-single/hooks/useTourSingleBookingPaymentFlow';
 import type { Tour } from '@/types/tour';
+import type { TourSingleDeparture } from '@/types/tourSingle';
+import { findDepartureByDateRange, formatDepartureDateRange } from '@/utils/helpers/departures';
 import { formatNumber } from '@/utils/helpers/formatNumber';
 import { createClient } from '@/utils/supabase/client';
 
 interface TourSingleSidebarProps {
-  tour?: Tour & { tourTypeName?: string | null };
+  tour?: Tour & {
+    tourTypeName?: string | null;
+    departures?: TourSingleDeparture[];
+  };
   tourContent?: TourContent;
   destinationId?: number;
 }
@@ -72,7 +76,9 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
   const dropDownContainer = useRef<HTMLDivElement | null>(null);
   const [currentActiveDD, setCurrentActiveDD] = useState('');
   const [isSubmittingCheckout, setIsSubmittingCheckout] = useState(false);
-  const [when, setWhen] = useState('');
+  const [selectedDepartureId, setSelectedDepartureId] = useState<number | null>(
+    tour?.departures?.[0]?.id ?? null,
+  );
   const [toastState, setToastState] = useState<{
     open: boolean;
     message: string;
@@ -82,8 +88,19 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
     message: '',
     severity: 'success',
   });
+  const availableDepartures = useMemo(() => tour?.departures ?? [], [tour?.departures]);
+  const selectedDeparture = useMemo(
+    () =>
+      availableDepartures.find((departure) => departure.id === selectedDepartureId) ??
+      availableDepartures[0] ??
+      null,
+    [availableDepartures, selectedDepartureId],
+  );
+  const when = selectedDeparture
+    ? formatDepartureDateRange(selectedDeparture.startDate, selectedDeparture.endDate)
+    : '';
   const bookingFlow = useTourSingleBookingPaymentFlow({
-    baseTourPrice: tour?.price ?? 0,
+    baseTourPrice: selectedDeparture?.price ?? tour?.price ?? 0,
     when,
   });
 
@@ -124,7 +141,11 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
       };
 
       if (typeof parsed.when === 'string') {
-        setWhen(parsed.when);
+        const matchedDeparture = findDepartureByDateRange(availableDepartures, parsed.when);
+
+        if (matchedDeparture) {
+          setSelectedDepartureId(matchedDeparture.id);
+        }
       }
 
       if (parsed.formState?.adults) {
@@ -145,7 +166,7 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
     } catch {
       // Ignore invalid resume payload and continue.
     }
-  }, [bookingFlow, getPendingCheckoutStorageKey]);
+  }, [availableDepartures, bookingFlow, getPendingCheckoutStorageKey]);
 
   const buildLoginRedirectPath = () => {
     const params = new URLSearchParams(searchParams.toString());
@@ -237,7 +258,9 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
       <div className='tourSingleSidebar'>
         <div className='d-flex items-center'>
           <div>{sidebar.pricePrefix}</div>
-          <div className='ml-10 text-20 fw-500'>₱{formatNumber(tour?.price ?? 1200)}</div>
+          <div className='ml-10 text-20 fw-500'>
+            ₱{formatNumber(selectedDeparture?.price ?? tour?.price ?? 1200)}
+          </div>
         </div>
 
         <div ref={dropDownContainer} className='mt-20 searchForm -type-1 -sidebar'>
@@ -259,31 +282,69 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
             <div className='js-select-control searchFormItem js-form-dd js-calendar'>
               <div
                 className='searchFormItem__button'
-                onClick={() =>
+                onClick={() => {
+                  if (availableDepartures.length === 0) {
+                    return;
+                  }
+
                   setCurrentActiveDD((previousValue) =>
                     previousValue === 'calender' ? '' : 'calender',
-                  )
-                }
+                  );
+                }}
               >
                 <div className='flex-center bg-light-1 rounded-12 size-50 searchFormItem__icon'>
                   <i className='text-20 icon-calendar'></i>
                 </div>
                 <div className='searchFormItem__content'>
                   <h5>{sidebar.fields.whenLabel}</h5>
-                  <div>
-                    <span className='js-first-date'>
-                      <Calender
-                        active={currentActiveDD === 'calender'}
-                        onValueChange={(displayValue) => setWhen(displayValue)}
-                      />
-                    </span>
-                    <span className='js-last-date'></span>
+                  <div className='js-select-control-chosen'>
+                    {when || sidebar.fields.whenPlaceholder}
                   </div>
                 </div>
                 <div className='searchFormItem__icon_chevron'>
                   <i className='d-flex text-18 icon-chevron-down'></i>
                 </div>
               </div>
+
+              {availableDepartures.length > 0 ? (
+                <div
+                  className={`searchFormItemDropdown -tour-type ${
+                    currentActiveDD === 'calender' ? 'is-active' : ''
+                  }`}
+                >
+                  <div className='searchFormItemDropdown__container'>
+                    <div className='searchFormItemDropdown__list sroll-bar-1'>
+                      {availableDepartures.map((departure) => {
+                        const departureDateRange = formatDepartureDateRange(
+                          departure.startDate,
+                          departure.endDate,
+                        );
+                        const isSelected = selectedDeparture?.id === departure.id;
+
+                        return (
+                          <div key={departure.id} className='searchFormItemDropdown__item'>
+                            <button
+                              type='button'
+                              className={isSelected ? '-is-button-active' : undefined}
+                              onClick={() => {
+                                setSelectedDepartureId(departure.id);
+                                setCurrentActiveDD('');
+                              }}
+                            >
+                              <span className='d-block js-select-control-choice'>
+                                {departureDateRange}
+                              </span>
+                              <span className='d-block mt-5 text-13 text-light-2'>
+                                ₱{formatNumber(departure.price)}
+                              </span>
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              ) : null}
             </div>
 
             <div className='js-select-control searchFormItem js-form-dd'>
@@ -352,6 +413,7 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
               },
               body: JSON.stringify({
                 tourId: tour.id,
+                departureId: selectedDeparture?.id,
                 travelDateRange: when,
                 adults: bookingFlow.formState.adults,
                 children: bookingFlow.formState.children,

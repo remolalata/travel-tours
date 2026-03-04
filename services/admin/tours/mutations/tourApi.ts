@@ -111,6 +111,7 @@ export type CreatedAdminTour = {
 
 type TourRow = {
   id: number;
+  slug: string;
   title: string;
   location: string;
   image_src: string;
@@ -321,7 +322,7 @@ export async function fetchAdminTours(
 
   let query = supabase
     .from('tours')
-    .select('id,title,location,image_src,departures(price,original_price)', { count: 'exact' })
+    .select('id,slug,title,location,image_src,departures(price,original_price)', { count: 'exact' })
     .order('created_at', { ascending: false })
     .order('id', { ascending: false });
 
@@ -366,6 +367,7 @@ export async function fetchAdminTours(
 
     return {
       id: tour.id,
+      slug: tour.slug,
       imageSrc: tour.image_src,
       location: tour.location,
       title: tour.title,

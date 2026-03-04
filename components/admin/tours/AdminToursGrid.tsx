@@ -13,7 +13,6 @@ type AdminToursGridProps = {
   isLoading: boolean;
   errorMessage: string | null;
   emptyMessage: string;
-  onEditClick: (tour: AdminTourData) => void;
   onDeleteClick: (tour: AdminTourData) => void;
 };
 
@@ -25,7 +24,6 @@ export default function AdminToursGrid({
   isLoading,
   errorMessage,
   emptyMessage,
-  onEditClick,
   onDeleteClick,
 }: AdminToursGridProps) {
   if (isLoading) {
@@ -102,7 +100,6 @@ export default function AdminToursGrid({
             actionLabels={actionLabels}
             pricePrefix={pricePrefix}
             availabilityDateLabels={availabilityDateLabels}
-            onEditClick={onEditClick}
             onDeleteClick={onDeleteClick}
           />
         </div>

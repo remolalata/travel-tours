@@ -10,6 +10,15 @@ export type TourSingleRouteContext = {
 export type TourSinglePageTour = TourFeaturedItem & {
   slug: string;
   tourTypeName?: string | null;
+  departures: TourSingleDeparture[];
+};
+
+export type TourSingleDeparture = {
+  id: number;
+  startDate: string;
+  endDate: string;
+  price: number;
+  originalPrice: number;
 };
 
 export type TourSinglePageData = {
