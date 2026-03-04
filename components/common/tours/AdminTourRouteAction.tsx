@@ -87,13 +87,13 @@ export default function AdminTourRouteAction({
     );
   }
 
+  const iconClass = mode === 'edit' ? 'icon-pencil' : 'icon-arrow-top-right';
+
   return (
     <Link href={href} className={className} style={style}>
+      {mode === 'edit' ? <i className={`${iconClass} mr-10 text-16`} aria-hidden='true'></i> : null}
       {label}
-      <i
-        className={`${mode === 'edit' ? 'icon-pencil' : 'icon-arrow-top-right'} ml-10 text-16`}
-        aria-hidden='true'
-      ></i>
+      {mode === 'view' ? <i className={`${iconClass} ml-10 text-16`} aria-hidden='true'></i> : null}
     </Link>
   );
 }
