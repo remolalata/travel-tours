@@ -21,6 +21,8 @@ interface TourSingleSidebarProps {
   };
   tourContent?: TourContent;
   destinationId?: number;
+  selectedDepartureId?: number | null;
+  onSelectedDepartureChange?: (departureId: number | null) => void;
 }
 
 const getTourDestinationName = (tour?: Tour): string => {
@@ -63,7 +65,12 @@ const CHECKOUT_RESUME_QUERY = 'resumeCheckout';
 const CHECKOUT_STATUS_QUERY = 'checkout';
 const CHECKOUT_REFERENCE_QUERY = 'ref';
 
-export default function TourSingleSidebar({ tour, destinationId }: TourSingleSidebarProps) {
+export default function TourSingleSidebar({
+  tour,
+  destinationId,
+  selectedDepartureId: selectedDepartureIdProp,
+  onSelectedDepartureChange,
+}: TourSingleSidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -76,9 +83,11 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
   const dropDownContainer = useRef<HTMLDivElement | null>(null);
   const [currentActiveDD, setCurrentActiveDD] = useState('');
   const [isSubmittingCheckout, setIsSubmittingCheckout] = useState(false);
-  const [selectedDepartureId, setSelectedDepartureId] = useState<number | null>(
+  const [internalSelectedDepartureId, setInternalSelectedDepartureId] = useState<number | null>(
     tour?.departures?.[0]?.id ?? null,
   );
+  const selectedDepartureId = selectedDepartureIdProp ?? internalSelectedDepartureId;
+  const updateSelectedDepartureId = onSelectedDepartureChange ?? setInternalSelectedDepartureId;
   const [toastState, setToastState] = useState<{
     open: boolean;
     message: string;
@@ -144,7 +153,7 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
         const matchedDeparture = findDepartureByDateRange(availableDepartures, parsed.when);
 
         if (matchedDeparture) {
-          setSelectedDepartureId(matchedDeparture.id);
+          updateSelectedDepartureId(matchedDeparture.id);
         }
       }
 
@@ -166,7 +175,7 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
     } catch {
       // Ignore invalid resume payload and continue.
     }
-  }, [availableDepartures, bookingFlow, getPendingCheckoutStorageKey]);
+  }, [availableDepartures, bookingFlow, getPendingCheckoutStorageKey, updateSelectedDepartureId]);
 
   const buildLoginRedirectPath = () => {
     const params = new URLSearchParams(searchParams.toString());
@@ -327,7 +336,7 @@ export default function TourSingleSidebar({ tour, destinationId }: TourSingleSid
                               type='button'
                               className={isSelected ? '-is-button-active' : undefined}
                               onClick={() => {
-                                setSelectedDepartureId(departure.id);
+                                updateSelectedDepartureId(departure.id);
                                 setCurrentActiveDD('');
                               }}
                             >

@@ -17,6 +17,8 @@ export type TourSingleDeparture = {
   id: number;
   startDate: string;
   endDate: string;
+  bookingDeadline: string;
+  maximumCapacity: number;
   price: number;
   originalPrice: number;
 };

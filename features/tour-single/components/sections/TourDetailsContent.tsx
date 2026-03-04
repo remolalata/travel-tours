@@ -1,9 +1,13 @@
+'use client';
+
 import { tourSingleContent as tourSinglePageContent } from '@/content/features/tourSingle';
 import type { TourContent } from '@/data/tourSingleContent';
 import TourPhotoGallery from '@/features/tour-single/components/Galleries/TourPhotoGallery';
+import useSelectedTourDeparture from '@/features/tour-single/hooks/useSelectedTourDeparture';
 import type { Review } from '@/types/review';
 import type { Tour } from '@/types/tour';
 import type { FaqItem } from '@/types/tourContent';
+import type { TourSingleDeparture } from '@/types/tourSingle';
 
 import Faq from './Faq';
 import Included from './Included';
@@ -15,7 +19,9 @@ import Reviews from './Reviews';
 import TourSingleSidebar from './TourSingleSidebar';
 
 interface TourDetailsContentProps {
-  tour: Tour;
+  tour: Tour & {
+    departures?: TourSingleDeparture[];
+  };
   tourContent: TourContent;
   destinationId?: number;
   reviews?: Review[];
@@ -34,6 +40,8 @@ export default function TourDetailsContent({
   faqItems,
 }: TourDetailsContentProps) {
   const detailsContent = tourSinglePageContent.details;
+  const { selectedDeparture, selectedDepartureId, setSelectedDepartureId } =
+    useSelectedTourDeparture(tour.departures);
 
   return (
     <>
@@ -49,7 +57,7 @@ export default function TourDetailsContent({
           <div className='justify-between y-gap-30 row'>
             <div className='col-lg-8'>
               <div className='justify-between items-center y-gap-20 layout-pb-md row'>
-                <OthersInformation />
+                <OthersInformation selectedDeparture={selectedDeparture} />
               </div>
 
               <Overview description={overviewDescription} />
@@ -99,6 +107,8 @@ export default function TourDetailsContent({
                   tour={tour}
                   tourContent={tourContent}
                   destinationId={destinationId}
+                  selectedDepartureId={selectedDepartureId}
+                  onSelectedDepartureChange={setSelectedDepartureId}
                 />
               </div>
             </div>

@@ -17,6 +17,8 @@ type TourSingleRow = {
     id: number;
     start_date: string;
     end_date: string;
+    booking_deadline: string;
+    maximum_capacity: number;
     price: number;
     original_price: number | null;
   }> | null;
@@ -119,6 +121,8 @@ function mapDepartures(departures: TourSingleRow['departures']): TourSingleDepar
       id: departure.id,
       startDate: departure.start_date,
       endDate: departure.end_date,
+      bookingDeadline: departure.booking_deadline,
+      maximumCapacity: departure.maximum_capacity,
       price: departure.price,
       originalPrice: departure.original_price ?? departure.price,
     })),

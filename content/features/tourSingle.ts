@@ -20,6 +20,21 @@ export const tourSingleContent = {
     },
   },
   details: {
+    quickFacts: {
+      durationLabel: 'Duration',
+      groupSizeLabel: 'Group Size',
+      bookingDeadlineLabel: 'Booking Deadline',
+      duration: {
+        daySingular: 'day',
+        dayPlural: 'days',
+        nightSingular: 'night',
+        nightPlural: 'nights',
+      },
+      groupSize: {
+        upToPrefix: 'Up to',
+        paxSuffix: 'pax',
+      },
+    },
     includedTitle: "What's included",
     itineraryTitle: 'Itinerary',
     faqTitle: 'FAQ',
