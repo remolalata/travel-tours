@@ -226,7 +226,7 @@ function AdminProfilePageContent({ initialData, onUnauthorized }: AdminProfilePa
   );
 }
 
-export default function AdminProfilePage() {
+export default function ProfilePage() {
   const content = adminContent.pages.profile;
   const router = useRouter();
   const handleUnauthorized = useCallback(() => {

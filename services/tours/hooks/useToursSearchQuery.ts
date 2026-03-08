@@ -9,9 +9,11 @@ import { createClient } from '@/utils/supabase/client';
 
 export default function useToursSearchQuery(input: FetchToursSearchInput) {
   const supabase = useMemo(() => createClient(), []);
+  const normalizedSearchTerm = input.searchTerm?.trim() ?? '';
 
   return useQuery({
     queryKey: tourQueryKeys.search(input),
     queryFn: () => fetchToursSearch(supabase, input),
+    enabled: normalizedSearchTerm.length > 0,
   });
 }

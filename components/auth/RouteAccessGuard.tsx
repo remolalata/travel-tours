@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 
+import type { AuthViewerState } from '@/services/auth/mutations/authApi';
 import { fetchAuthViewerState } from '@/services/auth/mutations/authApi';
 import { createClient } from '@/utils/supabase/client';
 
@@ -12,13 +13,23 @@ type RouteAccessGuardMode = 'guest-only' | 'auth-required';
 type RouteAccessGuardProps = {
   mode: RouteAccessGuardMode;
   children: ReactNode;
+  initialAuthState?: AuthViewerState;
 };
 
-export default function RouteAccessGuard({ mode, children }: RouteAccessGuardProps) {
+export default function RouteAccessGuard({
+  mode,
+  children,
+  initialAuthState,
+}: RouteAccessGuardProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const supabase = useMemo(() => createClient(), []);
-  const [isChecking, setIsChecking] = useState(true);
+  const hasInitialAccess =
+    initialAuthState !== undefined &&
+    ((mode === 'auth-required' && initialAuthState.isAuthenticated) ||
+      (mode === 'guest-only' && !initialAuthState.isAuthenticated));
+  const canRenderWhileChecking = hasInitialAccess;
+  const [isChecking, setIsChecking] = useState(!hasInitialAccess);
   const nextParam = searchParams.get('next');
   const redirectPath =
     nextParam && nextParam.startsWith('/') && !nextParam.startsWith('//') ? nextParam : '/';
@@ -65,6 +76,10 @@ export default function RouteAccessGuard({ mode, children }: RouteAccessGuardPro
   }, [mode, redirectPath, router, supabase]);
 
   if (isChecking && mode === 'auth-required') {
+    if (canRenderWhileChecking) {
+      return <>{children}</>;
+    }
+
     return null;
   }
 

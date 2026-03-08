@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState, useSyncExternalStore } from 'react';
 
 import { headerSearchContent } from '@/content/shared/layoutHeaderSearch';
 import { normalizeTourSearchTerm } from '@/services/tours/helpers/tourSearch';
@@ -18,6 +18,11 @@ export default function HeaderSerch({ white = false }: HeaderSearchProps) {
   const dropDownContainer = useRef<HTMLDivElement | null>(null);
   const { labels } = headerSearchContent;
   const normalizedSearchTerm = normalizeTourSearchTerm(selected);
+  const isHydrated = useSyncExternalStore(
+    () => () => undefined,
+    () => true,
+    () => false,
+  );
   const toursSearchQuery = useToursSearchQuery({
     searchTerm: normalizedSearchTerm,
     limit: 8,
@@ -43,6 +48,8 @@ export default function HeaderSerch({ white = false }: HeaderSearchProps) {
   }, []);
 
   const searchResults = toursSearchQuery.data ?? [];
+  const shouldShowLoading = isHydrated && toursSearchQuery.isLoading;
+  const shouldShowResults = isHydrated && !toursSearchQuery.isLoading;
 
   return (
     <div ref={dropDownContainer} className='header__search js-liverSearch js-form-dd'>
@@ -58,6 +65,7 @@ export default function HeaderSerch({ white = false }: HeaderSearchProps) {
         type='text'
         placeholder={labels.inputPlaceholder}
         className={`js-search ${white ? 'text-white' : ''}`}
+        suppressHydrationWarning
         autoComplete='off'
         autoCorrect='off'
         autoCapitalize='none'
@@ -78,13 +86,13 @@ export default function HeaderSerch({ white = false }: HeaderSearchProps) {
           </div>
 
           <div className='headerSearchRecent__list js-results'>
-            {toursSearchQuery.isLoading && (
+            {shouldShowLoading && (
               <div className='headerSearchRecent__item'>
                 <div className='text-14 text-light-2'>Loading tours...</div>
               </div>
             )}
 
-            {!toursSearchQuery.isLoading &&
+            {shouldShowResults &&
               searchResults.map((item) => (
                 <Link
                   href={`/tour/${item.slug}`}
@@ -106,15 +114,13 @@ export default function HeaderSerch({ white = false }: HeaderSearchProps) {
                 </Link>
               ))}
 
-            {!toursSearchQuery.isLoading &&
-              !toursSearchQuery.isError &&
-              searchResults.length === 0 && (
-                <div className='headerSearchRecent__item'>
-                  <div className='text-14 text-light-2'>No available tours found.</div>
-                </div>
-              )}
+            {shouldShowResults && !toursSearchQuery.isError && searchResults.length === 0 && (
+              <div className='headerSearchRecent__item'>
+                <div className='text-14 text-light-2'>No available tours found.</div>
+              </div>
+            )}
 
-            {toursSearchQuery.isError && (
+            {isHydrated && toursSearchQuery.isError && (
               <div className='headerSearchRecent__item'>
                 <div className='text-14 text-light-2'>
                   Unable to load tours right now. Please try again.
