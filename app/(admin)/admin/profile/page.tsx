@@ -1,5 +1,5 @@
 import { adminContent } from '@/content/features/admin';
-import AdminProfilePage from '@/features/admin/AdminProfilePage';
+import ProfilePage from '@/features/admin/profile/ProfilePage';
 
 export const metadata = {
   title: adminContent.metadata.profile.title,
@@ -7,5 +7,5 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <AdminProfilePage />;
+  return <ProfilePage />;
 }
