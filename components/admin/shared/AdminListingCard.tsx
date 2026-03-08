@@ -1,20 +1,37 @@
+import Box from '@mui/material/Box';
 import Image from 'next/image';
 
 import Stars from '@/components/common/Stars';
-import type { AdminListingItem } from '@/types/admin';
+import AdminTourRouteAction from '@/components/common/tours/AdminTourRouteAction';
+import type { AdminListingContent, AdminListingItem } from '@/types/admin';
 import { formatNumber } from '@/utils/helpers/formatNumber';
 
 type AdminListingCardProps = {
   item: AdminListingItem;
   compact?: boolean;
+  actionLabels: AdminListingContent['actions'];
   pricePrefix: string;
+  availabilityDateLabels: AdminListingContent['availabilityDateLabels'];
+  onDeleteClick?: (item: AdminListingItem) => void;
 };
 
 export default function AdminListingCard({
   item,
   compact = false,
+  actionLabels,
   pricePrefix,
+  availabilityDateLabels,
+  onDeleteClick,
 }: AdminListingCardProps) {
+  const currentPrice = item.price;
+  const originalPrice = item.fromPrice;
+  const hasCurrentPrice = typeof currentPrice === 'number';
+  const hasOriginalPrice = typeof originalPrice === 'number';
+  const primaryPrice = currentPrice ?? originalPrice;
+  const departureLabel =
+    item.departureCount === 1 ? availabilityDateLabels.singular : availabilityDateLabels.plural;
+  const departureSummary = `${item.departureCount} ${departureLabel}`;
+
   if (compact) {
     return (
       <div className='-hover-shadow px-10 py-10 border rounded-12 tourCard -type-1'>
@@ -56,12 +73,23 @@ export default function AdminListingCard({
 
           <div className='d-flex justify-between items-center mt-10 pt-10 border-top text-13 text-dark-1'>
             <div className='d-flex items-center'>
-              <i className='mr-5 text-16 icon-clock'></i>
-              {item.duration}
+              <i className='mr-5 text-16 icon-calendar'></i>
+              {departureSummary}
             </div>
 
             <div>
-              {pricePrefix} <span className='text-16 fw-500'>${formatNumber(item.price)}</span>
+              {hasCurrentPrice && hasOriginalPrice ? (
+                <>
+                  <div className='lh-14'>${formatNumber(currentPrice)}</div>
+                  {pricePrefix}{' '}
+                  <span className='text-16 fw-500'>${formatNumber(originalPrice)}</span>
+                </>
+              ) : primaryPrice !== null ? (
+                <>
+                  {pricePrefix}{' '}
+                  <span className='text-16 fw-500'>${formatNumber(primaryPrice)}</span>
+                </>
+              ) : null}
             </div>
           </div>
         </div>
@@ -70,7 +98,78 @@ export default function AdminListingCard({
   }
 
   return (
-    <div className='px-20 py-20 border rounded-12'>
+    <Box
+      sx={{
+        position: 'relative',
+        border: '1px solid rgba(229, 231, 235, 1)',
+        borderRadius: '12px',
+        px: '20px',
+        py: '20px',
+        transition: 'box-shadow 0.2s ease, border-color 0.2s ease',
+        '&:hover': {
+          borderColor: 'rgba(235, 102, 43, 0.28)',
+          boxShadow: '0 14px 32px rgba(5, 7, 60, 0.08)',
+        },
+        '&:hover .adminListingCard__actions': {
+          opacity: 1,
+          transform: 'translateY(0)',
+          pointerEvents: 'auto',
+        },
+      }}
+    >
+      <Box
+        className='adminListingCard__actions'
+        sx={{
+          position: 'absolute',
+          top: 12,
+          right: 12,
+          display: 'flex',
+          gap: 1,
+          opacity: 0,
+          transform: 'translateY(-4px)',
+          pointerEvents: 'none',
+          transition: 'opacity 0.18s ease, transform 0.18s ease',
+          zIndex: 2,
+        }}
+      >
+        <AdminTourRouteAction
+          mode='edit'
+          compact
+          tourId={item.id}
+          publicRouteValue={item.slug ?? item.id}
+          label={actionLabels.editLabel}
+        />
+
+        <AdminTourRouteAction
+          mode='view'
+          compact
+          tourId={item.id}
+          publicRouteValue={item.slug ?? item.id}
+          label={actionLabels.viewLabel}
+        />
+
+        <button
+          type='button'
+          aria-label={actionLabels.deleteLabel}
+          title={actionLabels.deleteLabel}
+          onClick={() => onDeleteClick?.(item)}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 36,
+            height: 36,
+            borderRadius: 10,
+            border: '1px solid rgba(179, 38, 30, 0.12)',
+            background: '#fff',
+            color: '#b3261e',
+            boxShadow: '0 10px 24px rgba(5, 7, 60, 0.08)',
+          }}
+        >
+          <i className='icon-delete text-14' aria-hidden='true'></i>
+        </button>
+      </Box>
+
       <div className='items-center x-gap-20 y-gap-20 row'>
         <div className='col-12 col-xl-auto'>
           <Image
@@ -102,21 +201,30 @@ export default function AdminListingCard({
           <div className='justify-between items-end y-gap-15 pt-5 row'>
             <div className='col-auto'>
               <div className='d-flex items-center'>
-                <i className='mr-5 icon-clock'></i>
-                <div className='text-14'>{item.duration}</div>
+                <i className='mr-5 icon-calendar'></i>
+                <div className='text-14'>{departureSummary}</div>
               </div>
             </div>
 
             <div className='col-auto'>
               <div className='md:text-left text-right'>
-                <div className='lh-14'>${formatNumber(item.price)}</div>
-                {pricePrefix}{' '}
-                <span className='text-20 fw-500'>${formatNumber(item.fromPrice)}</span>
+                {hasCurrentPrice && hasOriginalPrice ? (
+                  <>
+                    <div className='lh-14'>${formatNumber(currentPrice)}</div>
+                    {pricePrefix}{' '}
+                    <span className='text-20 fw-500'>${formatNumber(originalPrice)}</span>
+                  </>
+                ) : primaryPrice !== null ? (
+                  <>
+                    {pricePrefix}{' '}
+                    <span className='text-20 fw-500'>${formatNumber(primaryPrice)}</span>
+                  </>
+                ) : null}
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </Box>
   );
 }

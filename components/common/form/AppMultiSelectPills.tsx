@@ -1,17 +1,21 @@
 'use client';
 
 import Box from '@mui/material/Box';
+import type { SxProps, Theme } from '@mui/material/styles';
+import { Check } from 'lucide-react';
 
 type AppMultiSelectPillsProps<T extends string> = {
   options: T[];
   value: T[];
   onChange: (value: T[]) => void;
   activeBackgroundColor?: string;
+  activeBorderColor?: string;
   activeTextColor?: string;
   inactiveBackgroundColor?: string;
   inactiveTextColor?: string;
   inactiveBorderColor?: string;
   hoverBorderColor?: string;
+  containerSx?: SxProps<Theme>;
 };
 
 export default function AppMultiSelectPills<T extends string>({
@@ -19,14 +23,16 @@ export default function AppMultiSelectPills<T extends string>({
   value,
   onChange,
   activeBackgroundColor = '#05073c',
+  activeBorderColor = activeBackgroundColor,
   activeTextColor = '#fff',
   inactiveBackgroundColor = '#fff',
   inactiveTextColor = '#05073c',
   inactiveBorderColor = '#d0d5dd',
   hoverBorderColor = 'var(--color-accent-1)',
+  containerSx,
 }: AppMultiSelectPillsProps<T>) {
   return (
-    <Box sx={{ mb: 2.5, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+    <Box sx={{ mb: 2.5, display: 'flex', flexWrap: 'wrap', gap: 1, ...containerSx }}>
       {options.map((option) => {
         const isActive = value.includes(option);
 
@@ -49,11 +55,12 @@ export default function AppMultiSelectPills<T extends string>({
                 height: 34,
                 borderRadius: '999px',
                 px: 1.5,
+                gap: 0.75,
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 border: '1px solid',
-                borderColor: isActive ? activeBackgroundColor : inactiveBorderColor,
+                borderColor: isActive ? activeBorderColor : inactiveBorderColor,
                 backgroundColor: isActive ? activeBackgroundColor : inactiveBackgroundColor,
                 color: isActive ? activeTextColor : inactiveTextColor,
                 fontSize: 14,
@@ -62,10 +69,11 @@ export default function AppMultiSelectPills<T extends string>({
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
                 '&:hover': {
-                  borderColor: isActive ? activeBackgroundColor : hoverBorderColor,
+                  borderColor: isActive ? activeBorderColor : hoverBorderColor,
                 },
               }}
             >
+              {isActive ? <Check size={14} strokeWidth={2.5} aria-hidden='true' /> : null}
               {option}
             </Box>
           </button>

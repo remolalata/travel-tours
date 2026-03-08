@@ -1,14 +1,13 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-import useAuthViewerQuery from '@/services/auth/hooks/useAuthViewerQuery';
-import type { AuthViewerState } from '@/services/auth/mutations/authApi';
 import HeaderAccountMenu from '@/components/layout/header/HeaderAccountMenu';
 import HeaderSerch from '@/components/layout/shared/HeaderSerch';
 import { headerAccountContent } from '@/content/shared/layoutHeaderAccount';
+import useAuthViewerQuery from '@/services/auth/hooks/useAuthViewerQuery';
+import type { AuthViewerState } from '@/services/auth/mutations/authApi';
 
 type SiteHeaderClientProps = {
   initialAuthState: AuthViewerState;
@@ -59,10 +58,17 @@ export default function SiteHeaderClient({ initialAuthState }: SiteHeaderClientP
         <div className='header__container container'>
           <div className='header__logo'>
             <Link href='/' className='header__logo'>
-              <Image width='167' height='32' src='/img/logo.svg' alt='logo icon' priority />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                width={167}
+                height={32}
+                src='/img/logo.svg'
+                alt='logo icon'
+                style={{ height: 'auto' }}
+              />
             </Link>
 
-            <div className='xl:d-none ml-30'>
+            <div className='ml-30 xl:d-none'>
               <HeaderSerch />
             </div>
           </div>
@@ -74,7 +80,7 @@ export default function SiteHeaderClient({ initialAuthState }: SiteHeaderClientP
               aria-label={headerAccountContent.aria.toggleSearch}
               aria-expanded={mobileSearchOpen}
             >
-              <i className='icon-search text-18'></i>
+              <i className='text-18 icon-search'></i>
             </button>
           </div>
 

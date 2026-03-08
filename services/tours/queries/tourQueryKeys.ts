@@ -1,9 +1,14 @@
-import type { FetchToursListInput } from '@/services/tours/mutations/tourApi';
+import type {
+  FetchToursListInput,
+  FetchToursSearchInput,
+} from '@/services/tours/mutations/tourApi';
 
 export const tourQueryKeys = {
   all: ['tours'] as const,
   popular: () => [...tourQueryKeys.all, 'popular'] as const,
   topTrending: () => [...tourQueryKeys.all, 'top-trending'] as const,
+  types: () => [...tourQueryKeys.all, 'types'] as const,
   list: (input: FetchToursListInput) => [...tourQueryKeys.all, 'list', input] as const,
+  search: (input: FetchToursSearchInput) => [...tourQueryKeys.all, 'search', input] as const,
   single: (routeValue: string) => [...tourQueryKeys.all, 'single', routeValue] as const,
 };

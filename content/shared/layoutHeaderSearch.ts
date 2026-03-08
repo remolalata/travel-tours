@@ -10,7 +10,8 @@ export const headerSearchContent = {
   labels: {
     inputLabel: 'Search destinations or activities',
     inputPlaceholder: 'Search destinations or activities',
-    recentSearchesTitle: 'Recent Searches',
+    emptySearchTitle: 'Search for tours',
+    searchResultsTitle: 'Available Tours',
   },
   searchData: [
     {

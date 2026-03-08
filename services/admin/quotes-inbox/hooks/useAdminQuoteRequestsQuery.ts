@@ -17,4 +17,3 @@ export default function useAdminQuoteRequestsQuery(input: FetchAdminQuoteRequest
     placeholderData: keepPreviousData,
   });
 }
-

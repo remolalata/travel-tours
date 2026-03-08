@@ -321,7 +321,28 @@ export const adminContent: AdminContent = {
         title: 'My Booking',
         description: 'Manage your current and historical booking requests.',
       },
-      tabs: ['Approved', 'Pending', 'Cancelled', 'Completed'],
+      tabs: ['Confirmed', 'Pending Payment', 'Partially Paid', 'Cancelled', 'Expired', 'Completed'],
+      filters: {
+        triggerLabel: 'Filter bookings',
+        title: 'Filter Bookings',
+        groups: {
+          status: {
+            label: 'Status',
+            options: {
+              confirmed: 'Confirmed',
+              pendingPayment: 'Pending Payment',
+              partiallyPaid: 'Partially Paid',
+              cancelled: 'Cancelled',
+              expired: 'Expired',
+              completed: 'Completed',
+            },
+          },
+        },
+        actions: {
+          reset: 'Reset',
+          apply: 'Apply',
+        },
+      },
     },
     listing: {
       intro: {
@@ -329,16 +350,68 @@ export const adminContent: AdminContent = {
         description: 'Review and manage tour packages.',
       },
       addButtonLabel: 'Add Tour',
+      actions: {
+        editLabel: 'Edit tour',
+        viewLabel: 'View live tour',
+        deleteLabel: 'Delete tour',
+      },
       pricePrefix: 'From',
+      availabilityDateLabels: {
+        singular: 'available date',
+        plural: 'available dates',
+      },
       messages: {
         loading: 'Loading tours...',
         loadError: 'Failed to load tours. Please refresh and try again.',
         empty: 'No tours found.',
+        deleteFailedPrefix: 'Failed to delete tour',
+        deleteSuccess: 'Tour deleted successfully.',
       },
       summary: {
         showing: 'Showing',
         of: 'of',
         itemSuffix: 'tour(s)',
+      },
+      deleteModal: {
+        title: 'Delete Tour',
+        description: 'Are you sure you want to delete this tour? This action cannot be undone.',
+        actions: {
+          cancel: 'Cancel',
+          confirm: 'Delete',
+        },
+      },
+      filters: {
+        triggerLabel: 'Filter tours',
+        title: 'Filter Tours',
+        description: 'UI only for now. These selections do not affect the list yet.',
+        groups: {
+          status: {
+            label: 'Status',
+            options: {
+              all: 'All',
+              active: 'Active',
+              inactive: 'Inactive',
+            },
+          },
+          visibility: {
+            label: 'Visibility',
+            options: {
+              featured: 'Featured',
+              popular: 'Popular',
+              topTrending: 'Top Trending',
+            },
+          },
+        },
+        actions: {
+          reset: 'Reset',
+          apply: 'Apply',
+        },
+      },
+      editPage: {
+        intro: {
+          title: 'Edit Tour',
+          description: 'Update an existing tour package.',
+        },
       },
       createPage: {
         intro: {
@@ -348,19 +421,19 @@ export const adminContent: AdminContent = {
         sections: {
           basic: {
             title: 'Basic Info',
-            description: 'Core details that identify the tour.',
+            description: 'Core identity and marketing copy for the tour.',
           },
           classification: {
-            title: 'Classification',
-            description: 'Map this tour to destination and taxonomy records.',
+            title: 'Destination & Type',
+            description: 'Set the destination relationship, display location, and tour taxonomy.',
           },
           pricing: {
-            title: 'Pricing',
-            description: 'Set base and optional original price.',
+            title: 'Departure & Pricing',
+            description: 'Add one or more departures with schedule, capacity, and price.',
           },
           media: {
-            title: 'Media and Status',
-            description: 'Provide image source and active state.',
+            title: 'Media & Visibility',
+            description: 'Upload images and control customer visibility and homepage placement.',
           },
           itinerary: {
             title: 'Itinerary',
@@ -375,7 +448,6 @@ export const adminContent: AdminContent = {
           title: 'Title',
           description: 'Description',
           location: 'Location',
-          duration: 'Duration',
           destinationId: 'Destination',
           tourTypeId: 'Tour Type',
           price: 'Price',
@@ -399,7 +471,6 @@ export const adminContent: AdminContent = {
             'This is the tour name your customers will see. The slug is created automatically.',
           description: 'Write a short description of the experience.',
           location: 'Enter the place shown to customers (for example: Boracay, Philippines).',
-          duration: 'How long is the tour? Example: 4 Days or 2 Days 1 Night.',
           destinationId: 'Select the main destination for this tour.',
           tourTypeId: 'Select the tour type for this package.',
           price: 'Set the current selling price.',
@@ -421,6 +492,9 @@ export const adminContent: AdminContent = {
         actions: {
           cancel: 'Cancel',
           create: 'Create Tour',
+          update: 'Update Tour',
+          creating: 'Creating...',
+          updating: 'Updating...',
           addItinerary: 'Add Itinerary Item',
           removeItinerary: 'Remove',
           addInclusion: 'Add Inclusion Item',
@@ -430,6 +504,10 @@ export const adminContent: AdminContent = {
           selectEmpty: 'Select an option',
           referencesLoading: 'Loading options...',
           referencesLoadError: 'Failed to load reference options. Please refresh and try again.',
+          createSuccess: 'Tour created successfully.',
+          updateSuccess: 'Tour updated successfully.',
+          createFailedPrefix: 'Unable to create tour',
+          updateFailedPrefix: 'Unable to update tour',
         },
         richTextToolbar: {
           paragraph: 'Paragraph',
@@ -482,6 +560,40 @@ export const adminContent: AdminContent = {
             { value: 'excluded', label: 'Excluded' },
           ],
         },
+        departureBlocks: {
+          title: 'Departure Blocks',
+          description: 'Add and reorder departure schedules, pricing, and availability.',
+          fields: {
+            dateRange: 'Departure Dates',
+            bookingDeadline: 'Booking Deadline',
+            maximumCapacity: 'Maximum Capacity',
+            price: 'Price',
+            originalPrice: 'Original Price',
+            status: 'Departure Status',
+          },
+          helpers: {
+            dateRange: 'Select the start and end dates for this departure.',
+            bookingDeadline: 'Bookings must close on or before the departure start date.',
+            maximumCapacity: 'Set how many seats are available for this departure.',
+            price: 'Set the selling price for this departure.',
+            originalPrice: 'Optional: add an old price to show a discount.',
+            status: 'Set the availability state for this departure.',
+          },
+          actions: {
+            addItem: 'Add Block',
+            removeItem: 'Remove',
+          },
+          item: {
+            titlePrefix: 'Departure',
+            expandIconAriaLabel: 'Toggle departure block',
+          },
+          statusOptions: [
+            { value: 'open', label: 'Open' },
+            { value: 'sold_out', label: 'Sold Out' },
+            { value: 'closed', label: 'Closed' },
+            { value: 'cancelled', label: 'Cancelled' },
+          ],
+        },
         mediaPickers: {
           mainImage: {
             title: 'Main Image',
@@ -508,10 +620,13 @@ export const adminContent: AdminContent = {
           required_title: 'Title is required.',
           required_description: 'Description is required.',
           required_location: 'Location is required.',
-          required_duration: 'Duration is required.',
           required_destination_id: 'Destination is required.',
           required_tour_type_id: 'Tour type is required.',
-          required_price: 'Price is required.',
+          required_departure_start_date: 'Departure start date is required.',
+          required_departure_end_date: 'Departure end date is required.',
+          required_departure_booking_deadline: 'Booking deadline is required.',
+          required_departure_maximum_capacity: 'Maximum capacity is required.',
+          required_departure_price: 'Departure price is required.',
         },
       },
     },

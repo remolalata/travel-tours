@@ -1,23 +1,30 @@
 import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 
-import type { AdminTourData } from '@/services/admin/tours/mutations/tourApi';
 import AdminListingCard from '@/components/admin/shared/AdminListingCard';
+import type { AdminTourData } from '@/services/admin/tours/mutations/tourApi';
+import type { AdminListingContent } from '@/types/admin';
 
 type AdminToursGridProps = {
   tours: AdminTourData[];
+  actionLabels: AdminListingContent['actions'];
   pricePrefix: string;
+  availabilityDateLabels: AdminListingContent['availabilityDateLabels'];
   isLoading: boolean;
   errorMessage: string | null;
   emptyMessage: string;
+  onDeleteClick: (tour: AdminTourData) => void;
 };
 
 export default function AdminToursGrid({
   tours,
+  actionLabels,
   pricePrefix,
+  availabilityDateLabels,
   isLoading,
   errorMessage,
   emptyMessage,
+  onDeleteClick,
 }: AdminToursGridProps) {
   if (isLoading) {
     return (
@@ -88,7 +95,13 @@ export default function AdminToursGrid({
     <div className='y-gap-30 row'>
       {tours.map((item) => (
         <div key={item.id} className='col-lg-6'>
-          <AdminListingCard item={item} pricePrefix={pricePrefix} />
+          <AdminListingCard
+            item={item}
+            actionLabels={actionLabels}
+            pricePrefix={pricePrefix}
+            availabilityDateLabels={availabilityDateLabels}
+            onDeleteClick={onDeleteClick}
+          />
         </div>
       ))}
     </div>

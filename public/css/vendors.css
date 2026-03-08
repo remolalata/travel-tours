@@ -5158,6 +5158,9 @@ iframe.wait-autoplay {
 .icon-sort-down:before {
   content: '\e932';
 }
+.icon-filter:before {
+  content: '\e932';
+}
 .icon-star-2:before {
   content: '\e933';
 }

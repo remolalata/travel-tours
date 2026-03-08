@@ -2,13 +2,14 @@
 
 import Box from '@mui/material/Box';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import useAdminTourReferencesQuery from '@/services/admin/tours/hooks/useAdminTourReferencesQuery';
 import AdminRichTextEditor from '@/components/admin/help-center/AdminRichTextEditor';
+import AdminDepartureBlocksManager from '@/components/admin/tours/AdminDepartureBlocksManager';
 import AdminInclusionBlocksManager from '@/components/admin/tours/AdminInclusionBlocksManager';
 import AdminItineraryBlocksManager from '@/components/admin/tours/AdminItineraryBlocksManager';
 import AppButton from '@/components/common/button/AppButton';
+import AppToast from '@/components/common/feedback/AppToast';
 import AppFieldHelper from '@/components/common/form/AppFieldHelper';
 import AppImageGalleryPicker from '@/components/common/form/AppImageGalleryPicker';
 import AppSelectField from '@/components/common/form/AppSelectField';
@@ -16,9 +17,11 @@ import AppSingleImagePicker from '@/components/common/form/AppSingleImagePicker'
 import AppTextField from '@/components/common/form/AppTextField';
 import AppSideTabs from '@/components/common/navigation/AppSideTabs';
 import { adminContent } from '@/content/features/admin';
-import type { AdminTourCreateValidationInput } from '@/types/admin';
+import useAdminTourReferencesQuery from '@/services/admin/tours/hooks/useAdminTourReferencesQuery';
+import useCreateAdminTourMutation from '@/services/admin/tours/hooks/useCreateAdminTourMutation';
+import useUpdateAdminTourMutation from '@/services/admin/tours/hooks/useUpdateAdminTourMutation';
+import type { AdminTourEditorData } from '@/services/admin/tours/mutations/tourApi';
 import type { AppGalleryPickerItem } from '@/types/gallery';
-import { validateAdminTourCreateForm } from '@/utils/helpers/formValidation';
 import useAdminTextBlocksManager from '@/utils/hooks/admin/useAdminTextBlocksManager';
 
 type TourItineraryFormItem = {
@@ -37,22 +40,41 @@ type TourInclusionFormItem = {
   content: string;
 };
 
+type TourStatus = 'active' | 'inactive';
+type TourDepartureStatus = 'open' | 'sold_out' | 'closed' | 'cancelled';
+type TourDepartureFormItem = {
+  id: string;
+  rowId: number | null;
+  startDate: string;
+  endDate: string;
+  bookingDeadline: string;
+  maximumCapacity: string;
+  price: string;
+  originalPrice: string;
+  status: TourDepartureStatus;
+};
+type DepartureFieldKey = 'startDate' | 'endDate' | 'bookingDeadline' | 'maximumCapacity' | 'price';
+type TourCreateValidatableField =
+  | 'title'
+  | 'description'
+  | 'location'
+  | 'destinationId'
+  | 'tourTypeId';
+
 type TourCreateFormState = {
   title: string;
   description: string;
   location: string;
-  duration: string;
   destinationId: string;
   tourTypeId: string;
-  price: string;
-  originalPrice: string;
   imageSrc: string;
   mainImage: AppGalleryPickerItem | null;
   images: AppGalleryPickerItem[];
-  isActive: boolean;
+  status: TourStatus;
   isFeatured: boolean;
   isPopular: boolean;
   isTopTrending: boolean;
+  departures: TourDepartureFormItem[];
   itineraries: TourItineraryFormItem[];
   inclusions: TourInclusionFormItem[];
 };
@@ -64,7 +86,42 @@ type TourCreateSectionKey =
   | 'media'
   | 'itinerary'
   | 'inclusions';
-type TourCreateValidatableField = keyof AdminTourCreateValidationInput;
+type TourPopulateData = Partial<
+  Pick<
+    TourCreateFormState,
+    | 'imageSrc'
+    | 'mainImage'
+    | 'images'
+    | 'title'
+    | 'description'
+    | 'location'
+    | 'destinationId'
+    | 'tourTypeId'
+    | 'status'
+    | 'isFeatured'
+    | 'isPopular'
+    | 'isTopTrending'
+    | 'departures'
+    | 'itineraries'
+    | 'inclusions'
+  >
+> & {
+  departure?: Partial<{
+    startDate: string;
+    endDate: string;
+    bookingDeadline: string;
+    maximumCapacity: string;
+    price: string;
+    originalPrice: string;
+    status: TourDepartureStatus;
+  }>;
+};
+
+declare global {
+  interface Window {
+    populate?: (tour?: TourPopulateData) => void;
+  }
+}
 
 function normalizeItineraryItems(items: TourItineraryFormItem[]): TourItineraryFormItem[] {
   const lastIndex = items.length - 1;
@@ -95,22 +152,38 @@ function normalizeInclusionItems(items: TourInclusionFormItem[]): TourInclusionF
   }));
 }
 
+function createDepartureItem(
+  index: number,
+  overrides: Partial<Omit<TourDepartureFormItem, 'id'>> = {},
+): TourDepartureFormItem {
+  return {
+    id: `departure-${Date.now()}-${index}`,
+    rowId: null,
+    startDate: '',
+    endDate: '',
+    bookingDeadline: '',
+    maximumCapacity: '10',
+    price: '',
+    originalPrice: '',
+    status: 'open',
+    ...overrides,
+  };
+}
+
 const initialState: TourCreateFormState = {
   title: '',
   description: '',
   location: '',
-  duration: '',
   destinationId: '',
   tourTypeId: '',
-  price: '',
-  originalPrice: '',
   imageSrc: '',
   mainImage: null,
   images: [],
-  isActive: true,
+  status: 'active',
   isFeatured: false,
   isPopular: false,
   isTopTrending: false,
+  departures: [createDepartureItem(1)],
   itineraries: [
     {
       id: 'itinerary-1',
@@ -131,15 +204,70 @@ const initialState: TourCreateFormState = {
   ],
 };
 
-export default function AdminTourCreateForm() {
+function buildInitialState(
+  initialData?: AdminTourCreateFormProps['initialData'],
+): TourCreateFormState {
+  if (!initialData) {
+    return initialState;
+  }
+
+  return {
+    ...initialState,
+    ...initialData,
+    mainImage: initialData.mainImage ?? initialState.mainImage,
+    images: initialData.images ?? initialState.images,
+    departures:
+      (initialData.departures?.length ?? 0) > 0 ? initialData.departures : initialState.departures,
+    itineraries:
+      (initialData.itineraries?.length ?? 0) > 0
+        ? initialData.itineraries
+        : initialState.itineraries,
+    inclusions:
+      (initialData.inclusions?.length ?? 0) > 0 ? initialData.inclusions : initialState.inclusions,
+  };
+}
+
+type AdminTourCreateFormProps = {
+  mode?: 'create' | 'edit';
+  tourId?: number;
+  initialData?: AdminTourEditorData | null;
+};
+
+export default function AdminTourCreateForm({
+  mode = 'create',
+  tourId,
+  initialData,
+}: AdminTourCreateFormProps) {
   const router = useRouter();
   const content = adminContent.pages.listing.createPage;
   const [activeSection, setActiveSection] = useState<TourCreateSectionKey>('basic');
-  const [formState, setFormState] = useState<TourCreateFormState>(initialState);
+  const [formState, setFormState] = useState<TourCreateFormState>(() =>
+    buildInitialState(initialData),
+  );
   const [fieldErrors, setFieldErrors] = useState<
     Partial<Record<TourCreateValidatableField, string>>
   >({});
+  const [departureErrors, setDepartureErrors] = useState<
+    Record<string, Partial<Record<DepartureFieldKey, string>>>
+  >({});
+  const [toastState, setToastState] = useState<{
+    open: boolean;
+    message: string;
+    severity: 'success' | 'error' | 'warning' | 'info';
+  }>({ open: false, message: '', severity: 'info' });
   const referencesQuery = useAdminTourReferencesQuery();
+  const createTourMutation = useCreateAdminTourMutation();
+  const updateTourMutation = useUpdateAdminTourMutation();
+  const isEditing = mode === 'edit';
+  const isSubmitting = createTourMutation.isPending || updateTourMutation.isPending;
+  const booleanOptions = [
+    { value: 'true', label: 'Yes' },
+    { value: 'false', label: 'No' },
+  ] as const;
+  const tourStatusOptions = [
+    { value: 'active', label: 'Active' },
+    { value: 'inactive', label: 'Inactive' },
+  ] as const;
 
   const sectionItems: Array<{
     key: TourCreateSectionKey;
@@ -200,35 +328,138 @@ export default function AdminTourCreateForm() {
     return code ? (content.validationMessages[code] ?? code) : undefined;
   }
 
-  function handleCreate() {
-    const validationErrors = validateAdminTourCreateForm({
-      title: formState.title,
-      description: formState.description,
-      location: formState.location,
-      duration: formState.duration,
-      destinationId: formState.destinationId,
-      tourTypeId: formState.tourTypeId,
-      price: formState.price,
+  function setDepartureField<Key extends keyof TourDepartureFormItem>(
+    departureId: string,
+    key: Key,
+    value: TourDepartureFormItem[Key],
+  ) {
+    setFormState((previousValue) => ({
+      ...previousValue,
+      departures: previousValue.departures.map((departure) =>
+        departure.id === departureId ? { ...departure, [key]: value } : departure,
+      ),
+    }));
+
+    const validatableKeys: DepartureFieldKey[] = [
+      'startDate',
+      'endDate',
+      'bookingDeadline',
+      'maximumCapacity',
+      'price',
+    ];
+
+    if (validatableKeys.includes(key as DepartureFieldKey)) {
+      const errorKey = key as DepartureFieldKey;
+
+      setDepartureErrors((previousValue) => {
+        if (!previousValue[departureId]?.[errorKey]) {
+          return previousValue;
+        }
+
+        return {
+          ...previousValue,
+          [departureId]: {
+            ...previousValue[departureId],
+            [errorKey]: undefined,
+          },
+        };
+      });
+    }
+  }
+
+  function addDeparture() {
+    setFormState((previousValue) => ({
+      ...previousValue,
+      departures: [
+        ...previousValue.departures,
+        createDepartureItem(previousValue.departures.length + 1),
+      ],
+    }));
+  }
+
+  function removeDeparture(departureId: string) {
+    setFormState((previousValue) => {
+      if (previousValue.departures.length <= 1) {
+        return previousValue;
+      }
+
+      return {
+        ...previousValue,
+        departures: previousValue.departures.filter((departure) => departure.id !== departureId),
+      };
     });
 
-    if (Object.keys(validationErrors).length > 0) {
-      const nextErrors: Partial<Record<TourCreateValidatableField, string>> = {
-        title: mapValidationError(validationErrors.title),
-        description: mapValidationError(validationErrors.description),
-        location: mapValidationError(validationErrors.location),
-        duration: mapValidationError(validationErrors.duration),
-        destinationId: mapValidationError(validationErrors.destinationId),
-        tourTypeId: mapValidationError(validationErrors.tourTypeId),
-        price: mapValidationError(validationErrors.price),
-      };
-      setFieldErrors(nextErrors);
+    setDepartureErrors((previousValue) => {
+      if (!previousValue[departureId]) {
+        return previousValue;
+      }
 
-      if (
-        nextErrors.title ||
-        nextErrors.description ||
-        nextErrors.location ||
-        nextErrors.duration
-      ) {
+      const nextValue = { ...previousValue };
+      delete nextValue[departureId];
+      return nextValue;
+    });
+  }
+
+  async function handleSubmit() {
+    const nextErrors: Partial<Record<TourCreateValidatableField, string>> = {};
+
+    if (!formState.title.trim()) {
+      nextErrors.title = mapValidationError('required_title');
+    }
+    if (!formState.description.trim()) {
+      nextErrors.description = mapValidationError('required_description');
+    }
+    if (!formState.location.trim()) {
+      nextErrors.location = mapValidationError('required_location');
+    }
+    if (!formState.destinationId.trim()) {
+      nextErrors.destinationId = mapValidationError('required_destination_id');
+    }
+    if (!formState.tourTypeId.trim()) {
+      nextErrors.tourTypeId = mapValidationError('required_tour_type_id');
+    }
+
+    const nextDepartureErrors: Record<string, Partial<Record<DepartureFieldKey, string>>> = {};
+
+    if (formState.departures.length === 0) {
+      setToastState({
+        open: true,
+        message: 'Add at least one departure before saving this tour.',
+        severity: 'error',
+      });
+      setActiveSection('pricing');
+      return;
+    }
+
+    formState.departures.forEach((departure) => {
+      const errors: Partial<Record<DepartureFieldKey, string>> = {};
+
+      if (!departure.startDate.trim()) {
+        errors.startDate = mapValidationError('required_departure_start_date');
+      }
+      if (!departure.endDate.trim()) {
+        errors.endDate = mapValidationError('required_departure_end_date');
+      }
+      if (!departure.bookingDeadline.trim()) {
+        errors.bookingDeadline = mapValidationError('required_departure_booking_deadline');
+      }
+      if (!departure.maximumCapacity.trim()) {
+        errors.maximumCapacity = mapValidationError('required_departure_maximum_capacity');
+      }
+      if (!departure.price.trim()) {
+        errors.price = mapValidationError('required_departure_price');
+      }
+
+      if (Object.keys(errors).length > 0) {
+        nextDepartureErrors[departure.id] = errors;
+      }
+    });
+
+    setFieldErrors(nextErrors);
+    setDepartureErrors(nextDepartureErrors);
+
+    if (Object.keys(nextErrors).length > 0 || Object.keys(nextDepartureErrors).length > 0) {
+      if (nextErrors.title || nextErrors.description || nextErrors.location) {
         setActiveSection('basic');
       } else if (nextErrors.destinationId || nextErrors.tourTypeId) {
         setActiveSection('classification');
@@ -238,7 +469,141 @@ export default function AdminTourCreateForm() {
       return;
     }
 
-    setFieldErrors({});
+    const destinationId = Number(formState.destinationId);
+    const tourTypeId = Number(formState.tourTypeId);
+
+    if (!Number.isFinite(destinationId) || !Number.isFinite(tourTypeId)) {
+      setToastState({
+        open: true,
+        message: 'Invalid numeric values detected. Please review destination and tour type.',
+        severity: 'error',
+      });
+      return;
+    }
+
+    try {
+      const normalizedDepartures = formState.departures.map((departure, index) => {
+        const maximumCapacity = Number(departure.maximumCapacity);
+        const price = Number(departure.price);
+        const originalPrice = departure.originalPrice.trim()
+          ? Number(departure.originalPrice)
+          : null;
+
+        if (
+          !Number.isFinite(maximumCapacity) ||
+          maximumCapacity < 1 ||
+          !Number.isFinite(price) ||
+          price < 0 ||
+          (originalPrice !== null && (!Number.isFinite(originalPrice) || originalPrice < 0))
+        ) {
+          throw new Error(`DEPARTURE_NUMERIC_INVALID:${index + 1}`);
+        }
+
+        if (
+          departure.endDate < departure.startDate ||
+          departure.bookingDeadline > departure.startDate
+        ) {
+          throw new Error(`DEPARTURE_DATES_INVALID:${index + 1}`);
+        }
+
+        return {
+          startDate: departure.startDate,
+          endDate: departure.endDate,
+          bookingDeadline: departure.bookingDeadline,
+          maximumCapacity,
+          price,
+          originalPrice,
+          status: departure.status,
+          id: departure.rowId,
+        };
+      });
+
+      const payload = {
+        title: formState.title.trim(),
+        description: formState.description.trim() || null,
+        location: formState.location.trim(),
+        destinationId,
+        tourTypeId,
+        imageSrc:
+          formState.imageSrc.trim() ||
+          formState.mainImage?.src ||
+          formState.images[0]?.src ||
+          '/img/tours/og-preview.webp',
+        mainImage: formState.mainImage,
+        images: formState.images,
+        status: formState.status,
+        isFeatured: formState.isFeatured ?? false,
+        isPopular: formState.isPopular ?? false,
+        isTopTrending: formState.isTopTrending ?? false,
+        departures: normalizedDepartures,
+        itineraries: normalizeItineraryItems(formState.itineraries).map((item, index) => ({
+          dayNumber: Number(item.dayNumber) || index + 1,
+          title: item.title.trim() || `Day ${index + 1}`,
+          content: item.content.trim() || null,
+          icon: item.icon.trim() || null,
+          isSummary: item.isSummary,
+        })),
+        inclusions: normalizeInclusionItems(formState.inclusions)
+          .filter((item) => item.content.trim().length > 0)
+          .map((item, index) => ({
+            itemType: item.itemType,
+            itemOrder: Number(item.itemOrder) || index + 1,
+            content: item.content.trim(),
+          })),
+      };
+
+      if (isEditing) {
+        if (!tourId) {
+          throw new Error('TOUR_ID_REQUIRED');
+        }
+
+        await updateTourMutation.mutateAsync({
+          id: tourId,
+          ...payload,
+        });
+      } else {
+        await createTourMutation.mutateAsync(payload);
+      }
+
+      setToastState({
+        open: true,
+        message: isEditing ? content.messages.updateSuccess : content.messages.createSuccess,
+        severity: 'success',
+      });
+      router.push('/admin/tours');
+    } catch (error) {
+      if (error instanceof Error && error.message.startsWith('DEPARTURE_NUMERIC_INVALID:')) {
+        const departureIndex = Number(error.message.split(':')[1] ?? '0');
+        setActiveSection('pricing');
+        setToastState({
+          open: true,
+          message: `Departure ${departureIndex} has invalid numeric values. Review capacity and pricing.`,
+          severity: 'error',
+        });
+        return;
+      }
+
+      if (error instanceof Error && error.message.startsWith('DEPARTURE_DATES_INVALID:')) {
+        const departureIndex = Number(error.message.split(':')[1] ?? '0');
+        setActiveSection('pricing');
+        setToastState({
+          open: true,
+          message: `Departure ${departureIndex} has invalid dates. End date must be on or after start date, and booking deadline must be on or before start date.`,
+          severity: 'error',
+        });
+        return;
+      }
+
+      const failedPrefix = isEditing
+        ? content.messages.updateFailedPrefix
+        : content.messages.createFailedPrefix;
+      const message = error instanceof Error ? `${failedPrefix}: ${error.message}` : failedPrefix;
+      setToastState({
+        open: true,
+        message,
+        severity: 'error',
+      });
+    }
   }
 
   const itineraryBlocksManager = useAdminTextBlocksManager<TourItineraryFormItem>({
@@ -264,6 +629,136 @@ export default function AdminTourCreateForm() {
       content: '',
     }),
   });
+
+  useEffect(() => {
+    window.populate = (tour = {}) => {
+      setFormState((previousValue) => {
+        const destinationId =
+          tour.destinationId ??
+          previousValue.destinationId ??
+          referencesQuery.data?.destinations[0]?.value ??
+          '';
+        const tourTypeId =
+          tour.tourTypeId ??
+          previousValue.tourTypeId ??
+          referencesQuery.data?.tourTypes[0]?.value ??
+          '';
+        const fallbackDeparture = tour.departure
+          ? [
+              createDepartureItem(1, {
+                startDate: tour.departure.startDate ?? '',
+                endDate: tour.departure.endDate ?? '',
+                bookingDeadline: tour.departure.bookingDeadline ?? '',
+                maximumCapacity: tour.departure.maximumCapacity ?? '10',
+                price: tour.departure.price ?? '',
+                originalPrice: tour.departure.originalPrice ?? '',
+                status: tour.departure.status ?? 'open',
+              }),
+            ]
+          : null;
+        const defaultDepartures = [
+          createDepartureItem(1, {
+            startDate: '2026-04-10',
+            endDate: '2026-04-12',
+            bookingDeadline: '2026-04-03',
+            maximumCapacity: '12',
+            price: '7499',
+            originalPrice: '8999',
+            status: 'open',
+          }),
+          createDepartureItem(2, {
+            startDate: '2026-05-08',
+            endDate: '2026-05-10',
+            bookingDeadline: '2026-05-01',
+            maximumCapacity: '12',
+            price: '7699',
+            originalPrice: '9199',
+            status: 'open',
+          }),
+        ];
+        const populatedDepartures =
+          tour.departures && tour.departures.length > 0
+            ? tour.departures
+            : (fallbackDeparture ?? defaultDepartures);
+
+        return {
+          ...previousValue,
+          title: tour.title ?? 'Sunrise Island Hopping Adventure',
+          description:
+            tour.description ??
+            '<p>Discover hidden lagoons, white-sand beaches, and local seafood spots in one unforgettable day.</p>',
+          location: tour.location ?? 'El Nido, Palawan, Philippines',
+          destinationId,
+          tourTypeId,
+          status: tour.status ?? 'active',
+          isFeatured: tour.isFeatured ?? true,
+          isPopular: tour.isPopular ?? true,
+          isTopTrending: tour.isTopTrending ?? false,
+          departures: populatedDepartures,
+          itineraries: normalizeItineraryItems(
+            tour.itineraries ?? [
+              {
+                id: `itinerary-${Date.now()}-1`,
+                dayNumber: '1',
+                title: 'Arrival and Island Warm-Up',
+                content:
+                  'Meet the guide, transfer to the resort, and enjoy a sunset island-hopping welcome tour.',
+                icon: '',
+                isSummary: false,
+              },
+              {
+                id: `itinerary-${Date.now()}-2`,
+                dayNumber: '2',
+                title: 'Lagoons and Snorkeling Highlights',
+                content:
+                  'Visit key lagoons, snorkel coral gardens, and stop for a beachside lunch with free time.',
+                icon: '',
+                isSummary: false,
+              },
+              {
+                id: `itinerary-${Date.now()}-3`,
+                dayNumber: '3',
+                title: 'Town Stroll and Departure',
+                content:
+                  'Morning local market walk, checkout, and transfer back to the airport or ferry terminal.',
+                icon: '',
+                isSummary: false,
+              },
+            ],
+          ),
+          inclusions: normalizeInclusionItems(
+            tour.inclusions ?? [
+              {
+                id: `inclusion-${Date.now()}-1`,
+                itemType: 'included',
+                itemOrder: '1',
+                content: 'Roundtrip land and boat transfers',
+              },
+              {
+                id: `inclusion-${Date.now()}-2`,
+                itemType: 'included',
+                itemOrder: '2',
+                content: '2 nights accommodation with breakfast',
+              },
+              {
+                id: `inclusion-${Date.now()}-3`,
+                itemType: 'excluded',
+                itemOrder: '3',
+                content: 'Personal travel insurance',
+              },
+            ],
+          ),
+        };
+      });
+
+      setFieldErrors({});
+      setDepartureErrors({});
+    };
+
+    return () => {
+      delete window.populate;
+    };
+  }, [referencesQuery.data]);
 
   return (
     <div className='bg-white shadow-2 mt-60 md:mt-30 px-40 md:px-20 pt-40 md:pt-20 pb-30 md:pb-20 rounded-12 toursCreateForm'>
@@ -321,28 +816,6 @@ export default function AdminTourCreateForm() {
                     <AppFieldHelper text={content.helpers.description} />
                   ) : null}
                 </Box>
-                <Box className='toursCreateField'>
-                  <AppTextField
-                    label={content.fields.location}
-                    value={formState.location}
-                    onChange={(value) => setValidatedField('location', value)}
-                    errorMessage={fieldErrors.location}
-                  />
-                  {!fieldErrors.location ? (
-                    <AppFieldHelper text={content.helpers.location} />
-                  ) : null}
-                </Box>
-                <Box className='toursCreateField'>
-                  <AppTextField
-                    label={content.fields.duration}
-                    value={formState.duration}
-                    onChange={(value) => setValidatedField('duration', value)}
-                    errorMessage={fieldErrors.duration}
-                  />
-                  {!fieldErrors.duration ? (
-                    <AppFieldHelper text={content.helpers.duration} />
-                  ) : null}
-                </Box>
               </Box>
             </div>
           ) : null}
@@ -370,6 +843,20 @@ export default function AdminTourCreateForm() {
                   gap: 2.5,
                 }}
               >
+                <Box
+                  className='toursCreateField'
+                  sx={{ gridColumn: { xs: '1 / -1', md: '1 / -1' } }}
+                >
+                  <AppTextField
+                    label={content.fields.location}
+                    value={formState.location}
+                    onChange={(value) => setValidatedField('location', value)}
+                    errorMessage={fieldErrors.location}
+                  />
+                  {!fieldErrors.location ? (
+                    <AppFieldHelper text={content.helpers.location} />
+                  ) : null}
+                </Box>
                 <Box className='toursCreateField'>
                   <AppSelectField
                     label={content.fields.destinationId}
@@ -416,37 +903,14 @@ export default function AdminTourCreateForm() {
 
           {activeSection === 'pricing' ? (
             <div className='px-20 py-20 border rounded-12 toursCreateSection'>
-              <div className='toursCreateSection__header'>
-                <h4 className='text-18 fw-500'>{content.sections.pricing.title}</h4>
-                <p className='mt-5 text-14 text-light-1'>{content.sections.pricing.description}</p>
-              </div>
-              <Box
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-                  gap: 2.5,
-                }}
-              >
-                <Box className='toursCreateField'>
-                  <AppTextField
-                    label={content.fields.price}
-                    value={formState.price}
-                    onChange={(value) => setValidatedField('price', value)}
-                    type='number'
-                    errorMessage={fieldErrors.price}
-                  />
-                  {!fieldErrors.price ? <AppFieldHelper text={content.helpers.price} /> : null}
-                </Box>
-                <Box className='toursCreateField'>
-                  <AppTextField
-                    label={content.fields.originalPrice}
-                    value={formState.originalPrice}
-                    onChange={(value) => setField('originalPrice', value)}
-                    type='number'
-                  />
-                  <AppFieldHelper text={content.helpers.originalPrice} />
-                </Box>
-              </Box>
+              <AdminDepartureBlocksManager
+                items={formState.departures}
+                fieldErrors={departureErrors}
+                onAddItem={addDeparture}
+                onRemoveItem={removeDeparture}
+                onUpdateItem={(id, key, value) => setDepartureField(id, key, value)}
+                content={content}
+              />
             </div>
           ) : null}
 
@@ -497,6 +961,51 @@ export default function AdminTourCreateForm() {
                     onChange={(nextItems) => setField('images', nextItems)}
                     labels={content.mediaPickers.galleryImages}
                   />
+                </Box>
+
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+                    gap: 2,
+                  }}
+                >
+                  <Box className='toursCreateField'>
+                    <AppSelectField
+                      label='Tour Status'
+                      value={formState.status}
+                      onChange={(value) => setField('status', value as TourStatus)}
+                      options={tourStatusOptions}
+                    />
+                    <AppFieldHelper text='Set this to inactive to hide the tour from customers.' />
+                  </Box>
+                  <Box className='toursCreateField'>
+                    <AppSelectField
+                      label={content.fields.isFeatured}
+                      value={formState.isFeatured ? 'true' : 'false'}
+                      onChange={(value) => setField('isFeatured', value === 'true')}
+                      options={booleanOptions}
+                    />
+                    <AppFieldHelper text={content.helpers.isFeatured} />
+                  </Box>
+                  <Box className='toursCreateField'>
+                    <AppSelectField
+                      label={content.fields.isPopular}
+                      value={formState.isPopular ? 'true' : 'false'}
+                      onChange={(value) => setField('isPopular', value === 'true')}
+                      options={booleanOptions}
+                    />
+                    <AppFieldHelper text={content.helpers.isPopular} />
+                  </Box>
+                  <Box className='toursCreateField'>
+                    <AppSelectField
+                      label={content.fields.isTopTrending}
+                      value={formState.isTopTrending ? 'true' : 'false'}
+                      onChange={(value) => setField('isTopTrending', value === 'true')}
+                      options={booleanOptions}
+                    />
+                    <AppFieldHelper text={content.helpers.isTopTrending} />
+                  </Box>
                 </Box>
               </Box>
             </div>
@@ -553,6 +1062,7 @@ export default function AdminTourCreateForm() {
           type='button'
           size='sm'
           variant='outline'
+          disabled={isSubmitting}
           onClick={() => {
             router.push('/admin/tours');
           }}
@@ -564,11 +1074,29 @@ export default function AdminTourCreateForm() {
           type='button'
           size='sm'
           className='toursCreateSubmitButton'
-          onClick={handleCreate}
+          disabled={isSubmitting}
+          onClick={handleSubmit}
         >
-          {content.actions.create}
+          {isSubmitting
+            ? isEditing
+              ? content.actions.updating
+              : content.actions.creating
+            : isEditing
+              ? content.actions.update
+              : content.actions.create}
         </AppButton>
       </div>
+      <AppToast
+        open={toastState.open}
+        message={toastState.message}
+        severity={toastState.severity}
+        onClose={() =>
+          setToastState((previousValue) => ({
+            ...previousValue,
+            open: false,
+          }))
+        }
+      />
     </div>
   );
 }

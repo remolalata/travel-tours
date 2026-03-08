@@ -1,9 +1,11 @@
 'use client';
 
-import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useId, useRef, useState } from 'react';
 
 import { headerSearchContent } from '@/content/shared/layoutHeaderSearch';
+import { normalizeTourSearchTerm } from '@/services/tours/helpers/tourSearch';
+import useToursSearchQuery from '@/services/tours/hooks/useToursSearchQuery';
 
 interface HeaderSearchProps {
   white?: boolean;
@@ -14,7 +16,12 @@ export default function HeaderSerch({ white = false }: HeaderSearchProps) {
   const [ddActive, setDdActive] = useState<boolean>(false);
   const headerSearchInputId = useId();
   const dropDownContainer = useRef<HTMLDivElement | null>(null);
-  const { labels, searchData } = headerSearchContent;
+  const { labels } = headerSearchContent;
+  const normalizedSearchTerm = normalizeTourSearchTerm(selected);
+  const toursSearchQuery = useToursSearchQuery({
+    searchTerm: normalizedSearchTerm,
+    limit: 8,
+  });
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
@@ -35,9 +42,7 @@ export default function HeaderSerch({ white = false }: HeaderSearchProps) {
     };
   }, []);
 
-  const filteredSearchData = searchData.filter((item) =>
-    item.title.toLowerCase().includes(selected.toLowerCase()),
-  );
+  const searchResults = toursSearchQuery.data ?? [];
 
   return (
     <div ref={dropDownContainer} className='header__search js-liverSearch js-form-dd'>
@@ -53,6 +58,10 @@ export default function HeaderSerch({ white = false }: HeaderSearchProps) {
         type='text'
         placeholder={labels.inputPlaceholder}
         className={`js-search ${white ? 'text-white' : ''}`}
+        autoComplete='off'
+        autoCorrect='off'
+        autoCapitalize='none'
+        spellCheck={false}
       />
 
       <div
@@ -61,38 +70,57 @@ export default function HeaderSerch({ white = false }: HeaderSearchProps) {
       >
         <div className='headerSearchRecent__container'>
           <div className='headerSearchRecent__title'>
-            <p className='text-18 fw-500'>{labels.recentSearchesTitle}</p>
+            <p className='text-18 fw-500'>
+              {normalizedSearchTerm.length === 0 || searchResults.length === 0
+                ? labels.emptySearchTitle
+                : labels.searchResultsTitle}
+            </p>
           </div>
 
           <div className='headerSearchRecent__list js-results'>
-            {filteredSearchData.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => {
-                  setSelected(item.title);
-                  setDdActive(false);
-                }}
-                className='headerSearchRecent__item js-search-option'
-                data-x-click='headerSearch'
-              >
-                <div className='flex-center bg-white border rounded-12 size-50'>
-                  {item.iconClass && <i className={item.iconClass}></i>}
-                  {item.img && (
-                    <Image
-                      width={50}
-                      height={50}
-                      src={item.img}
-                      alt='image'
-                      className='rounded-12'
-                    />
-                  )}
+            {toursSearchQuery.isLoading && (
+              <div className='headerSearchRecent__item'>
+                <div className='text-14 text-light-2'>Loading tours...</div>
+              </div>
+            )}
+
+            {!toursSearchQuery.isLoading &&
+              searchResults.map((item) => (
+                <Link
+                  href={`/tour/${item.slug}`}
+                  key={item.id}
+                  onClick={() => {
+                    setSelected(item.title);
+                    setDdActive(false);
+                  }}
+                  className='headerSearchRecent__item js-search-option'
+                  data-x-click='headerSearch'
+                >
+                  <div className='flex-center bg-white border rounded-12 size-50'>
+                    <i className='icon-pin text-20'></i>
+                  </div>
+                  <div className='ml-10'>
+                    <div className='fw-500 js-search-option-target'>{item.title}</div>
+                    <div className='text-14 text-light-2 lh-14'>{item.location}</div>
+                  </div>
+                </Link>
+              ))}
+
+            {!toursSearchQuery.isLoading &&
+              !toursSearchQuery.isError &&
+              searchResults.length === 0 && (
+                <div className='headerSearchRecent__item'>
+                  <div className='text-14 text-light-2'>No available tours found.</div>
                 </div>
-                <div className='ml-10'>
-                  <div className='fw-500 js-search-option-target'>{item.title}</div>
-                  <div className='text-14 text-light-2 lh-14'>{item.location}</div>
+              )}
+
+            {toursSearchQuery.isError && (
+              <div className='headerSearchRecent__item'>
+                <div className='text-14 text-light-2'>
+                  Unable to load tours right now. Please try again.
                 </div>
-              </button>
-            ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

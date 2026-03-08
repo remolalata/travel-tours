@@ -96,10 +96,17 @@ export function validateAdminTourCreateForm(
   if (!input.title.trim()) errors.title = 'required_title';
   if (!input.description.trim()) errors.description = 'required_description';
   if (!input.location.trim()) errors.location = 'required_location';
-  if (!input.duration.trim()) errors.duration = 'required_duration';
   if (!input.destinationId.trim()) errors.destinationId = 'required_destination_id';
   if (!input.tourTypeId.trim()) errors.tourTypeId = 'required_tour_type_id';
-  if (!input.price.trim()) errors.price = 'required_price';
+  if (!input.departureStartDate.trim()) errors.departureStartDate = 'required_departure_start_date';
+  if (!input.departureEndDate.trim()) errors.departureEndDate = 'required_departure_end_date';
+  if (!input.departureBookingDeadline.trim()) {
+    errors.departureBookingDeadline = 'required_departure_booking_deadline';
+  }
+  if (!input.departureMaximumCapacity.trim()) {
+    errors.departureMaximumCapacity = 'required_departure_maximum_capacity';
+  }
+  if (!input.departurePrice.trim()) errors.departurePrice = 'required_departure_price';
 
   return errors;
 }

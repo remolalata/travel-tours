@@ -1,6 +1,6 @@
-import { fetchFaqItems } from '@/services/faqs/mutations/faqApi';
 import { helpCenterPageContent } from '@/content/features/help-center';
 import HelpCenterPage from '@/features/help-center/HelpCenterPage';
+import { fetchFaqItems } from '@/services/faqs/mutations/faqApi';
 import type { FaqItem } from '@/types/tourContent';
 import { createClient } from '@/utils/supabase/server';
 

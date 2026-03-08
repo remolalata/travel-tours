@@ -1,8 +1,5 @@
 export const getQuoteContent = {
-  breadcrumbs: [
-    { label: 'Home', href: '/' },
-    { label: 'Get a Quote' },
-  ],
+  breadcrumbs: [{ label: 'Home', href: '/' }, { label: 'Get a Quote' }],
   sidebar: {
     eyebrow: 'Custom Travel Planning',
     title: 'Build Your Ideal Escape',

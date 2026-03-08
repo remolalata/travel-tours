@@ -14,6 +14,7 @@ export type Review = {
 export type FetchReviewsInput = {
   destinationId?: number;
   rating?: number;
+  minRating?: number;
   limit?: number;
   isPublished?: boolean;
 };

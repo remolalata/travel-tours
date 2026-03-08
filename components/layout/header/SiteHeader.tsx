@@ -1,5 +1,5 @@
-import type { AuthViewerState } from '@/services/auth/mutations/authApi';
 import SiteHeaderClient from '@/components/layout/header/SiteHeaderClient';
+import type { AuthViewerState } from '@/services/auth/mutations/authApi';
 import { getServerAuthState } from '@/utils/auth/server';
 
 export default async function SiteHeader() {

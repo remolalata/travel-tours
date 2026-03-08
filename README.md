@@ -133,24 +133,6 @@ npm run dev
 - `npm run format` - Format code with Prettier
 - `npm run format:check` - Check formatting
 
-## Content/Data Sources
-
-Primary static content lives in:
-
-- `data/tours.js`
-- `data/tourSingleContent.js`
-- `data/destinations.js`
-- `data/testimonials.js`
-- `data/tourFilteringOptions.js`
-
-Homepage composition:
-
-- `app/(homes)/home-1/page.jsx`
-
-Tour detail composition:
-
-- `components/tourSingle/pages/TourDetailsContent.jsx`
-
 ## Deployment
 
 Standard Next.js deployment flow:

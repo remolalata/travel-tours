@@ -1,7 +1,7 @@
 'use client';
 
 import type { User } from '@supabase/supabase-js';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { type FormEvent, useMemo, useState } from 'react';
 
 import {
@@ -17,6 +17,7 @@ type LoginFieldErrors = {
 
 export default function useLoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const supabase = useMemo(() => createClient(), []);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -39,6 +40,10 @@ export default function useLoginForm() {
       password: previous.password ? getPasswordValidationMessage(value) : previous.password,
     }));
   };
+
+  const nextParam = searchParams.get('next');
+  const redirectPath =
+    nextParam && nextParam.startsWith('/') && !nextParam.startsWith('//') ? nextParam : '/';
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -78,7 +83,7 @@ export default function useLoginForm() {
     }
 
     if (!user) {
-      router.replace('/');
+      router.replace(redirectPath);
       router.refresh();
       return;
     }
@@ -90,12 +95,12 @@ export default function useLoginForm() {
       .maybeSingle();
 
     if (userRoleError) {
-      router.replace('/');
+      router.replace(redirectPath);
       router.refresh();
       return;
     }
 
-    router.replace('/');
+    router.replace(redirectPath);
     router.refresh();
   };
 

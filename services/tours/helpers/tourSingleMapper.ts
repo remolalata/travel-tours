@@ -1,6 +1,7 @@
 import { createTourContentTemplate } from '@/data/tourSingleContent';
 import type { IncludedExcludedItem, ItineraryStep } from '@/types/tourContent';
-import type { TourSinglePageData } from '@/types/tourSingle';
+import type { TourSingleDeparture, TourSinglePageData } from '@/types/tourSingle';
+import { sortDeparturesByStartDate } from '@/utils/helpers/departures';
 
 type TourSingleRow = {
   id: number;
@@ -10,11 +11,17 @@ type TourSingleRow = {
   location: string;
   image_src: string;
   images: string[] | null;
-  duration_label: string | null;
-  price: number;
-  original_price: number | null;
   description: string | null;
   is_featured: boolean;
+  departures?: Array<{
+    id: number;
+    start_date: string;
+    end_date: string;
+    booking_deadline: string;
+    maximum_capacity: number;
+    price: number;
+    original_price: number | null;
+  }> | null;
   tour_types:
     | {
         name: string | null;
@@ -86,6 +93,42 @@ function getTourType(row: TourSingleRow['tour_types']): { name: string | null } 
   return row;
 }
 
+function getLowestDeparture(departures: TourSingleRow['departures']): {
+  id: number;
+  start_date: string;
+  end_date: string;
+  price: number;
+  original_price: number | null;
+} | null {
+  return (departures ?? []).reduce<{
+    id: number;
+    start_date: string;
+    end_date: string;
+    price: number;
+    original_price: number | null;
+  } | null>((lowest, departure) => {
+    if (!lowest || departure.price < lowest.price) {
+      return departure;
+    }
+
+    return lowest;
+  }, null);
+}
+
+function mapDepartures(departures: TourSingleRow['departures']): TourSingleDeparture[] {
+  return sortDeparturesByStartDate(
+    (departures ?? []).map((departure) => ({
+      id: departure.id,
+      startDate: departure.start_date,
+      endDate: departure.end_date,
+      bookingDeadline: departure.booking_deadline,
+      maximumCapacity: departure.maximum_capacity,
+      price: departure.price,
+      originalPrice: departure.original_price ?? departure.price,
+    })),
+  );
+}
+
 export function mapTourSinglePageData(
   tour: TourSingleRow,
   inclusionRows: TourInclusionRow[],
@@ -97,6 +140,12 @@ export function mapTourSinglePageData(
   const itinerarySummarySteps = mapItineraryRows(itineraryRows, true);
   const itinerarySteps = mapItineraryRows(itineraryRows, false);
   const tourType = getTourType(tour.tour_types);
+  const lowestDeparture = getLowestDeparture(tour.departures);
+  const departures = mapDepartures(tour.departures);
+
+  if (!lowestDeparture) {
+    throw new Error('TOUR_HAS_NO_OPEN_DEPARTURES');
+  }
 
   return {
     routeContext: {
@@ -113,14 +162,14 @@ export function mapTourSinglePageData(
       title: tour.title,
       rating: 0,
       ratingCount: 0,
-      duration: tour.duration_label ?? '',
       description: tour.description ?? '',
-      price: tour.price,
-      fromPrice: tour.original_price ?? tour.price,
+      price: lowestDeparture.price,
+      fromPrice: lowestDeparture.original_price ?? lowestDeparture.price,
       featured: tour.is_featured,
       badgeText: '',
       badgeClass: '',
       features: [],
+      departures,
     },
     tourContent: {
       ...baseTourContent,

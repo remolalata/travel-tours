@@ -25,7 +25,11 @@ export default function LoginForm() {
       helpLinkLabel={authContent.login.helpLinkLabel}
       helpLinkHref={authContent.login.helpLinkHref}
     >
-      <form onSubmit={handleSubmit} noValidate className='px-60 md:px-25 py-60 md:py-30 border rounded-12'>
+      <form
+        onSubmit={handleSubmit}
+        noValidate
+        className='px-60 md:px-25 py-60 md:py-30 border rounded-12'
+      >
         <div>
           <AppTextField
             type='email'
@@ -57,7 +61,9 @@ export default function LoginForm() {
           disabled={isSubmitting}
           className='mt-30 text-white bg-accent-1 button -md -dark-1 col-12 disabled'
         >
-          {isSubmitting ? authContent.login.actions.submittingLabel : authContent.login.actions.submitLabel}
+          {isSubmitting
+            ? authContent.login.actions.submittingLabel
+            : authContent.login.actions.submitLabel}
           <i className='icon-arrow-top-right ml-10' />
         </button>
       </form>

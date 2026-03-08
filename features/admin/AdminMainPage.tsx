@@ -18,8 +18,6 @@ import {
   YAxis,
 } from 'recharts';
 
-import { buildAdminDashboardViewModel } from '@/services/admin/dashboard/helpers/dashboardMetrics';
-import useAdminDashboardQuery from '@/services/admin/dashboard/hooks/useAdminDashboardQuery';
 import AdminDashboardKpiCard from '@/components/admin/dashboard/AdminDashboardKpiCard';
 import AdminDashboardPanel from '@/components/admin/dashboard/AdminDashboardPanel';
 import AdminTopDestinationsSummary from '@/components/admin/dashboard/AdminTopDestinationsSummary';
@@ -27,6 +25,8 @@ import AdminTopToursTable from '@/components/admin/dashboard/AdminTopToursTable'
 import AdminShell from '@/components/admin/layout/AdminShell';
 import FadeIn from '@/components/common/motion/FadeIn';
 import { adminContent } from '@/content/features/admin';
+import { buildAdminDashboardViewModel } from '@/services/admin/dashboard/helpers/dashboardMetrics';
+import useAdminDashboardQuery from '@/services/admin/dashboard/hooks/useAdminDashboardQuery';
 import type { AdminDashboardTimeRange } from '@/types/adminDashboard';
 
 function formatCurrency(value: number): string {

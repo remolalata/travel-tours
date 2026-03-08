@@ -5,8 +5,8 @@ export interface TourBase {
   title: string;
   ratingCount: number;
   rating: number;
-  duration: string;
   price: number;
+  duration?: string;
 }
 
 export interface TourFilterItem extends TourBase {

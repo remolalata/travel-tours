@@ -1,8 +1,8 @@
-import type { AuthViewerState } from '@/services/auth/mutations/authApi';
 import AboutHero from '@/components/about/sections/AboutHero';
 import SiteFooter from '@/components/layout/footers/SiteFooter';
 import SiteHeaderClient from '@/components/layout/header/SiteHeaderClient';
 import { aboutContent } from '@/content/features/about';
+import type { AuthViewerState } from '@/services/auth/mutations/authApi';
 
 const guestAuthState: AuthViewerState = {
   isAuthenticated: false,

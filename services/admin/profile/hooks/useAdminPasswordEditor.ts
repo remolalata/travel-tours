@@ -3,8 +3,8 @@
 import { useMutation } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 
-import { updateCurrentAdminPassword } from '@/services/admin/profile/mutations/profileApi';
 import { adminContent } from '@/content/features/admin';
+import { updateCurrentAdminPassword } from '@/services/admin/profile/mutations/profileApi';
 import type { AdminPasswordFormState } from '@/types/admin';
 import { validateAdminPasswordForm } from '@/utils/helpers/formValidation';
 import { createClient } from '@/utils/supabase/client';

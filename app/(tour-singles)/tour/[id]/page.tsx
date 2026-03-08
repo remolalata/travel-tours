@@ -2,20 +2,17 @@ import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { cache } from 'react';
 
+import TourSinglePage from '@/features/tour-single/TourSinglePage';
 import { fetchFaqItems } from '@/services/faqs/mutations/faqApi';
 import { fetchReviews } from '@/services/reviews/mutations/reviewApi';
 import { fetchTourSinglePageData } from '@/services/tours/mutations/tourSingleApi';
-import SiteFooter from '@/components/layout/footers/SiteFooter';
-import SiteHeader from '@/components/layout/header/SiteHeader';
-import PageHeader from '@/features/tour-single/components/sections/PageHeader';
-import TourDetailsContent from '@/features/tour-single/components/sections/TourDetailsContent';
-import TourSlider from '@/features/tour-single/components/sections/TourSlider';
 import type { Review } from '@/types/review';
 import type { FaqItem } from '@/types/tourContent';
 import { createClient } from '@/utils/supabase/server';
 
 interface TourPageProps {
   params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 const getSingleTourPageData = cache(async (routeValue: string) => {
@@ -26,7 +23,10 @@ const getSingleTourPageData = cache(async (routeValue: string) => {
 function buildTourMetaDescription(description?: string | null): string {
   const fallbackDescription =
     'Discover curated tour packages, guided activities, and hassle-free travel planning with Travel & Tours.';
-  const rawValue = (description || fallbackDescription).trim();
+  const rawValue = (description || fallbackDescription)
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 
   if (rawValue.length <= 160) {
     return rawValue;
@@ -97,6 +97,7 @@ export async function generateMetadata(props: TourPageProps): Promise<Metadata> 
 
 export default async function Page(props: TourPageProps) {
   const params = await props.params;
+  const searchParams = await props.searchParams;
   const routeValue = params.id;
   const singlePageData = await getSingleTourPageData(routeValue);
 
@@ -105,12 +106,30 @@ export default async function Page(props: TourPageProps) {
   }
 
   if (routeValue !== singlePageData.routeContext.slug && isNumericRouteValue(routeValue)) {
-    permanentRedirect(getCanonicalTourPath(singlePageData.routeContext.slug));
+    const queryParams = new URLSearchParams();
+    Object.entries(searchParams).forEach(([key, value]) => {
+      if (typeof value === 'string') {
+        queryParams.set(key, value);
+      } else if (Array.isArray(value)) {
+        value.forEach((entry) => queryParams.append(key, entry));
+      }
+    });
+
+    const canonicalPath = getCanonicalTourPath(singlePageData.routeContext.slug);
+    const redirectPath = queryParams.toString()
+      ? `${canonicalPath}?${queryParams.toString()}`
+      : canonicalPath;
+
+    permanentRedirect(redirectPath);
   }
 
-  const { tour, tourContent, galleryImageUrls, overviewDescription, routeContext } = singlePageData;
+  const { routeContext } = singlePageData;
   let reviews: Review[] = [];
   let faqItems: FaqItem[] = [];
+  const paymentsEnabled = Boolean(
+    process.env.NEXT_PAYMONGO_SECRET_KEY?.trim() &&
+    process.env.NEXT_PAYMONGO_WEBHOOK_SECRET?.trim(),
+  );
 
   try {
     const supabase = await createClient();
@@ -129,29 +148,11 @@ export default async function Page(props: TourPageProps) {
   }
 
   return (
-    <>
-      <main>
-        <SiteHeader />
-        <PageHeader
-          breadcrumbs={[
-            { label: 'Home', href: '/' },
-            { label: 'Tours', href: '/tours' },
-            { label: tour.title },
-          ]}
-        />
-
-        <TourDetailsContent
-          tour={tour}
-          tourContent={tourContent}
-          destinationId={routeContext.destinationId}
-          reviews={reviews}
-          galleryImageUrls={galleryImageUrls}
-          overviewDescription={overviewDescription}
-          faqItems={faqItems}
-        />
-        <TourSlider destinationId={routeContext.destinationId} currentTourId={routeContext.id} />
-        <SiteFooter />
-      </main>
-    </>
+    <TourSinglePage
+      singlePageData={singlePageData}
+      reviews={reviews}
+      faqItems={faqItems}
+      paymentsEnabled={paymentsEnabled}
+    />
   );
 }

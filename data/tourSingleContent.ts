@@ -3,18 +3,14 @@ import type {
   IncludedExcludedItem,
   ItineraryStep,
   RatingItem,
-  ReviewItem,
   TourContent,
 } from '@/types/tourContent';
-
-import { allTour } from './tours';
 
 export type {
   FaqItem,
   IncludedExcludedItem,
   ItineraryStep,
   RatingItem,
-  ReviewItem,
   TourContent,
 } from '@/types/tourContent';
 
@@ -157,39 +153,6 @@ const ratingItemsBase: RatingItem[] = [
   },
 ];
 
-const reviewItemsBase: ReviewItem[] = [
-  {
-    id: 1,
-    avatar: '/img/reviews/avatars/1.png',
-    name: 'Carla Mae Dizon',
-    date: 'January 2026',
-    stars: 5,
-    reviewText: 'Super smooth and sulit!',
-    desc: 'First time namin mag-book as a family and sobrang dali ng process. Complete details, on-time transfers, and very friendly guides. Hassle-free talaga from start to finish.',
-    images: ['/img/reviews/1/1.png', '/img/reviews/1/2.png', '/img/reviews/1/3.png'],
-  },
-  {
-    id: 2,
-    avatar: '/img/reviews/avatars/1.png',
-    name: 'Paolo Reyes',
-    date: 'February 2026',
-    stars: 5,
-    reviewText: 'Worth every peso!',
-    desc: 'Booked the Bangkok package and it exceeded expectations. Hotel location was great, tours were organized, and support team was responsive kahit may late-night question kami.',
-    images: ['/img/reviews/1/1.png', '/img/reviews/1/2.png', '/img/reviews/1/3.png'],
-  },
-  {
-    id: 3,
-    avatar: '/img/reviews/avatars/1.png',
-    name: 'Jessa Ann Villanueva',
-    date: 'March 2026',
-    stars: 5,
-    reviewText: 'Babalik kami for sure!',
-    desc: 'Sobrang na-enjoy namin yung island hopping and city tour. Clear itinerary, bait ng staff, and walang stress sa logistics. Perfect for couples and barkada trips.',
-    images: ['/img/reviews/1/1.png', '/img/reviews/1/2.png', '/img/reviews/1/3.png'],
-  },
-];
-
 const timeSlotsBase: string[] = ['08:00', '09:30', '11:00', '13:00', '14:30', '16:00', '18:00'];
 
 const cloneIncludedExcluded = (items: IncludedExcludedItem[]): IncludedExcludedItem[] =>
@@ -200,12 +163,6 @@ const cloneItinerarySteps = (items: ItineraryStep[]): ItineraryStep[] =>
 
 const cloneRatingItems = (items: RatingItem[]): RatingItem[] => items.map((item) => ({ ...item }));
 
-const cloneReviewItems = (items: ReviewItem[]): ReviewItem[] =>
-  items.map((item) => ({
-    ...item,
-    images: [...item.images],
-  }));
-
 export const createTourContentTemplate = (): TourContent => ({
   includedItems: cloneIncludedExcluded(includedItemsBase),
   excludedItems: cloneIncludedExcluded(excludedItemsBase),
@@ -213,29 +170,7 @@ export const createTourContentTemplate = (): TourContent => ({
   itinerarySteps: cloneItinerarySteps(itineraryStepsBase),
   faqItems: [...faqItemsBase],
   ratingItems: cloneRatingItems(ratingItemsBase),
-  reviewItems: cloneReviewItems(reviewItemsBase),
   timeSlots: [...timeSlotsBase],
 });
 
 export const defaultTourContent: TourContent = createTourContentTemplate();
-
-export const tourContentById: Record<string, TourContent> = allTour.reduce(
-  (accumulator, tour) => {
-    accumulator[String(tour.id)] = createTourContentTemplate();
-    return accumulator;
-  },
-  {} as Record<string, TourContent>,
-);
-
-export const getTourContentById = (tourId: number | string): TourContent =>
-  tourContentById[String(tourId)] || defaultTourContent;
-
-// Backward-compatible exports for components that still use legacy keys.
-export const included = defaultTourContent.includedItems;
-export const excluded = defaultTourContent.excludedItems;
-export const roadmapData = defaultTourContent.itinerarySummarySteps;
-export const roadmapData2 = defaultTourContent.itinerarySteps;
-export const faqData = defaultTourContent.faqItems;
-export const overallRatingData = defaultTourContent.ratingItems;
-export const reviews = defaultTourContent.reviewItems;
-export const times = defaultTourContent.timeSlots;

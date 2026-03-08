@@ -23,17 +23,6 @@ export interface RatingItem {
   comment: string;
 }
 
-export interface ReviewItem {
-  id: number;
-  avatar: string;
-  name: string;
-  date: string;
-  stars: number;
-  reviewText: string;
-  desc: string;
-  images: string[];
-}
-
 export interface TourContent {
   includedItems: IncludedExcludedItem[];
   excludedItems: IncludedExcludedItem[];
@@ -41,6 +30,5 @@ export interface TourContent {
   itinerarySteps: ItineraryStep[];
   faqItems: FaqItem[];
   ratingItems: RatingItem[];
-  reviewItems: ReviewItem[];
   timeSlots: string[];
 }

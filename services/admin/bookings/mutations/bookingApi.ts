@@ -1,7 +1,26 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-export type RawBookingStatus = 'approved' | 'pending' | 'cancelled' | 'completed';
-export type RawPaymentStatus = 'unpaid' | 'partial' | 'paid' | 'refunded';
+import {
+  normalizeBookingSearchTerm,
+  tokenizeBookingSearchTerm,
+} from '@/services/admin/bookings/helpers/bookingSearch';
+
+export type RawBookingStatus =
+  | 'draft'
+  | 'pending_payment'
+  | 'partially_paid'
+  | 'confirmed'
+  | 'cancelled'
+  | 'expired'
+  | 'completed';
+export type RawPaymentStatus =
+  | 'unpaid'
+  | 'pending'
+  | 'partial'
+  | 'paid'
+  | 'failed'
+  | 'refunded'
+  | 'partially_refunded';
 
 export type AdminBookingData = {
   id: number;
@@ -13,18 +32,27 @@ export type AdminBookingData = {
   currency: string;
   totalAmount: number;
   amountPaid: number;
-  numberOfTravelers: number;
+  amountDueNow: number;
+  balanceAmount: number;
+  travelerCount: number;
+  paymentOption: 'full' | 'downpayment' | 'reserve';
   travelStartDate: string;
   travelEndDate: string;
   bookedAt: string;
-  customerFirstName: string;
-  customerLastName: string;
+  customerName: string;
+  customerEmail: string;
 };
 
 export type FetchAdminBookingsInput = {
   statuses?: RawBookingStatus[];
+  searchTerm?: string;
   page: number;
   pageSize: number;
+};
+
+export type UpdateAdminBookingStatusInput = {
+  bookingId: number;
+  bookingStatus: RawBookingStatus;
 };
 
 export type PaginatedAdminBookings = {
@@ -36,33 +64,46 @@ export type PaginatedAdminBookings = {
 
 type BookingRow = {
   id: number;
-  booking_reference: string;
-  customer_user_id: string | null;
+  reference_no: string;
+  user_id: string | null;
   tour_id: number | null;
-  package_title: string;
+  tour_title_snapshot: string;
   booking_status: RawBookingStatus;
   payment_status: RawPaymentStatus;
+  payment_option: 'full' | 'downpayment' | 'reserve';
   currency: string;
   total_amount: number;
+  amount_due_now: number;
   amount_paid: number;
-  number_of_travelers: number;
-  travel_start_date: string;
-  travel_end_date: string;
+  balance_amount: number;
+  traveler_count: number;
+  departure_start_date_snapshot: string;
+  departure_end_date_snapshot: string;
   booked_at: string;
-  destinations:
-    | {
-        name: string | null;
-      }
-    | Array<{
-        name: string | null;
-      }>
-    | null;
+  lead_traveler_name: string;
+  lead_traveler_email: string;
   tours:
     | {
         title: string;
+        destinations:
+          | {
+              name: string | null;
+            }
+          | Array<{
+              name: string | null;
+            }>
+          | null;
       }
     | Array<{
         title: string;
+        destinations:
+          | {
+              name: string | null;
+            }
+          | Array<{
+              name: string | null;
+            }>
+          | null;
       }>
     | null;
 };
@@ -73,15 +114,8 @@ type ProfileRow = {
   last_name: string | null;
 };
 
-function getDestination(destination: BookingRow['destinations']): { name: string | null } | null {
-  if (!destination) return null;
-
-  if (Array.isArray(destination)) {
-    return destination[0] ?? null;
-  }
-
-  return destination;
-}
+const MAX_PROFILE_MATCH_RESULTS = 300;
+const MAX_PROFILE_FILTER_IDS = 150;
 
 function getTour(tour: BookingRow['tours']): { title: string } | null {
   if (!tour) return null;
@@ -93,10 +127,91 @@ function getTour(tour: BookingRow['tours']): { title: string } | null {
   return tour;
 }
 
+function getDestinationNameFromTour(tour: BookingRow['tours']): string | null {
+  if (!tour) return null;
+
+  const normalizedTour = Array.isArray(tour) ? (tour[0] ?? null) : tour;
+  if (!normalizedTour?.destinations) return null;
+
+  const destination = Array.isArray(normalizedTour.destinations)
+    ? (normalizedTour.destinations[0] ?? null)
+    : normalizedTour.destinations;
+
+  return destination?.name ?? null;
+}
+
+async function fetchMatchingProfileUserIds(
+  supabase: SupabaseClient,
+  token: string,
+): Promise<Set<string>> {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('user_id')
+    .or(`first_name.ilike.%${token}%,last_name.ilike.%${token}%`)
+    .limit(MAX_PROFILE_MATCH_RESULTS);
+
+  if (error) {
+    throw new Error(`BOOKINGS_PROFILE_SEARCH_FAILED:${error.message}`);
+  }
+
+  return new Set(
+    ((data ?? []) as Array<{ user_id: string | null }>)
+      .map((row) => row.user_id)
+      .filter((userId): userId is string => Boolean(userId)),
+  );
+}
+
+async function resolveCustomerUserIdsBySearchTerm(
+  supabase: SupabaseClient,
+  normalizedSearchTerm: string,
+): Promise<string[]> {
+  const tokens = tokenizeBookingSearchTerm(normalizedSearchTerm);
+
+  if (tokens.length === 0) {
+    return [];
+  }
+
+  const tokenMatches: Set<string>[] = [];
+
+  for (const token of tokens) {
+    const matches = await fetchMatchingProfileUserIds(supabase, token);
+    tokenMatches.push(matches);
+
+    if (matches.size === 0) {
+      return [];
+    }
+  }
+
+  const [firstTokenMatches, ...restTokenMatches] = tokenMatches;
+
+  const filteredIds = [...firstTokenMatches].filter((userId) =>
+    restTokenMatches.every((matches) => matches.has(userId)),
+  );
+
+  return filteredIds.slice(0, MAX_PROFILE_FILTER_IDS);
+}
+
+export async function updateAdminBookingStatus(
+  supabase: SupabaseClient,
+  input: UpdateAdminBookingStatusInput,
+): Promise<void> {
+  const { error } = await supabase
+    .from('bookings')
+    .update({ booking_status: input.bookingStatus })
+    .eq('id', input.bookingId)
+    .select('id')
+    .single();
+
+  if (error) {
+    throw new Error(`BOOKING_STATUS_UPDATE_FAILED:${error.message}`);
+  }
+}
+
 export async function fetchAdminBookings(
   supabase: SupabaseClient,
   input: FetchAdminBookingsInput,
 ): Promise<PaginatedAdminBookings> {
+  const normalizedSearchTerm = normalizeBookingSearchTerm(input.searchTerm ?? '');
   const from = input.page * input.pageSize;
   const to = from + input.pageSize - 1;
 
@@ -105,21 +220,25 @@ export async function fetchAdminBookings(
     .select(
       `
       id,
-      booking_reference,
-      customer_user_id,
+      reference_no,
+      user_id,
       tour_id,
-      package_title,
+      tour_title_snapshot,
       booking_status,
       payment_status,
+      payment_option,
       currency,
       total_amount,
+      amount_due_now,
       amount_paid,
-      number_of_travelers,
-      travel_start_date,
-      travel_end_date,
+      balance_amount,
+      traveler_count,
+      departure_start_date_snapshot,
+      departure_end_date_snapshot,
       booked_at,
-      destinations(name),
-      tours(title)
+      lead_traveler_name,
+      lead_traveler_email,
+      tours(title,destinations(name))
     `,
       { count: 'exact' },
     )
@@ -130,6 +249,23 @@ export async function fetchAdminBookings(
     query = query.in('booking_status', input.statuses);
   }
 
+  if (normalizedSearchTerm.length > 0) {
+    const matchedCustomerUserIds = await resolveCustomerUserIdsBySearchTerm(
+      supabase,
+      normalizedSearchTerm,
+    );
+
+    if (matchedCustomerUserIds.length > 0) {
+      query = query.or(
+        `reference_no.ilike.%${normalizedSearchTerm}%,lead_traveler_name.ilike.%${normalizedSearchTerm}%,lead_traveler_email.ilike.%${normalizedSearchTerm}%,tour_title_snapshot.ilike.%${normalizedSearchTerm}%,user_id.in.(${matchedCustomerUserIds.join(',')})`,
+      );
+    } else {
+      query = query.or(
+        `reference_no.ilike.%${normalizedSearchTerm}%,lead_traveler_name.ilike.%${normalizedSearchTerm}%,lead_traveler_email.ilike.%${normalizedSearchTerm}%,tour_title_snapshot.ilike.%${normalizedSearchTerm}%`,
+      );
+    }
+  }
+
   const { data, error, count } = await query;
 
   if (error) {
@@ -137,9 +273,7 @@ export async function fetchAdminBookings(
   }
 
   const bookings = (data ?? []) as BookingRow[];
-  const customerUserIds = [
-    ...new Set(bookings.map((booking) => booking.customer_user_id).filter(Boolean)),
-  ];
+  const customerUserIds = [...new Set(bookings.map((booking) => booking.user_id).filter(Boolean))];
 
   const profileByUserId = new Map<string, ProfileRow>();
 
@@ -155,26 +289,29 @@ export async function fetchAdminBookings(
   }
 
   const rows = bookings.map((booking) => {
-    const destination = getDestination(booking.destinations);
     const tour = getTour(booking.tours);
-    const profile = booking.customer_user_id ? profileByUserId.get(booking.customer_user_id) : null;
+    const profile = booking.user_id ? profileByUserId.get(booking.user_id) : null;
+    const profileName = [profile?.first_name, profile?.last_name].filter(Boolean).join(' ').trim();
 
     return {
       id: booking.id,
-      bookingReference: booking.booking_reference,
-      packageTitle: tour?.title ?? booking.package_title,
-      destinationName: destination?.name ?? null,
+      bookingReference: booking.reference_no,
+      packageTitle: tour?.title ?? booking.tour_title_snapshot,
+      destinationName: getDestinationNameFromTour(booking.tours),
       bookingStatus: booking.booking_status,
       paymentStatus: booking.payment_status,
       currency: booking.currency,
       totalAmount: booking.total_amount,
+      amountDueNow: booking.amount_due_now,
       amountPaid: booking.amount_paid,
-      numberOfTravelers: booking.number_of_travelers,
-      travelStartDate: booking.travel_start_date,
-      travelEndDate: booking.travel_end_date,
+      balanceAmount: booking.balance_amount,
+      travelerCount: booking.traveler_count,
+      paymentOption: booking.payment_option,
+      travelStartDate: booking.departure_start_date_snapshot,
+      travelEndDate: booking.departure_end_date_snapshot,
       bookedAt: booking.booked_at,
-      customerFirstName: profile?.first_name ?? '-',
-      customerLastName: profile?.last_name ?? '',
+      customerName: profileName || booking.lead_traveler_name,
+      customerEmail: booking.lead_traveler_email,
     };
   });
 

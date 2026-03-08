@@ -83,7 +83,10 @@ function getFieldErrorMap(formState: RegisterFormState): RegisterFieldErrors {
 
 function isEmailAlreadyRegisteredError(message: string) {
   const normalizedMessage = message.toLowerCase();
-  return normalizedMessage.includes('already registered') || normalizedMessage.includes('already been registered');
+  return (
+    normalizedMessage.includes('already registered') ||
+    normalizedMessage.includes('already been registered')
+  );
 }
 
 export default function useRegisterForm() {

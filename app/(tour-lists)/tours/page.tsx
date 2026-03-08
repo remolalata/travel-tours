@@ -1,9 +1,6 @@
+import ToursPage from '@/features/tours/ToursPage';
 import type { PaginatedToursList } from '@/services/tours/mutations/tourApi';
 import { fetchToursList } from '@/services/tours/mutations/tourApi';
-import SiteFooter from '@/components/layout/footers/SiteFooter';
-import SiteHeader from '@/components/layout/header/SiteHeader';
-import PageHeader from '@/features/tours/components/sections/PageHeader';
-import TourList1 from '@/features/tours/components/sections/TourList1';
 import { createClient } from '@/utils/supabase/server';
 
 export const metadata = {
@@ -13,7 +10,7 @@ export const metadata = {
 
 const TOURS_PAGE_SIZE = 8;
 
-export default async function page() {
+export default async function Page() {
   const supabase = await createClient();
   let initialToursPage: PaginatedToursList = {
     rows: [],
@@ -36,14 +33,5 @@ export default async function page() {
     };
   }
 
-  return (
-    <>
-      <main>
-        <SiteHeader />
-        <PageHeader />
-        <TourList1 initialToursPage={initialToursPage} />
-        <SiteFooter />
-      </main>
-    </>
-  );
+  return <ToursPage initialToursPage={initialToursPage} />;
 }

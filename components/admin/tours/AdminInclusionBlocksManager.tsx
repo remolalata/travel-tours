@@ -93,12 +93,14 @@ function InclusionAccordionItem({
             '& .MuiAccordionSummary-content': { margin: '6px 0 !important', alignItems: 'center' },
           }}
         >
-          <button
-            type='button'
-            {...attributes}
+          <span
             {...listeners}
             aria-label={content.inclusionBlocks.item.dragHandleAriaLabel}
+            aria-roledescription={attributes['aria-roledescription']}
+            aria-describedby={attributes['aria-describedby']}
+            tabIndex={0}
             onClick={(event) => event.stopPropagation()}
+            onKeyDown={(event) => event.stopPropagation()}
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -114,7 +116,7 @@ function InclusionAccordionItem({
             }}
           >
             <i className='icon-main-menu text-14' aria-hidden='true'></i>
-          </button>
+          </span>
 
           <div className='text-15 fw-500' style={{ color: '#05073c' }}>
             {content.inclusionBlocks.item.titlePrefix} {index + 1}

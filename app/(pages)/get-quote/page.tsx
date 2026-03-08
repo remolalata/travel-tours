@@ -1,8 +1,4 @@
-import { Suspense } from 'react';
-
-import SiteFooter from '@/components/layout/footers/SiteFooter';
-import SiteHeader from '@/components/layout/header/SiteHeader';
-import GetQuoteFormSection from '@/features/get-quote/components/sections/GetQuoteFormSection';
+import GetQuotePage from '@/features/get-quote/GetQuotePage';
 
 export const metadata = {
   title: 'Get a Quote | Travel & Tours',
@@ -10,15 +6,5 @@ export const metadata = {
 };
 
 export default function Page() {
-  return (
-    <main>
-      <SiteHeader />
-      <Suspense
-        fallback={<div className='layout-pt-lg layout-pb-lg container'>Loading form...</div>}
-      >
-        <GetQuoteFormSection />
-      </Suspense>
-      <SiteFooter />
-    </main>
-  );
+  return <GetQuotePage />;
 }

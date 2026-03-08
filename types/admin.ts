@@ -125,11 +125,39 @@ export interface AdminMainContent {
   };
 }
 
-export type BookingStatus = 'Approved' | 'Pending' | 'Cancelled' | 'Completed';
+export type BookingStatus =
+  | 'Draft'
+  | 'Pending Payment'
+  | 'Partially Paid'
+  | 'Confirmed'
+  | 'Cancelled'
+  | 'Expired'
+  | 'Completed';
 
 export interface AdminBookingContent {
   intro: AdminSectionIntro;
   tabs: BookingStatus[];
+  filters: {
+    triggerLabel: string;
+    title: string;
+    groups: {
+      status: {
+        label: string;
+        options: {
+          confirmed: string;
+          pendingPayment: string;
+          partiallyPaid: string;
+          cancelled: string;
+          expired: string;
+          completed: string;
+        };
+      };
+    };
+    actions: {
+      reset: string;
+      apply: string;
+    };
+  };
 }
 
 export interface AdminDestinationsContent {
@@ -207,29 +235,79 @@ export interface AdminDestinationsContent {
 
 export interface AdminListingItem {
   id: number;
+  slug?: string;
   imageSrc: string;
   location: string;
   title: string;
   rating: number;
   ratingCount: number;
-  duration: string;
-  price: number;
-  fromPrice: number;
+  price: number | null;
+  fromPrice: number | null;
+  departureCount: number;
 }
 
 export interface AdminListingContent {
   intro: AdminSectionIntro;
   addButtonLabel: string;
+  actions: {
+    editLabel: string;
+    viewLabel: string;
+    deleteLabel: string;
+  };
   pricePrefix: string;
+  availabilityDateLabels: {
+    singular: string;
+    plural: string;
+  };
   messages: {
     loading: string;
     loadError: string;
     empty: string;
+    deleteFailedPrefix: string;
+    deleteSuccess: string;
   };
   summary: {
     showing: string;
     of: string;
     itemSuffix: string;
+  };
+  deleteModal: {
+    title: string;
+    description: string;
+    actions: {
+      cancel: string;
+      confirm: string;
+    };
+  };
+  filters: {
+    triggerLabel: string;
+    title: string;
+    description: string;
+    groups: {
+      status: {
+        label: string;
+        options: {
+          all: string;
+          active: string;
+          inactive: string;
+        };
+      };
+      visibility: {
+        label: string;
+        options: {
+          featured: string;
+          popular: string;
+          topTrending: string;
+        };
+      };
+    };
+    actions: {
+      reset: string;
+      apply: string;
+    };
+  };
+  editPage: {
+    intro: AdminSectionIntro;
   };
   createPage: {
     intro: AdminSectionIntro;
@@ -245,7 +323,6 @@ export interface AdminListingContent {
       title: string;
       description: string;
       location: string;
-      duration: string;
       destinationId: string;
       tourTypeId: string;
       price: string;
@@ -268,7 +345,6 @@ export interface AdminListingContent {
       title: string;
       description: string;
       location: string;
-      duration: string;
       destinationId: string;
       tourTypeId: string;
       price: string;
@@ -290,6 +366,9 @@ export interface AdminListingContent {
     actions: {
       cancel: string;
       create: string;
+      update: string;
+      creating: string;
+      updating: string;
       addItinerary: string;
       removeItinerary: string;
       addInclusion: string;
@@ -299,6 +378,10 @@ export interface AdminListingContent {
       selectEmpty: string;
       referencesLoading: string;
       referencesLoadError: string;
+      createSuccess: string;
+      updateSuccess: string;
+      createFailedPrefix: string;
+      updateFailedPrefix: string;
     };
     richTextToolbar: {
       paragraph: string;
@@ -347,6 +430,38 @@ export interface AdminListingContent {
         expandIconAriaLabel: string;
       };
       typeOptions: Array<{
+        value: string;
+        label: string;
+      }>;
+    };
+    departureBlocks: {
+      title: string;
+      description: string;
+      fields: {
+        dateRange: string;
+        bookingDeadline: string;
+        maximumCapacity: string;
+        price: string;
+        originalPrice: string;
+        status: string;
+      };
+      helpers: {
+        dateRange: string;
+        bookingDeadline: string;
+        maximumCapacity: string;
+        price: string;
+        originalPrice: string;
+        status: string;
+      };
+      actions: {
+        addItem: string;
+        removeItem: string;
+      };
+      item: {
+        titlePrefix: string;
+        expandIconAriaLabel: string;
+      };
+      statusOptions: Array<{
         value: string;
         label: string;
       }>;
@@ -497,8 +612,11 @@ export interface AdminTourCreateValidationInput {
   title: string;
   description: string;
   location: string;
-  duration: string;
   destinationId: string;
   tourTypeId: string;
-  price: string;
+  departureStartDate: string;
+  departureEndDate: string;
+  departureBookingDeadline: string;
+  departureMaximumCapacity: string;
+  departurePrice: string;
 }
