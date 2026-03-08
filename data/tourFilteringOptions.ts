@@ -10,5 +10,3 @@ export const toursTypes = [
 export const languages = ['English', 'Dutch', 'German', 'French', 'Italian'];
 
 export const rating = [5, 4, 3, 2, 1];
-
-export const speedFeatures = ['Fast', 'Steady', 'Speedy', 'Furious', 'Grind'];

@@ -2,15 +2,18 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import Pagination from '@/components/common/Pagination';
 import Stars from '@/components/common/Stars';
-import { speedFeatures } from '@/data/tourFilteringOptions';
+import ToursSortDropdown from '@/components/tours/sections/ToursSortDropdown';
+import { toursContent } from '@/content/features/tours';
+import { DEFAULT_TOURS_LIST_SORT } from '@/services/tours/helpers/toursListSort';
 import useToursListQuery from '@/services/tours/hooks/useToursListQuery';
 import type { PaginatedToursList } from '@/services/tours/mutations/tourApi';
 import { formatNumber } from '@/utils/helpers/formatNumber';
 import useToursListFilters from '@/utils/hooks/tours/useToursListFilters';
+import useToursListSort from '@/utils/hooks/tours/useToursListSort';
 
 import Sidebar from './Sidebar';
 
@@ -28,8 +31,6 @@ function toPlainText(value: string | null | undefined): string {
 }
 
 export default function TourList({ initialToursPage }: TourListProps) {
-  const [sortOption, setSortOption] = useState<string>('');
-  const [ddActives, setDdActives] = useState(false);
   const [sidebarActive, setSidebarActive] = useState(false);
   const [page, setPage] = useState(0);
   const {
@@ -40,15 +41,19 @@ export default function TourList({ initialToursPage }: TourListProps) {
     commitPriceRange,
     queryFilters,
   } = useToursListFilters();
-  const dropDownContainer = useRef<HTMLDivElement | null>(null);
+  const { sort } = toursContent.list;
+  const { selectedSort, selectedSortLabel, sortOptions, setSelectedSort } = useToursListSort({
+    labels: sort.options,
+  });
   const toursQuery = useToursListQuery(
-    { page, pageSize: initialToursPage.pageSize || 8, ...queryFilters },
+    { page, pageSize: initialToursPage.pageSize || 8, sortBy: selectedSort, ...queryFilters },
     {
       initialData:
         page === 0 &&
         selectedTourTypeIds.length === 0 &&
         queryFilters.minPrice === undefined &&
-        queryFilters.maxPrice === undefined
+        queryFilters.maxPrice === undefined &&
+        selectedSort === DEFAULT_TOURS_LIST_SORT
           ? initialToursPage
           : undefined,
     },
@@ -74,25 +79,6 @@ export default function TourList({ initialToursPage }: TourListProps) {
     setPage(0);
     commitPriceRange(nextPriceRange);
   };
-
-  useEffect(() => {
-    const handleClick = (event: MouseEvent) => {
-      const eventTarget = event.target;
-      if (
-        dropDownContainer.current &&
-        eventTarget instanceof Node &&
-        !dropDownContainer.current.contains(eventTarget)
-      ) {
-        setDdActives(false);
-      }
-    };
-
-    document.addEventListener('click', handleClick);
-
-    return () => {
-      document.removeEventListener('click', handleClick);
-    };
-  }, []);
 
   return (
     <section className='layout-pb-xl'>
@@ -143,39 +129,15 @@ export default function TourList({ initialToursPage }: TourListProps) {
                 <div>{totalResults} results</div>
               </div>
 
-              <div ref={dropDownContainer} className='col-auto'>
-                <div
-                  className={`dropdown -type-2 js-dropdown js-form-dd ${
-                    ddActives ? 'is-active' : ''
-                  } `}
-                  data-main-value=''
-                >
-                  <div
-                    className='dropdown__button js-button'
-                    onClick={() => setDdActives((previousValue) => !previousValue)}
-                  >
-                    <span>Sort by: </span>
-                    <span className='js-title'>{sortOption ? sortOption : 'Featured'}</span>
-                    <i className='icon-chevron-down'></i>
-                  </div>
-
-                  <div className='dropdown__menu js-menu-items'>
-                    {speedFeatures.map((elm, i) => (
-                      <div
-                        onClick={() => {
-                          setSortOption((previousValue) => (previousValue === elm ? '' : elm));
-                          setDdActives(false);
-                        }}
-                        key={i}
-                        className='dropdown__item'
-                        data-value='fast'
-                      >
-                        {elm}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <ToursSortDropdown
+                label={sort.label}
+                valueLabel={selectedSortLabel}
+                options={sortOptions}
+                onSelect={(value) => {
+                  setPage(0);
+                  setSelectedSort(value);
+                }}
+              />
             </div>
 
             <div className='y-gap-30 pt-30 row'>

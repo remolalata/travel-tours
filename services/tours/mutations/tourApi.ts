@@ -1,6 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { normalizeTourSearchTerm } from '@/services/tours/helpers/tourSearch';
+import { normalizeToursListSort, sortToursListItems } from '@/services/tours/helpers/toursListSort';
 import type { TourBase, TourFeaturedItem } from '@/types/tour';
 import { getDiscountPercent } from '@/utils/helpers/tourPricing';
 
@@ -30,6 +31,7 @@ export type FetchToursListInput = {
   tourTypeIds?: number[];
   minPrice?: number;
   maxPrice?: number;
+  sortBy?: string;
 };
 export type FetchRelatedToursInput = {
   destinationId: number;
@@ -56,6 +58,9 @@ type TourRow = {
   image_src: string;
   description: string | null;
   is_featured: boolean;
+  is_popular: boolean;
+  is_top_trending: boolean;
+  created_at: string;
   departures?: Array<{
     price: number;
     original_price: number | null;
@@ -147,7 +152,7 @@ export async function fetchPopularTours(supabase: SupabaseClient): Promise<HomeP
   const { data, error } = await supabase
     .from('tours')
     .select(
-      'id,slug,title,location,image_src,description,is_featured,departures(price,original_price)',
+      'id,slug,title,location,image_src,description,is_featured,is_popular,is_top_trending,created_at,departures(price,original_price)',
     )
     .eq('status', 'active')
     .eq('is_popular', true)
@@ -170,7 +175,7 @@ export async function fetchTopTrendingTours(
   const { data, error } = await supabase
     .from('tours')
     .select(
-      'id,slug,title,location,image_src,description,is_featured,departures(price,original_price)',
+      'id,slug,title,location,image_src,description,is_featured,is_popular,is_top_trending,created_at,departures(price,original_price)',
     )
     .eq('status', 'active')
     .eq('is_top_trending', true)
@@ -210,7 +215,7 @@ export async function fetchToursList(
   let query = supabase
     .from('tours')
     .select(
-      'id,slug,title,location,image_src,description,is_featured,departures(price,original_price)',
+      'id,slug,title,location,image_src,description,is_featured,is_popular,is_top_trending,created_at,departures(price,original_price)',
     )
     .eq('status', 'active')
     .order('created_at', { ascending: false })
@@ -226,27 +231,28 @@ export async function fetchToursList(
     throw new Error(`TOURS_LIST_FETCH_FAILED:${error.message}`);
   }
 
-  const filteredRows = ((data ?? []) as TourRow[])
-    .filter((tour) => {
-      const lowestDeparture = getLowestDeparture(tour.departures);
+  const sortBy = normalizeToursListSort(input.sortBy);
+  const filteredRows = ((data ?? []) as TourRow[]).filter((tour) => {
+    const lowestDeparture = getLowestDeparture(tour.departures);
 
-      if (!lowestDeparture) {
-        return false;
-      }
-      if (typeof input.minPrice === 'number' && lowestDeparture.price < input.minPrice) {
-        return false;
-      }
-      if (typeof input.maxPrice === 'number' && lowestDeparture.price > input.maxPrice) {
-        return false;
-      }
+    if (!lowestDeparture) {
+      return false;
+    }
+    if (typeof input.minPrice === 'number' && lowestDeparture.price < input.minPrice) {
+      return false;
+    }
+    if (typeof input.maxPrice === 'number' && lowestDeparture.price > input.maxPrice) {
+      return false;
+    }
 
-      return true;
-    })
-    .map(mapTourRowToToursListItem);
+    return true;
+  });
+  const sortedRows = sortToursListItems(filteredRows, sortBy);
+  const mappedRows = sortedRows.map(mapTourRowToToursListItem);
 
-  const total = filteredRows.length;
+  const total = mappedRows.length;
   const from = input.page * input.pageSize;
-  const rows = filteredRows.slice(from, from + input.pageSize);
+  const rows = mappedRows.slice(from, from + input.pageSize);
 
   return {
     rows,
