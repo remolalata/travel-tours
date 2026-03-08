@@ -1,10 +1,10 @@
 'use client';
 
-import { Filter } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useId, useMemo, useState } from 'react';
 
 import AdminShell from '@/components/admin/layout/AdminShell';
+import AdminFiltersTriggerButton from '@/components/admin/shared/AdminFiltersTriggerButton';
 import AdminListingFiltersPopover from '@/components/admin/shared/AdminListingFiltersPopover';
 import AdminSearchInput from '@/components/admin/shared/AdminSearchInput';
 import AdminToursGrid from '@/components/admin/tours/AdminToursGrid';
@@ -87,23 +87,12 @@ export default function AdminListingPage() {
           className='d-flex flex-wrap justify-between items-center mb-20'
           style={{ columnGap: '16px', rowGap: '10px' }}
         >
-          <button
-            type='button'
-            aria-label={content.filters.triggerLabel}
-            aria-expanded={listingFilters.isOpen}
-            aria-haspopup='dialog'
-            className='d-inline-flex justify-center items-center bg-white border rounded-12'
-            style={{
-              width: '44px',
-              height: '44px',
-              borderColor: listingFilters.hasActiveFilters ? '#05073c' : '#e8edf5',
-              color: '#05073c',
-              backgroundColor: listingFilters.hasActiveFilters ? 'rgba(5, 7, 60, 0.06)' : '#fff',
-            }}
+          <AdminFiltersTriggerButton
+            ariaLabel={content.filters.triggerLabel}
+            isOpen={listingFilters.isOpen}
+            hasActiveFilters={listingFilters.hasActiveFilters}
             onClick={listingFilters.open}
-          >
-            <Filter size={18} strokeWidth={2} aria-hidden='true' />
-          </button>
+          />
           <div
             className='d-flex flex-wrap items-center'
             style={{ columnGap: '16px', rowGap: '10px' }}

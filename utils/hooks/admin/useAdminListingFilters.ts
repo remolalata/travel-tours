@@ -1,72 +1,44 @@
 'use client';
 
-import type { MouseEvent } from 'react';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import type {
   AdminListingStatusFilter,
   AdminListingVisibilityFilter,
 } from '@/utils/helpers/adminListingFilters';
+import useAdminFiltersPopover from '@/utils/hooks/admin/useAdminFiltersPopover';
 
 export default function useAdminListingFilters() {
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const [statusFilters, setStatusFilters] = useState<AdminListingStatusFilter[]>(['all']);
-  const [visibilityFilters, setVisibilityFilters] = useState<AdminListingVisibilityFilter[]>([]);
-  const [draftStatusFilters, setDraftStatusFilters] = useState<AdminListingStatusFilter[]>(['all']);
-  const [draftVisibilityFilters, setDraftVisibilityFilters] = useState<
-    AdminListingVisibilityFilter[]
-  >([]);
+  const filters = useAdminFiltersPopover<{
+    statusFilters: AdminListingStatusFilter[];
+    visibilityFilters: AdminListingVisibilityFilter[];
+  }>({
+    initialFilters: {
+      statusFilters: ['all'],
+      visibilityFilters: [],
+    },
+    hasActiveFilters: (value) =>
+      value.statusFilters.some((status) => status !== 'all') || value.visibilityFilters.length > 0,
+  });
 
-  const isOpen = Boolean(anchorEl);
-  const hasActiveFilters = useMemo(
-    () => statusFilters.some((value) => value !== 'all') || visibilityFilters.length > 0,
-    [statusFilters, visibilityFilters],
+  return useMemo(
+    () => ({
+      ...filters,
+      statusFilters: filters.appliedFilters.statusFilters,
+      visibilityFilters: filters.appliedFilters.visibilityFilters,
+      draftStatusFilters: filters.draftFilters.statusFilters,
+      draftVisibilityFilters: filters.draftFilters.visibilityFilters,
+      setDraftStatusFilters: (value: AdminListingStatusFilter[]) =>
+        filters.setDraftFilters((previousValue) => ({
+          ...previousValue,
+          statusFilters: value,
+        })),
+      setDraftVisibilityFilters: (value: AdminListingVisibilityFilter[]) =>
+        filters.setDraftFilters((previousValue) => ({
+          ...previousValue,
+          visibilityFilters: value,
+        })),
+    }),
+    [filters],
   );
-
-  function open(event: MouseEvent<HTMLElement>) {
-    setDraftStatusFilters(statusFilters);
-    setDraftVisibilityFilters(visibilityFilters);
-    setAnchorEl(event.currentTarget);
-  }
-
-  function close() {
-    setDraftStatusFilters(statusFilters);
-    setDraftVisibilityFilters(visibilityFilters);
-    setAnchorEl(null);
-  }
-
-  function resetDraft() {
-    setDraftStatusFilters(['all']);
-    setDraftVisibilityFilters([]);
-  }
-
-  function apply() {
-    setStatusFilters(draftStatusFilters);
-    setVisibilityFilters(draftVisibilityFilters);
-    setAnchorEl(null);
-  }
-
-  function resetApplied() {
-    setStatusFilters(['all']);
-    setVisibilityFilters([]);
-    setDraftStatusFilters(['all']);
-    setDraftVisibilityFilters([]);
-  }
-
-  return {
-    anchorEl,
-    isOpen,
-    hasActiveFilters,
-    statusFilters,
-    visibilityFilters,
-    draftStatusFilters,
-    draftVisibilityFilters,
-    setDraftStatusFilters,
-    setDraftVisibilityFilters,
-    open,
-    close,
-    apply,
-    resetDraft,
-    resetApplied,
-  };
 }

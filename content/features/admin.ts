@@ -321,7 +321,28 @@ export const adminContent: AdminContent = {
         title: 'My Booking',
         description: 'Manage your current and historical booking requests.',
       },
-      tabs: ['Approved', 'Pending', 'Cancelled', 'Completed'],
+      tabs: ['Confirmed', 'Pending Payment', 'Partially Paid', 'Cancelled', 'Expired', 'Completed'],
+      filters: {
+        triggerLabel: 'Filter bookings',
+        title: 'Filter Bookings',
+        groups: {
+          status: {
+            label: 'Status',
+            options: {
+              confirmed: 'Confirmed',
+              pendingPayment: 'Pending Payment',
+              partiallyPaid: 'Partially Paid',
+              cancelled: 'Cancelled',
+              expired: 'Expired',
+              completed: 'Completed',
+            },
+          },
+        },
+        actions: {
+          reset: 'Reset',
+          apply: 'Apply',
+        },
+      },
     },
     listing: {
       intro: {

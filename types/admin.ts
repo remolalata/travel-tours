@@ -125,11 +125,39 @@ export interface AdminMainContent {
   };
 }
 
-export type BookingStatus = 'Approved' | 'Pending' | 'Cancelled' | 'Completed';
+export type BookingStatus =
+  | 'Draft'
+  | 'Pending Payment'
+  | 'Partially Paid'
+  | 'Confirmed'
+  | 'Cancelled'
+  | 'Expired'
+  | 'Completed';
 
 export interface AdminBookingContent {
   intro: AdminSectionIntro;
   tabs: BookingStatus[];
+  filters: {
+    triggerLabel: string;
+    title: string;
+    groups: {
+      status: {
+        label: string;
+        options: {
+          confirmed: string;
+          pendingPayment: string;
+          partiallyPaid: string;
+          cancelled: string;
+          expired: string;
+          completed: string;
+        };
+      };
+    };
+    actions: {
+      reset: string;
+      apply: string;
+    };
+  };
 }
 
 export interface AdminDestinationsContent {

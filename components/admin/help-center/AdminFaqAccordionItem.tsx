@@ -69,6 +69,7 @@ export default function AdminFaqAccordionItem({
         }}
       >
         <AccordionSummary
+          component='div'
           expandIcon={<i className='icon-chevron-down text-14' aria-hidden='true' />}
           aria-label={content.item.expandIconAriaLabel}
           sx={{

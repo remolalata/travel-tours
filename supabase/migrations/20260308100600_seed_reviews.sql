@@ -3,7 +3,7 @@ using public.bookings b
 where b.id = r.booking_id
   and (
     b.booking_status <> 'completed'
-    or b.customer_user_id is null
+    or b.user_id is null
   );
 
 delete from public.reviews r
@@ -34,12 +34,14 @@ with review_templates as (
 eligible_bookings as (
   select
     b.id as booking_id,
-    b.customer_user_id as user_id,
-    b.destination_id,
+    b.user_id,
+    t.destination_id,
     row_number() over (order by b.booked_at desc nulls last, b.id desc) as row_id
   from public.bookings b
+  join public.tours t
+    on t.id = b.tour_id
   where b.booking_status = 'completed'
-    and b.customer_user_id is not null
+    and b.user_id is not null
 ),
 seed_rows as (
   select

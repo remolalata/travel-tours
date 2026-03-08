@@ -5,8 +5,9 @@ import type { GridRenderCellParams } from '@mui/x-data-grid';
 import { useId, useMemo, useState } from 'react';
 
 import AdminShell from '@/components/admin/layout/AdminShell';
+import AdminFiltersPopover from '@/components/admin/shared/AdminFiltersPopover';
+import AdminFiltersTriggerButton from '@/components/admin/shared/AdminFiltersTriggerButton';
 import AdminSearchInput from '@/components/admin/shared/AdminSearchInput';
-import AppMultiSelectPills from '@/components/common/form/AppMultiSelectPills';
 import type { DataTableColumn } from '@/components/common/table/AppDataTable';
 import AppDataTable from '@/components/common/table/AppDataTable';
 import { adminContent } from '@/content/features/admin';
@@ -16,8 +17,9 @@ import type {
   AdminBookingData,
   RawBookingStatus,
 } from '@/services/admin/bookings/mutations/bookingApi';
-import type { BookingStatus } from '@/types/admin';
-import { bookingStatusLabelMap, bookingStatusValueMap } from '@/utils/helpers/admin/bookingStatus';
+import { bookingStatusLabelMap } from '@/utils/helpers/admin/bookingStatus';
+import { getAdminBookingStatusFilterOptions } from '@/utils/helpers/adminBookingFilters';
+import useAdminBookingFilters from '@/utils/hooks/admin/useAdminBookingFilters';
 import useAdminBookingsSearch from '@/utils/hooks/admin/useAdminBookingsSearch';
 
 const bookedDateFormatter = new Intl.DateTimeFormat('en-PH', {
@@ -33,26 +35,44 @@ const rowsPerPageOptions = [10, 20, 50];
 
 const paymentLabelMap = {
   unpaid: 'Unpaid',
+  pending: 'Pending',
   partial: 'Partial',
   paid: 'Paid',
+  failed: 'Failed',
   refunded: 'Refunded',
+  partially_refunded: 'Partially Refunded',
 } as const;
 
 const bookingStatusPillColorMap = {
-  approved: {
+  draft: {
+    text: '#1f2937',
+    background: '#e5e7eb',
+    border: '#d1d5db',
+  },
+  pending_payment: {
+    text: '#7c2d12',
+    background: '#ffedd5',
+    border: '#fdba74',
+  },
+  partially_paid: {
+    text: '#713f12',
+    background: '#fef3c7',
+    border: '#fcd34d',
+  },
+  confirmed: {
     text: '#0f5132',
     background: '#d1e7dd',
     border: '#badbcc',
-  },
-  pending: {
-    text: '#664d03',
-    background: '#fff3cd',
-    border: '#ffecb5',
   },
   cancelled: {
     text: '#842029',
     background: '#f8d7da',
     border: '#f5c2c7',
+  },
+  expired: {
+    text: '#6b7280',
+    background: '#f3f4f6',
+    border: '#d1d5db',
   },
   completed: {
     text: '#0c5460',
@@ -79,16 +99,15 @@ function formatCurrency(amount: number, currency: string): string {
 export default function AdminBookingPage() {
   const content = adminContent.pages.booking;
   const searchInputId = useId();
-  const [currentTabs, setCurrentTabs] = useState<BookingStatus[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
   const [statusPopoverAnchorEl, setStatusPopoverAnchorEl] = useState<HTMLElement | null>(null);
   const [statusPopoverBookingId, setStatusPopoverBookingId] = useState<number | null>(null);
   const [statusPopoverCurrentStatus, setStatusPopoverCurrentStatus] =
     useState<RawBookingStatus | null>(null);
+  const bookingFilters = useAdminBookingFilters();
   const { searchTerm, normalizedSearchTerm, setSearchTerm } = useAdminBookingsSearch();
   const updateBookingStatusMutation = useUpdateAdminBookingStatusMutation();
-  const activeTabs = currentTabs.length > 0 ? currentTabs : content.tabs;
   const statusPopoverOpen = Boolean(statusPopoverAnchorEl);
   const statusPopoverOptions = useMemo(
     () =>
@@ -99,7 +118,7 @@ export default function AdminBookingPage() {
   );
 
   const bookingsQuery = useAdminBookingsQuery({
-    statuses: activeTabs.map((tab) => bookingStatusValueMap[tab]),
+    statuses: bookingFilters.statusFilters,
     searchTerm: normalizedSearchTerm,
     page,
     pageSize: rowsPerPage,
@@ -128,6 +147,19 @@ export default function AdminBookingPage() {
         ),
       },
       {
+        field: 'customerName',
+        headerName: 'Customer',
+        minWidth: 240,
+        flex: 1,
+        sortable: false,
+        renderCell: (params: GridRenderCellParams<AdminBookingData>) => (
+          <div className='d-flex flex-column'>
+            <span className='fw-500'>{params.row.customerName}</span>
+            <span className='text-12 text-light-1'>{params.row.customerEmail}</span>
+          </div>
+        ),
+      },
+      {
         field: 'destinationName',
         headerName: 'Destination',
         minWidth: 140,
@@ -135,14 +167,6 @@ export default function AdminBookingPage() {
         sortable: false,
         renderCell: (params: GridRenderCellParams<AdminBookingData, string | null>) =>
           params.row.destinationName ?? '-',
-      },
-      {
-        field: 'customerName',
-        headerName: 'Customer',
-        minWidth: 200,
-        flex: 1,
-        sortable: false,
-        valueGetter: (_, row) => `${row.customerFirstName} ${row.customerLastName}`,
       },
       {
         field: 'travelWindow',
@@ -157,12 +181,25 @@ export default function AdminBookingPage() {
         },
       },
       {
-        field: 'numberOfTravelers',
+        field: 'travelerCount',
         headerName: 'Travelers',
         align: 'left',
         headerAlign: 'left',
         minWidth: 100,
         flex: 0.7,
+      },
+      {
+        field: 'paymentOption',
+        headerName: 'Option',
+        minWidth: 140,
+        flex: 0.8,
+        sortable: false,
+        renderCell: (params: GridRenderCellParams<AdminBookingData>) =>
+          params.row.paymentOption === 'downpayment'
+            ? 'Downpayment'
+            : params.row.paymentOption === 'full'
+              ? 'Full'
+              : 'Reserve',
       },
       {
         field: 'bookingStatus',
@@ -205,7 +242,7 @@ export default function AdminBookingPage() {
         flex: 1.1,
         sortable: false,
         renderCell: (params: GridRenderCellParams<AdminBookingData>) =>
-          `${paymentLabelMap[params.row.paymentStatus]} (${formatCurrency(params.row.amountPaid, params.row.currency)} paid)`,
+          `${paymentLabelMap[params.row.paymentStatus]} (${formatCurrency(params.row.amountPaid, params.row.currency)} paid / ${formatCurrency(params.row.balanceAmount, params.row.currency)} balance)`,
       },
       {
         field: 'totalAmount',
@@ -217,6 +254,17 @@ export default function AdminBookingPage() {
         sortable: false,
         renderCell: (params: GridRenderCellParams<AdminBookingData>) =>
           formatCurrency(params.row.totalAmount, params.row.currency),
+      },
+      {
+        field: 'amountDueNow',
+        headerName: 'Due Now',
+        align: 'left',
+        headerAlign: 'left',
+        minWidth: 130,
+        flex: 0.8,
+        sortable: false,
+        renderCell: (params: GridRenderCellParams<AdminBookingData>) =>
+          formatCurrency(params.row.amountDueNow, params.row.currency),
       },
       {
         field: 'bookedAt',
@@ -235,14 +283,11 @@ export default function AdminBookingPage() {
     <AdminShell title={content.intro.title} description={content.intro.description}>
       <div className='bg-white shadow-2 mt-60 md:mb-20 px-40 md:px-20 pt-40 md:pt-20 pb-30 rounded-12'>
         <div className='d-flex justify-between items-center gap-20 mb-20'>
-          <AppMultiSelectPills<BookingStatus>
-            options={content.tabs}
-            value={currentTabs}
-            containerSx={{ mb: 0, display: 'inline-flex', alignItems: 'center' }}
-            onChange={(nextValue) => {
-              setCurrentTabs(nextValue);
-              setPage(0);
-            }}
+          <AdminFiltersTriggerButton
+            ariaLabel={content.filters.triggerLabel}
+            isOpen={bookingFilters.isOpen}
+            hasActiveFilters={bookingFilters.hasActiveFilters}
+            onClick={bookingFilters.open}
           />
 
           <AdminSearchInput
@@ -256,6 +301,28 @@ export default function AdminBookingPage() {
             placeholder={adminContent.shell.searchPlaceholder}
           />
         </div>
+        <AdminFiltersPopover
+          open={bookingFilters.isOpen}
+          anchorEl={bookingFilters.anchorEl}
+          title={content.filters.title}
+          groups={[
+            {
+              id: 'status',
+              label: content.filters.groups.status.label,
+              options: getAdminBookingStatusFilterOptions(content),
+              value: bookingFilters.draftStatusFilters,
+              onChange: bookingFilters.setDraftStatusFilters,
+            },
+          ]}
+          resetLabel={content.filters.actions.reset}
+          applyLabel={content.filters.actions.apply}
+          onClose={bookingFilters.close}
+          onResetDraft={bookingFilters.resetDraft}
+          onApply={() => {
+            setPage(0);
+            bookingFilters.apply();
+          }}
+        />
 
         <AppDataTable
           columns={columns}

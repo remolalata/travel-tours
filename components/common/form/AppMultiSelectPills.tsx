@@ -2,6 +2,7 @@
 
 import Box from '@mui/material/Box';
 import type { SxProps, Theme } from '@mui/material/styles';
+import { Check } from 'lucide-react';
 
 type AppMultiSelectPillsProps<T extends string> = {
   options: T[];
@@ -54,6 +55,7 @@ export default function AppMultiSelectPills<T extends string>({
                 height: 34,
                 borderRadius: '999px',
                 px: 1.5,
+                gap: 0.75,
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -71,6 +73,7 @@ export default function AppMultiSelectPills<T extends string>({
                 },
               }}
             >
+              {isActive ? <Check size={14} strokeWidth={2.5} aria-hidden='true' /> : null}
               {option}
             </Box>
           </button>
