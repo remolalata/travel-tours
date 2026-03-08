@@ -4,6 +4,7 @@ import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import type { ReactNode } from 'react';
 
+import BootstrapClient from '@/components/common/BootstrapClient';
 import FirstVisitPromoModal from '@/components/common/FirstVisitPromoModal';
 import MessengerButton from '@/components/common/MessengerButton';
 import ScrollTopBehaviour from '@/components/common/ScrollTopBehavier';
@@ -118,11 +119,6 @@ export const metadata: Metadata = {
     },
   },
 };
-// const inter = Inter({ subsets: ["latin"] });
-if (typeof window !== 'undefined') {
-  import('bootstrap');
-}
-
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang='en'>
@@ -140,6 +136,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body className={dmSans.className}>
         <ReactQueryProvider>
+          <BootstrapClient />
           <Wrapper>{children}</Wrapper>
           <FirstVisitPromoModal />
           <MessengerButton />

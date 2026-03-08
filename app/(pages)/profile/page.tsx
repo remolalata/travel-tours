@@ -1,30 +1,18 @@
-import RouteAccessGuard from '@/components/auth/RouteAccessGuard';
-import SiteFooter from '@/components/layout/footers/SiteFooter';
-import SiteHeaderClient from '@/components/layout/header/SiteHeaderClient';
-import { guestAuthState } from '@/utils/auth/guestAuthState';
+import { profilePageContent } from '@/content/features/profile';
+import ProfilePage from '@/features/profile/ProfilePage';
+import { fetchAuthViewerState } from '@/services/auth/mutations/authApi';
+import { createClient } from '@/utils/supabase/server';
 
-export const dynamic = 'force-static';
+export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: 'Profile | Travel & Tours',
-  description: 'Manage your profile settings.',
+  title: profilePageContent.metadata.title,
+  description: profilePageContent.metadata.description,
 };
 
-export default function Page() {
-  return (
-    <main>
-      <SiteHeaderClient initialAuthState={guestAuthState} />
-      <RouteAccessGuard mode='auth-required'>
-        <section className='layout-pt-lg layout-pb-lg'>
-          <div className='container'>
-            <div className='rounded-12 bg-white shadow-2 px-40 pt-40 pb-30 md:px-20 md:pt-20 mt-60'>
-              <h1 className='text-30'>Profile</h1>
-              <p className='mt-10'>Profile page setup is coming soon.</p>
-            </div>
-          </div>
-        </section>
-      </RouteAccessGuard>
-      <SiteFooter />
-    </main>
-  );
+export default async function Page() {
+  const supabase = await createClient();
+  const initialAuthState = await fetchAuthViewerState(supabase);
+
+  return <ProfilePage initialAuthState={initialAuthState} />;
 }
