@@ -57,6 +57,10 @@ export async function fetchReviews(
     query = query.eq('rating', input.rating);
   }
 
+  if (typeof input.minRating === 'number') {
+    query = query.gte('rating', input.minRating);
+  }
+
   if (typeof input.limit === 'number') {
     query = query.limit(input.limit);
   }

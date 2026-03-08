@@ -44,6 +44,7 @@ export default function TourDetailsContent({
   const detailsContent = tourSinglePageContent.details;
   const { selectedDeparture, selectedDepartureId, setSelectedDepartureId } =
     useSelectedTourDeparture(tour.departures);
+  const hasReviews = (reviews?.length ?? 0) > 0;
 
   return (
     <>
@@ -88,18 +89,22 @@ export default function TourDetailsContent({
                 <Faq tourContent={tourContent} items={faqItems} />
               </div>
 
-              <div className='mt-60 mb-60 line'></div>
+              {hasReviews ? (
+                <>
+                  <div className='mt-60 mb-60 line'></div>
 
-              <h2 className='text-30'>{detailsContent.reviewsTitle}</h2>
+                  <h2 className='text-30'>{detailsContent.reviewsTitle}</h2>
 
-              <div className='mt-20'>
-                <Reviews tourContent={tourContent} reviews={reviews} />
-              </div>
+                  <div className='mt-20'>
+                    <Reviews reviews={reviews} />
+                  </div>
 
-              <button className='mt-30 -outline-accent-1 text-accent-1 button -md'>
-                {detailsContent.seeMoreReviewsLabel}
-                <i className='icon-arrow-top-right ml-10 text-16'></i>
-              </button>
+                  <button className='mt-30 -outline-accent-1 text-accent-1 button -md'>
+                    {detailsContent.seeMoreReviewsLabel}
+                    <i className='icon-arrow-top-right ml-10 text-16'></i>
+                  </button>
+                </>
+              ) : null}
             </div>
 
             <div className='col-lg-4'>

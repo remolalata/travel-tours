@@ -305,7 +305,7 @@ export default function TourSingleSidebar({
 
               {availableDepartures.length > 0 ? (
                 <div
-                  className={`searchFormItemDropdown -tour-type ${
+                  className={`searchFormItemDropdown -tour-type tourSingleSidebar__whenDropdown ${
                     currentActiveDD === 'calender' ? 'is-active' : ''
                   }`}
                 >

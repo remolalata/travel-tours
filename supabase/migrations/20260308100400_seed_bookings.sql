@@ -52,8 +52,9 @@ booking_seed as (
       else 'downpayment'
     end as payment_option,
     case
-      when mod(sc.customer_index, 4) in (1, 3) then 'confirmed'
+      when mod(sc.customer_index, 4) = 1 then 'confirmed'
       when mod(sc.customer_index, 4) = 2 then 'partially_paid'
+      when mod(sc.customer_index, 4) = 3 then 'completed'
       else 'pending_payment'
     end as booking_status,
     case
@@ -114,7 +115,7 @@ normalized_booking_seed as (
     end as amount_paid,
     bs.booked_at,
     case
-      when bs.booking_status = 'confirmed' then bs.booked_at + interval '45 minutes'
+      when bs.booking_status in ('confirmed', 'completed') then bs.booked_at + interval '45 minutes'
       else null
     end as confirmed_at,
     case
@@ -124,6 +125,7 @@ normalized_booking_seed as (
     case
       when bs.booking_status = 'pending_payment' then 'Awaiting successful payment.'
       when bs.booking_status = 'partially_paid' then 'Downpayment received. Balance to follow.'
+      when bs.booking_status = 'completed' then 'Seeded completed booking with post-travel payment settled.'
       else 'Seeded confirmed booking.'
     end as notes
   from booking_seed bs
@@ -416,6 +418,7 @@ select
   'webhook',
   case
     when sls.booking_status = 'confirmed' then 'Seeded payment fully settled and seats secured.'
+    when sls.booking_status = 'completed' then 'Seeded completed booking with review eligibility.'
     when sls.booking_status = 'partially_paid' then 'Seeded downpayment received.'
     else 'Seeded booking remains unpaid.'
   end,

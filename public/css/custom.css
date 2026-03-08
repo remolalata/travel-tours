@@ -1305,3 +1305,15 @@ body.promoModal-open {
 .admin-rich-text-editor__content p + ol {
   margin-top: 10px;
 }
+
+.tourSingleSidebar__whenDropdown .searchFormItemDropdown__list {
+  height: auto !important;
+  max-height: 302px;
+  overflow-y: auto;
+  gap: 8px;
+}
+
+.tourSingleSidebar__whenDropdown .searchFormItemDropdown__item button {
+  min-height: 60px;
+  height: auto;
+}

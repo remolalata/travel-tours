@@ -5,7 +5,7 @@ import { createClient } from '@/utils/supabase/server';
 
 const HOMEPAGE_REVIEW_QUERY: FetchReviewsInput = {
   isPublished: true,
-  rating: 5,
+  minRating: 3,
   limit: 10,
 };
 
