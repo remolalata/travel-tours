@@ -11,9 +11,15 @@ type TourSinglePageProps = {
   singlePageData: TourSinglePageData;
   reviews: Review[];
   faqItems: FaqItem[];
+  paymentsEnabled: boolean;
 };
 
-export default function TourSinglePage({ singlePageData, reviews, faqItems }: TourSinglePageProps) {
+export default function TourSinglePage({
+  singlePageData,
+  reviews,
+  faqItems,
+  paymentsEnabled,
+}: TourSinglePageProps) {
   const { tour, tourContent, galleryImageUrls, overviewDescription, routeContext } = singlePageData;
 
   return (
@@ -34,6 +40,7 @@ export default function TourSinglePage({ singlePageData, reviews, faqItems }: To
         galleryImageUrls={galleryImageUrls}
         overviewDescription={overviewDescription}
         faqItems={faqItems}
+        paymentsEnabled={paymentsEnabled}
       />
       <TourSlider destinationId={routeContext.destinationId} currentTourId={routeContext.id} />
       <SiteFooter />

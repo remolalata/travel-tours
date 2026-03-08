@@ -11,6 +11,7 @@ import type { Tour } from '@/types/tour';
 import type { TourSingleDeparture } from '@/types/tourSingle';
 import { findDepartureByDateRange, formatDepartureDateRange } from '@/utils/helpers/departures';
 import { formatNumber } from '@/utils/helpers/formatNumber';
+import type { BookingPaymentFormState } from '@/utils/helpers/tour-single/bookingPayment';
 import useTourSingleBookingPaymentFlow from '@/utils/hooks/tour-single/useTourSingleBookingPaymentFlow';
 import { createClient } from '@/utils/supabase/client';
 
@@ -21,6 +22,7 @@ interface TourSingleSidebarProps {
   };
   tourContent?: TourContent;
   destinationId?: number;
+  paymentsEnabled: boolean;
   selectedDepartureId?: number | null;
   onSelectedDepartureChange?: (departureId: number | null) => void;
 }
@@ -67,7 +69,7 @@ const CHECKOUT_REFERENCE_QUERY = 'ref';
 
 export default function TourSingleSidebar({
   tour,
-  destinationId,
+  paymentsEnabled,
   selectedDepartureId: selectedDepartureIdProp,
   onSelectedDepartureChange,
 }: TourSingleSidebarProps) {
@@ -141,12 +143,7 @@ export default function TourSingleSidebar({
 
       const parsed = JSON.parse(rawValue) as {
         when?: string;
-        formState?: {
-          adults?: string;
-          children?: string;
-          paymentOption?: 'full' | 'partial' | 'reserve';
-          notes?: string;
-        };
+        formState?: BookingPaymentFormState;
       };
 
       if (typeof parsed.when === 'string') {
@@ -157,17 +154,8 @@ export default function TourSingleSidebar({
         }
       }
 
-      if (parsed.formState?.adults) {
-        bookingFlow.updateField('adults', parsed.formState.adults);
-      }
-      if (parsed.formState?.children) {
-        bookingFlow.updateField('children', parsed.formState.children);
-      }
-      if (parsed.formState?.paymentOption) {
-        bookingFlow.updateField('paymentOption', parsed.formState.paymentOption);
-      }
-      if (typeof parsed.formState?.notes === 'string') {
-        bookingFlow.updateField('notes', parsed.formState.notes);
+      if (parsed.formState) {
+        bookingFlow.replaceFormState(parsed.formState);
       }
 
       bookingFlow.open();
@@ -408,7 +396,7 @@ export default function TourSingleSidebar({
         onClose={bookingFlow.close}
         onConfirm={async () => {
           const { isValid } = bookingFlow.validate();
-          if (!isValid || isSubmittingCheckout || !tour || typeof destinationId !== 'number') {
+          if (!isValid || isSubmittingCheckout || !tour) {
             return;
           }
 
@@ -427,10 +415,8 @@ export default function TourSingleSidebar({
                 adults: bookingFlow.formState.adults,
                 children: bookingFlow.formState.children,
                 paymentOption: bookingFlow.formState.paymentOption,
+                travelers: bookingFlow.formState.travelers,
                 notes: bookingFlow.formState.notes.trim(),
-                location,
-                tourType,
-                destinationId,
               }),
             });
 
@@ -456,6 +442,8 @@ export default function TourSingleSidebar({
           }
         }}
         isSubmitting={isSubmittingCheckout}
+        paymentsEnabled={paymentsEnabled}
+        packageName={tour?.title ?? ''}
         location={location}
         when={when}
         tourType={tourType}
@@ -463,6 +451,7 @@ export default function TourSingleSidebar({
         fieldErrors={bookingFlow.fieldErrors}
         totals={bookingFlow.totals}
         onFieldChange={bookingFlow.updateField}
+        onTravelerFieldChange={bookingFlow.updateTravelerField}
       />
 
       <AppToast

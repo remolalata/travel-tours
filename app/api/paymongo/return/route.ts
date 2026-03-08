@@ -1,13 +1,13 @@
-import { Buffer } from 'node:buffer';
-
 import { NextResponse } from 'next/server';
 
+import { buildPaymongoAuthHeader, reconcileBookingPayment } from '@/app/api/paymongo/_lib';
 import { createAdminClient } from '@/utils/supabase/admin';
 
 const PAYMONGO_API_BASE_URL = process.env.PAYMONGO_API_BASE_URL || 'https://api.paymongo.com/v1';
 
 type PaymongoCheckoutSessionResponse = {
   data?: {
+    id?: string;
     attributes?: {
       status?: string;
       amount_total?: number;
@@ -21,11 +21,6 @@ type PaymongoCheckoutSessionResponse = {
     };
   };
 };
-
-function buildPaymongoAuthHeader(secretKey: string) {
-  const basic = Buffer.from(`${secretKey}:`, 'utf8').toString('base64');
-  return `Basic ${basic}`;
-}
 
 function isPaidCheckout(
   attributes: PaymongoCheckoutSessionResponse['data'] extends infer T
@@ -117,35 +112,39 @@ export async function GET(request: Request) {
     return NextResponse.redirect(redirectUrl);
   }
 
-  const paymongoSecretKey = process.env.PAYMONGO_SECRET_KEY;
+  const paymongoSecretKey = process.env.NEXT_PAYMONGO_SECRET_KEY;
   if (!paymongoSecretKey) {
     return NextResponse.redirect(redirectUrl);
   }
 
   try {
     const supabase = createAdminClient();
-    const { data: booking, error: bookingError } = await supabase
+    const { data: booking } = await supabase
       .from('bookings')
-      .select('id,total_amount,payment_status,paymongo_checkout_session_id')
-      .eq('booking_reference', reference)
+      .select('id,total_amount,payment_status')
+      .eq('reference_no', reference)
       .limit(1)
-      .maybeSingle<{
-        id: number;
-        total_amount: number;
-        payment_status: string;
-        paymongo_checkout_session_id: string | null;
-      }>();
+      .maybeSingle<{ id: number; total_amount: number; payment_status: string }>();
 
-    if (
-      bookingError ||
-      !booking?.paymongo_checkout_session_id ||
-      booking.payment_status === 'paid'
-    ) {
+    if (!booking || booking.payment_status === 'paid') {
+      return NextResponse.redirect(redirectUrl);
+    }
+
+    const { data: payment } = await supabase
+      .from('payments')
+      .select('id,amount,provider_checkout_session_id')
+      .eq('booking_id', booking.id)
+      .eq('provider', 'paymongo')
+      .order('attempted_at', { ascending: false })
+      .limit(1)
+      .maybeSingle<{ id: number; amount: number; provider_checkout_session_id: string | null }>();
+
+    if (!payment?.provider_checkout_session_id) {
       return NextResponse.redirect(redirectUrl);
     }
 
     const paymongoResponse = await fetch(
-      `${PAYMONGO_API_BASE_URL}/checkout_sessions/${booking.paymongo_checkout_session_id}`,
+      `${PAYMONGO_API_BASE_URL}/checkout_sessions/${payment.provider_checkout_session_id}`,
       {
         method: 'GET',
         headers: {
@@ -162,22 +161,19 @@ export async function GET(request: Request) {
       return NextResponse.redirect(redirectUrl);
     }
 
-    const amountPaid = resolveAmountPaid({
-      attributes,
-      fallback: Number(booking.total_amount),
+    await reconcileBookingPayment({
+      supabase,
+      paymentId: payment.id,
+      amountPaid: resolveAmountPaid({
+        attributes,
+        fallback: Number(payment.amount),
+      }),
+      providerReference: resolvePaymentId(attributes),
+      providerCheckoutSessionId: payment.provider_checkout_session_id,
+      providerPaymentIntentId: resolvePaymentId(attributes),
+      triggerSource: 'customer',
+      rawResponse: paymongoBody,
     });
-
-    const paymentId = resolvePaymentId(attributes);
-
-    await supabase
-      .from('bookings')
-      .update({
-        payment_status: 'paid',
-        amount_paid: amountPaid,
-        payment_provider: 'paymongo',
-        ...(paymentId ? { paymongo_payment_id: paymentId } : {}),
-      })
-      .eq('id', booking.id);
   } catch {
     // Keep customer flow uninterrupted if reconciliation fails.
   }

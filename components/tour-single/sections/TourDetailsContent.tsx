@@ -28,6 +28,7 @@ interface TourDetailsContentProps {
   galleryImageUrls?: string[];
   overviewDescription?: string | null;
   faqItems?: FaqItem[];
+  paymentsEnabled: boolean;
 }
 
 export default function TourDetailsContent({
@@ -38,6 +39,7 @@ export default function TourDetailsContent({
   galleryImageUrls,
   overviewDescription,
   faqItems,
+  paymentsEnabled,
 }: TourDetailsContentProps) {
   const detailsContent = tourSinglePageContent.details;
   const { selectedDeparture, selectedDepartureId, setSelectedDepartureId } =
@@ -107,6 +109,7 @@ export default function TourDetailsContent({
                   tour={tour}
                   tourContent={tourContent}
                   destinationId={destinationId}
+                  paymentsEnabled={paymentsEnabled}
                   selectedDepartureId={selectedDepartureId}
                   onSelectedDepartureChange={setSelectedDepartureId}
                 />

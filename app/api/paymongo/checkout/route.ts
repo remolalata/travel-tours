@@ -1,12 +1,17 @@
-import { Buffer } from 'node:buffer';
-
-import dayjs from 'dayjs';
 import { NextResponse } from 'next/server';
 
 import {
-  type BookingPaymentOption,
-  calculateBookingTotals,
+  buildPaymongoAuthHeader,
+  createUniqueBookingReference,
+  createUniquePaymentReference,
+  toCentavos,
+} from '@/app/api/paymongo/_lib';
+import type {
+  BookingPaymentFormState,
+  BookingPaymentOption,
+  BookingTravelerFormState,
 } from '@/utils/helpers/tour-single/bookingPayment';
+import { calculateBookingTotals } from '@/utils/helpers/tour-single/bookingPayment';
 import { createAdminClient } from '@/utils/supabase/admin';
 import { createClient as createServerSupabaseClient } from '@/utils/supabase/server';
 
@@ -14,17 +19,11 @@ type CheckoutPayload = {
   tourId?: number;
   departureId?: number;
   travelDateRange?: string;
-  adults?: string;
-  children?: string;
   paymentOption?: BookingPaymentOption;
   notes?: string;
-  location?: string;
-  tourType?: string;
-};
-
-type ProfileNameRow = {
-  first_name: string | null;
-  last_name: string | null;
+  travelers?: BookingTravelerFormState[];
+  adults?: string;
+  children?: string;
 };
 
 type PaymongoCheckoutResponse = {
@@ -37,54 +36,24 @@ type PaymongoCheckoutResponse = {
   errors?: Array<{ detail?: string }>;
 };
 
+type TourRow = {
+  id: number;
+  title: string;
+};
+
+type DepartureRow = {
+  id: number;
+  tour_id: number;
+  start_date: string;
+  end_date: string;
+  booking_deadline: string;
+  maximum_capacity: number;
+  confirmed_pax: number;
+  price: number;
+  status: 'open' | 'sold_out' | 'closed' | 'cancelled';
+};
+
 const PAYMONGO_API_BASE_URL = process.env.PAYMONGO_API_BASE_URL || 'https://api.paymongo.com/v1';
-
-function parseWholeNumber(value: string, fallback = 0): number {
-  const parsed = Number(value);
-  if (!Number.isFinite(parsed)) return fallback;
-  return Math.max(0, Math.floor(parsed));
-}
-
-function generateBookingReference() {
-  const numericPart = Math.floor(Math.random() * 100000)
-    .toString()
-    .padStart(5, '0');
-
-  return `BK-${numericPart}`;
-}
-
-function resolveStatuses(paymentOption: BookingPaymentOption) {
-  if (paymentOption === 'full') {
-    return {
-      bookingStatus: 'pending' as const,
-      paymentStatus: 'unpaid' as const,
-      approvedAt: null,
-    };
-  }
-
-  if (paymentOption === 'partial') {
-    return {
-      bookingStatus: 'pending' as const,
-      paymentStatus: 'unpaid' as const,
-      approvedAt: null,
-    };
-  }
-
-  return {
-    bookingStatus: 'pending' as const,
-    paymentStatus: 'unpaid' as const,
-    approvedAt: null,
-  };
-}
-
-function toCentavos(amount: number) {
-  return Math.round(amount * 100);
-}
-
-function buildPaymongoAuthHeader(secretKey: string) {
-  const basic = Buffer.from(`${secretKey}:`, 'utf8').toString('base64');
-  return `Basic ${basic}`;
-}
 
 function getPublicSiteUrl(request: Request) {
   const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
@@ -96,29 +65,49 @@ function getPublicSiteUrl(request: Request) {
   return `${requestUrl.protocol}//${requestUrl.host}`;
 }
 
-function resolveBillingName(input: {
-  firstName: string | null;
-  lastName: string | null;
-  email: string | null;
-}) {
-  const fullName = `${input.firstName ?? ''} ${input.lastName ?? ''}`.trim();
-  if (fullName) {
-    return fullName;
+function normalizeTravelerCounts(payload: CheckoutPayload) {
+  const adults = String(payload.adults ?? '');
+  const children = String(payload.children ?? '0');
+
+  return {
+    adults,
+    children,
+  };
+}
+
+function resolveBillingContact(travelers: BookingTravelerFormState[]) {
+  const leadTraveler = travelers[0];
+
+  if (!leadTraveler) {
+    throw new Error('At least one traveler is required.');
   }
 
-  const emailPrefix = input.email?.split('@')[0]?.trim();
-  if (emailPrefix) {
-    return emailPrefix;
-  }
+  return {
+    name: `${leadTraveler.firstName} ${leadTraveler.lastName}`.trim(),
+    email: leadTraveler.email.trim(),
+    phone: leadTraveler.phone.trim(),
+  };
+}
 
-  return 'Travel & Tours Customer';
+function normalizePaymentType(paymentOption: BookingPaymentOption) {
+  return paymentOption === 'downpayment' ? 'downpayment' : 'full';
+}
+
+function buildCheckoutFormState(input: CheckoutPayload): BookingPaymentFormState {
+  return {
+    adults: String(input.adults ?? '1'),
+    children: String(input.children ?? '0'),
+    paymentOption: input.paymentOption ?? 'downpayment',
+    travelers: input.travelers ?? [],
+    notes: String(input.notes ?? ''),
+  };
 }
 
 export async function POST(request: Request) {
-  const paymongoSecretKey = process.env.PAYMONGO_SECRET_KEY;
+  const paymongoSecretKey = process.env.NEXT_PAYMONGO_SECRET_KEY;
   if (!paymongoSecretKey) {
     return NextResponse.json(
-      { error: 'Server misconfiguration: missing PAYMONGO_SECRET_KEY.' },
+      { error: 'Server misconfiguration: missing NEXT_PAYMONGO_SECRET_KEY.' },
       { status: 500 },
     );
   }
@@ -130,17 +119,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid request payload.' }, { status: 400 });
   }
 
-  const paymentOption = body.paymentOption ?? 'partial';
-  const adults = String(body.adults ?? '');
-  const children = String(body.children ?? '0');
   const departureId = Number(body.departureId);
-  const travelDateRange = String(body.travelDateRange ?? '').trim();
+  const paymentOption = body.paymentOption ?? 'downpayment';
+  const travelers = body.travelers ?? [];
 
   if (
     !Number.isFinite(body.tourId) ||
     !Number.isFinite(departureId) ||
-    !travelDateRange ||
-    !['full', 'partial', 'reserve'].includes(paymentOption)
+    !['full', 'downpayment'].includes(paymentOption) ||
+    travelers.length === 0
   ) {
     return NextResponse.json({ error: 'Missing or invalid checkout fields.' }, { status: 400 });
   }
@@ -160,19 +147,14 @@ export async function POST(request: Request) {
   }
 
   const supabase = createAdminClient();
-  const { data: profileRow } = await supabase
-    .from('profiles')
-    .select('first_name,last_name')
-    .eq('user_id', user.id)
-    .maybeSingle<ProfileNameRow>();
 
   const { data: tourRow, error: tourError } = await supabase
     .from('tours')
-    .select('id,title,destination_id')
+    .select('id,title')
     .eq('id', body.tourId)
     .eq('status', 'active')
     .limit(1)
-    .maybeSingle();
+    .maybeSingle<TourRow>();
 
   if (tourError) {
     return NextResponse.json(
@@ -187,12 +169,13 @@ export async function POST(request: Request) {
 
   const { data: departureRow, error: departureError } = await supabase
     .from('departures')
-    .select('id,tour_id,start_date,end_date,price,status')
+    .select(
+      'id,tour_id,start_date,end_date,booking_deadline,maximum_capacity,confirmed_pax,price,status',
+    )
     .eq('id', departureId)
     .eq('tour_id', body.tourId)
-    .eq('status', 'open')
     .limit(1)
-    .maybeSingle();
+    .maybeSingle<DepartureRow>();
 
   if (departureError) {
     return NextResponse.json(
@@ -201,105 +184,137 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!departureRow) {
-    return NextResponse.json({ error: 'Departure not found.' }, { status: 404 });
+  if (!departureRow || departureRow.status !== 'open') {
+    return NextResponse.json({ error: 'Departure not found or unavailable.' }, { status: 404 });
   }
 
-  const normalizedAdults = Math.max(1, parseWholeNumber(adults, 1)).toString();
-  const normalizedChildren = parseWholeNumber(children, 0).toString();
-  const totals = calculateBookingTotals(Number(departureRow.price) || 0, {
-    adults: normalizedAdults,
-    children: normalizedChildren,
-    paymentOption,
-    notes: body.notes ?? '',
-  });
-
-  let startDate: dayjs.Dayjs;
-  let endDate: dayjs.Dayjs;
-  try {
-    startDate = dayjs(departureRow.start_date).startOf('day');
-    endDate = dayjs(departureRow.end_date).startOf('day');
-
-    if (!startDate.isValid() || !endDate.isValid()) {
-      throw new Error('INVALID_TRAVEL_DATE_RANGE');
-    }
-  } catch {
-    return NextResponse.json({ error: 'Selected departure has invalid dates.' }, { status: 400 });
-  }
-
-  const statusPayload = resolveStatuses(paymentOption);
-  const nowIso = new Date().toISOString();
-  const notes = [
-    body.notes?.trim(),
-    `Location: ${body.location?.trim() || '-'}`,
-    `Tour Type: ${body.tourType?.trim() || '-'}`,
-    `Payment Option: ${paymentOption}`,
-    'Checkout via PayMongo',
-  ]
-    .filter(Boolean)
-    .join(' | ');
-
-  let insertedBooking: {
-    id: number;
-    booking_reference: string;
-  } | null = null;
-
-  for (let attempt = 0; attempt < 5; attempt += 1) {
-    const bookingReference = generateBookingReference();
-    const { data, error } = await supabase
-      .from('bookings')
-      .insert({
-        booking_reference: bookingReference,
-        customer_user_id: user?.id ?? null,
-        destination_id: tourRow.destination_id,
-        tour_id: tourRow.id,
-        package_title: tourRow.title,
-        booking_status: statusPayload.bookingStatus,
-        payment_status: statusPayload.paymentStatus,
-        currency: 'PHP',
-        total_amount: totals.totalAmount,
-        amount_paid: 0,
-        refunded_amount: 0,
-        number_of_travelers: totals.travelers,
-        travel_start_date: startDate.format('YYYY-MM-DD'),
-        travel_end_date: endDate.format('YYYY-MM-DD'),
-        booked_at: nowIso,
-        approved_at: statusPayload.approvedAt,
-        notes,
-        payment_provider: 'paymongo',
-      })
-      .select('id,booking_reference')
-      .limit(1)
-      .maybeSingle();
-
-    if (!error && data) {
-      insertedBooking = data;
-      break;
-    }
-
-    if (error?.code === '23505') {
-      continue;
-    }
-
+  const today = new Date();
+  const bookingDeadline = new Date(`${departureRow.booking_deadline}T23:59:59Z`);
+  if (today > bookingDeadline) {
     return NextResponse.json(
-      { error: `Booking create failed: ${error?.message ?? 'Unknown error'}` },
-      { status: 500 },
+      { error: 'Booking deadline has passed for this departure.' },
+      { status: 400 },
     );
   }
 
-  if (!insertedBooking) {
+  if (departureRow.confirmed_pax + travelers.length > departureRow.maximum_capacity) {
     return NextResponse.json(
-      { error: 'Booking create failed: unique reference retry exhausted.' },
-      { status: 500 },
+      { error: 'Selected departure no longer has enough available slots.' },
+      { status: 409 },
     );
   }
 
+  const counts = normalizeTravelerCounts(body);
+  const totals = calculateBookingTotals(
+    Number(departureRow.price) || 0,
+    buildCheckoutFormState(body),
+  );
+  const travelerCount = travelers.length;
+  const expectedTravelerCount = Number(counts.adults || '0') + Number(counts.children || '0');
+
+  if (travelerCount !== expectedTravelerCount) {
+    return NextResponse.json(
+      { error: 'Traveler details do not match the selected passenger counts.' },
+      { status: 400 },
+    );
+  }
+
+  const bookingReference = await createUniqueBookingReference(supabase);
+  const paymentReference = await createUniquePaymentReference(supabase);
+  const billingContact = resolveBillingContact(travelers);
   const siteUrl = getPublicSiteUrl(request);
-  const amountInCentavos = toCentavos(totals.amountToChargeNow);
+  const nowIso = new Date().toISOString();
 
+  const { data: insertedBooking, error: bookingInsertError } = await supabase
+    .from('bookings')
+    .insert({
+      reference_no: bookingReference,
+      user_id: user.id,
+      tour_id: tourRow.id,
+      departure_id: departureRow.id,
+      tour_title_snapshot: tourRow.title,
+      departure_start_date_snapshot: departureRow.start_date,
+      departure_end_date_snapshot: departureRow.end_date,
+      lead_traveler_name: billingContact.name,
+      lead_traveler_email: billingContact.email,
+      lead_traveler_phone: billingContact.phone,
+      traveler_count: travelerCount,
+      currency: 'PHP',
+      payment_option: paymentOption,
+      booking_status: 'pending_payment',
+      payment_status: 'unpaid',
+      inventory_status: 'none',
+      price_per_pax_snapshot: departureRow.price,
+      downpayment_per_pax_snapshot:
+        paymentOption === 'downpayment' ? Math.round(departureRow.price * 0.3 * 100) / 100 : null,
+      total_amount: totals.totalAmount,
+      amount_due_now: totals.amountToChargeNow,
+      amount_paid: 0,
+      balance_amount: totals.totalAmount,
+      refunded_amount: 0,
+      booked_at: nowIso,
+      notes: body.notes?.trim() || null,
+    })
+    .select('id,reference_no')
+    .limit(1)
+    .maybeSingle<{ id: number; reference_no: string }>();
+
+  if (bookingInsertError || !insertedBooking) {
+    return NextResponse.json(
+      { error: `Booking create failed: ${bookingInsertError?.message ?? 'Unknown error'}` },
+      { status: 500 },
+    );
+  }
+
+  const { error: travelerInsertError } = await supabase.from('booking_travelers').insert(
+    travelers.map((traveler, index) => ({
+      booking_id: insertedBooking.id,
+      traveler_type: traveler.travelerType,
+      is_lead: index === 0,
+      first_name: traveler.firstName.trim(),
+      last_name: traveler.lastName.trim(),
+      email: traveler.email.trim() || null,
+      phone: traveler.phone.trim() || null,
+    })),
+  );
+
+  if (travelerInsertError) {
+    return NextResponse.json(
+      { error: `Traveler save failed: ${travelerInsertError.message}` },
+      { status: 500 },
+    );
+  }
+
+  const { data: paymentRow, error: paymentInsertError } = await supabase
+    .from('payments')
+    .insert({
+      booking_id: insertedBooking.id,
+      payment_reference: paymentReference,
+      payment_type: normalizePaymentType(paymentOption),
+      provider: 'paymongo',
+      amount: totals.amountToChargeNow,
+      currency: 'PHP',
+      payment_status: 'pending',
+      attempted_at: nowIso,
+      raw_response: {
+        source: 'checkout_request',
+      },
+    })
+    .select('id,payment_reference')
+    .limit(1)
+    .maybeSingle<{ id: number; payment_reference: string }>();
+
+  if (paymentInsertError || !paymentRow) {
+    return NextResponse.json(
+      { error: `Payment create failed: ${paymentInsertError?.message ?? 'Unknown error'}` },
+      { status: 500 },
+    );
+  }
+
+  const amountInCentavos = toCentavos(totals.amountToChargeNow);
   if (amountInCentavos <= 0) {
     return NextResponse.json(
-      { error: 'Selected payment option has no online payment amount to charge.' },
+      { error: 'Selected payment option has no amount to charge.' },
       { status: 400 },
     );
   }
@@ -315,12 +330,9 @@ export async function POST(request: Request) {
       data: {
         attributes: {
           billing: {
-            name: resolveBillingName({
-              firstName: profileRow?.first_name ?? null,
-              lastName: profileRow?.last_name ?? null,
-              email: user.email ?? null,
-            }),
-            email: user.email || undefined,
+            name: billingContact.name || 'Travel & Tours Customer',
+            email: billingContact.email || user.email || undefined,
+            phone: billingContact.phone || undefined,
             address: {
               line1: 'Poblacion',
               city: 'Manaoag',
@@ -329,7 +341,7 @@ export async function POST(request: Request) {
               country: 'PH',
             },
           },
-          description: 'Travel & Tours',
+          description: tourRow.title,
           send_email_receipt: true,
           show_description: true,
           show_line_items: true,
@@ -342,11 +354,13 @@ export async function POST(request: Request) {
             },
           ],
           payment_method_types: ['gcash', 'paymaya', 'card'],
-          success_url: `${siteUrl}/api/paymongo/return?checkout=success&tourId=${tourRow.id}&ref=${encodeURIComponent(insertedBooking.booking_reference)}`,
-          cancel_url: `${siteUrl}/api/paymongo/return?checkout=cancelled&tourId=${tourRow.id}&ref=${encodeURIComponent(insertedBooking.booking_reference)}`,
+          success_url: `${siteUrl}/api/paymongo/return?checkout=success&tourId=${tourRow.id}&ref=${encodeURIComponent(insertedBooking.reference_no)}`,
+          cancel_url: `${siteUrl}/api/paymongo/return?checkout=cancelled&tourId=${tourRow.id}&ref=${encodeURIComponent(insertedBooking.reference_no)}`,
           metadata: {
             booking_id: String(insertedBooking.id),
-            booking_reference: insertedBooking.booking_reference,
+            booking_reference: insertedBooking.reference_no,
+            payment_id: String(paymentRow.id),
+            payment_reference: paymentRow.payment_reference,
             tour_id: String(tourRow.id),
             payment_option: paymentOption,
           },
@@ -361,37 +375,38 @@ export async function POST(request: Request) {
 
   if (!paymongoResponse.ok || !checkoutSessionId || !checkoutUrl) {
     await supabase
-      .from('bookings')
+      .from('payments')
       .update({
-        notes: `${notes} | Checkout session creation failed`,
+        payment_status: 'failed',
+        failed_at: new Date().toISOString(),
+        raw_response: paymongoBody,
       })
-      .eq('id', insertedBooking.id);
+      .eq('id', paymentRow.id);
 
     return NextResponse.json(
-      {
-        error: paymongoBody?.errors?.[0]?.detail || 'PayMongo checkout creation failed.',
-      },
+      { error: paymongoBody?.errors?.[0]?.detail || 'PayMongo checkout creation failed.' },
       { status: 502 },
     );
   }
 
-  const { error: updateBookingError } = await supabase
-    .from('bookings')
+  const { error: paymentUpdateError } = await supabase
+    .from('payments')
     .update({
-      paymongo_checkout_session_id: checkoutSessionId,
+      provider_checkout_session_id: checkoutSessionId,
+      raw_response: paymongoBody,
     })
-    .eq('id', insertedBooking.id);
+    .eq('id', paymentRow.id);
 
-  if (updateBookingError) {
+  if (paymentUpdateError) {
     return NextResponse.json(
-      { error: `Booking checkout link failed: ${updateBookingError.message}` },
+      { error: `Payment checkout link failed: ${paymentUpdateError.message}` },
       { status: 500 },
     );
   }
 
   return NextResponse.json(
     {
-      bookingReference: insertedBooking.booking_reference,
+      bookingReference: insertedBooking.reference_no,
       checkoutUrl,
     },
     { status: 200 },

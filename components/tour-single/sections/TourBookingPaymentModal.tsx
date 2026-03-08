@@ -17,6 +17,8 @@ type TourBookingPaymentModalProps = {
   onClose: () => void;
   onConfirm: () => void;
   isSubmitting: boolean;
+  paymentsEnabled: boolean;
+  packageName: string;
   location: string;
   when: string;
   tourType: string;
@@ -26,10 +28,16 @@ type TourBookingPaymentModalProps = {
     travelers: number;
     totalAmount: number;
     amountToChargeNow: number;
+    balanceAmount: number;
   };
   onFieldChange: <Key extends keyof BookingPaymentFormState>(
     key: Key,
     value: BookingPaymentFormState[Key],
+  ) => void;
+  onTravelerFieldChange: (
+    index: number,
+    key: 'firstName' | 'lastName' | 'email' | 'phone',
+    value: string,
   ) => void;
 };
 
@@ -55,6 +63,8 @@ export default function TourBookingPaymentModal({
   onClose,
   onConfirm,
   isSubmitting,
+  paymentsEnabled,
+  packageName,
   location,
   when,
   tourType,
@@ -62,6 +72,7 @@ export default function TourBookingPaymentModal({
   fieldErrors,
   totals,
   onFieldChange,
+  onTravelerFieldChange,
 }: TourBookingPaymentModalProps) {
   const content = tourSingleContent.sidebar.paymentFlow;
 
@@ -80,13 +91,13 @@ export default function TourBookingPaymentModal({
         onClose();
       }}
       title={content.modalTitle}
-      size='small'
+      size='large'
       actions={
         <>
           <AppButton size='sm' variant='outline' onClick={onClose} disabled={isSubmitting}>
             {content.actions.cancel}
           </AppButton>
-          <AppButton size='sm' onClick={onConfirm} disabled={isSubmitting}>
+          <AppButton size='sm' onClick={onConfirm} disabled={isSubmitting || !paymentsEnabled}>
             {isSubmitting ? content.actions.processing : content.actions.confirm}
           </AppButton>
         </>
@@ -97,6 +108,9 @@ export default function TourBookingPaymentModal({
           <div className='rounded-12 border px-15 py-15 bg-white'>
             <div className='text-15 fw-500'>{content.summary.title}</div>
             <div className='mt-10 text-14'>
+              <div>
+                <strong>{content.summary.packageLabel}:</strong> {packageName || '-'}
+              </div>
               <div>
                 <strong>{content.summary.destinationLabel}:</strong> {location || '-'}
               </div>
@@ -157,6 +171,85 @@ export default function TourBookingPaymentModal({
         </div>
 
         <div className='col-12'>
+          <div className='rounded-12 border px-15 py-15 bg-white'>
+            <div className='d-flex justify-between items-center gap-10'>
+              <div className='text-15 fw-500'>{content.sections.travelersTitle}</div>
+              <div className='text-13 text-light-1'>{content.sections.travelersHelper}</div>
+            </div>
+
+            <div className='row g-3 mt-5'>
+              {formState.travelers.map((traveler, index) => (
+                <div key={`${traveler.travelerType}-${index}`} className='col-12'>
+                  <div className='rounded-12 border px-15 py-15 bg-light-1'>
+                    <div className='d-flex justify-between items-center gap-10 mb-10'>
+                      <div className='text-14 fw-500'>
+                        {content.sections.travelerTitlePrefix} {index + 1}
+                      </div>
+                      <div className='text-12 text-light-1 text-capitalize'>
+                        {traveler.travelerType}
+                      </div>
+                    </div>
+                    <div className='row g-3'>
+                      <div className='col-sm-6 col-12'>
+                        <AppTextField
+                          label={content.fields.travelerFirstName}
+                          value={traveler.firstName}
+                          onChange={(value) => onTravelerFieldChange(index, 'firstName', value)}
+                          required
+                          errorMessage={getValidationMessage(
+                            content.validationMessages,
+                            fieldErrors[`travelers.${index}.firstName`],
+                          )}
+                        />
+                      </div>
+                      <div className='col-sm-6 col-12'>
+                        <AppTextField
+                          label={content.fields.travelerLastName}
+                          value={traveler.lastName}
+                          onChange={(value) => onTravelerFieldChange(index, 'lastName', value)}
+                          required
+                          errorMessage={getValidationMessage(
+                            content.validationMessages,
+                            fieldErrors[`travelers.${index}.lastName`],
+                          )}
+                        />
+                      </div>
+                      <div className='col-sm-6 col-12'>
+                        <AppTextField
+                          label={content.fields.travelerEmail}
+                          value={traveler.email}
+                          onChange={(value) => onTravelerFieldChange(index, 'email', value)}
+                          type='email'
+                          autoComplete='email'
+                          required={index === 0}
+                          errorMessage={getValidationMessage(
+                            content.validationMessages,
+                            fieldErrors[`travelers.${index}.email`],
+                          )}
+                        />
+                      </div>
+                      <div className='col-sm-6 col-12'>
+                        <AppTextField
+                          label={content.fields.travelerPhone}
+                          value={traveler.phone}
+                          onChange={(value) => onTravelerFieldChange(index, 'phone', value)}
+                          autoComplete='tel'
+                          required={index === 0}
+                          errorMessage={getValidationMessage(
+                            content.validationMessages,
+                            fieldErrors[`travelers.${index}.phone`],
+                          )}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className='col-12'>
           <AppTextareaField
             label={content.fields.notes}
             value={formState.notes}
@@ -180,6 +273,13 @@ export default function TourBookingPaymentModal({
               <span>{content.summary.amountDueNowLabel}</span>
               <strong className='text-accent-1'>{formatCurrency(totals.amountToChargeNow)}</strong>
             </div>
+            <div className='d-flex justify-between mt-8 text-14'>
+              <span>{content.summary.balanceAmountLabel}</span>
+              <strong>{formatCurrency(totals.balanceAmount)}</strong>
+            </div>
+            {!paymentsEnabled ? (
+              <div className='mt-10 text-13 text-red-1'>{content.helpers.paymentsUnavailable}</div>
+            ) : null}
           </div>
         </div>
       </div>

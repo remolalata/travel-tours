@@ -126,6 +126,10 @@ export default async function Page(props: TourPageProps) {
   const { routeContext } = singlePageData;
   let reviews: Review[] = [];
   let faqItems: FaqItem[] = [];
+  const paymentsEnabled = Boolean(
+    process.env.NEXT_PAYMONGO_SECRET_KEY?.trim() &&
+    process.env.NEXT_PAYMONGO_WEBHOOK_SECRET?.trim(),
+  );
 
   try {
     const supabase = await createClient();
@@ -143,5 +147,12 @@ export default async function Page(props: TourPageProps) {
     faqItems = [];
   }
 
-  return <TourSinglePage singlePageData={singlePageData} reviews={reviews} faqItems={faqItems} />;
+  return (
+    <TourSinglePage
+      singlePageData={singlePageData}
+      reviews={reviews}
+      faqItems={faqItems}
+      paymentsEnabled={paymentsEnabled}
+    />
+  );
 }
