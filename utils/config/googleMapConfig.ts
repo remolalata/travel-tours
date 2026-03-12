@@ -1,5 +1,4 @@
-export const GOOGLE_MAPS_API_KEY =
-  process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
+export const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
 
 export const GOOGLE_MAP_CONTAINER_STYLE = {
   width: '100%',

@@ -8,9 +8,7 @@ type UseMyBookingsTabsOptions = {
   initialTab?: MyBookingsTabKey;
 };
 
-export default function useMyBookingsTabs({
-  initialTab = 'all',
-}: UseMyBookingsTabsOptions = {}) {
+export default function useMyBookingsTabs({ initialTab = 'all' }: UseMyBookingsTabsOptions = {}) {
   const [activeTab, setActiveTab] = useState<MyBookingsTabKey>(initialTab);
 
   return {

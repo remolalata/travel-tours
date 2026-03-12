@@ -108,9 +108,12 @@ function MyBookingsList({ activeTab }: { activeTab: MyBookingsTabKey }) {
 
 export default function MyBookingsPage({ initialAuthState }: MyBookingsPageProps) {
   const { activeTab, setActiveTab } = useMyBookingsTabs();
-  const handleTabChange = useCallback((value: MyBookingsTabKey) => {
-    setActiveTab(value);
-  }, [setActiveTab]);
+  const handleTabChange = useCallback(
+    (value: MyBookingsTabKey) => {
+      setActiveTab(value);
+    },
+    [setActiveTab],
+  );
 
   return (
     <main>

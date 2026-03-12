@@ -12,7 +12,12 @@ type MyBookingsTabsProps = {
   onChange: (value: MyBookingsTabKey) => void;
 };
 
-export default function MyBookingsTabs({ ariaLabel, activeTab, items, onChange }: MyBookingsTabsProps) {
+export default function MyBookingsTabs({
+  ariaLabel,
+  activeTab,
+  items,
+  onChange,
+}: MyBookingsTabsProps) {
   return (
     <Tabs
       value={activeTab}
