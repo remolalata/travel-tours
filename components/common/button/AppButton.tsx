@@ -34,14 +34,21 @@ export default function AppButton({
   variant = 'primary',
   className = '',
   type = 'button',
+  disabled = false,
   ...buttonProps
 }: AppButtonProps) {
-  const classes = ['button', getSizeClass(size), getVariantClass(variant), className]
+  const classes = [
+    'button',
+    getSizeClass(size),
+    getVariantClass(variant),
+    disabled ? 'disabled' : '',
+    className,
+  ]
     .filter(Boolean)
     .join(' ');
 
   return (
-    <button type={type} className={classes} {...buttonProps}>
+    <button type={type} className={classes} disabled={disabled} {...buttonProps}>
       {children}
     </button>
   );
