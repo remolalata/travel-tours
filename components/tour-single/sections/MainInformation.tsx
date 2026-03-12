@@ -71,8 +71,8 @@ export default function MainInformation({ tour }: MainInformationProps) {
           </div>
         </div>
 
-        <div className='col-auto'>
-          <div className='d-flex x-gap-30 y-gap-10'>
+        <div className='col-auto tourSinglePageActionsWrap'>
+          <div className='d-flex x-gap-30 y-gap-10 tourSinglePageActions'>
             {tour?.id ? (
               <AdminTourRouteAction
                 mode='edit'

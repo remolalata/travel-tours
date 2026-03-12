@@ -11,6 +11,7 @@ import useHeaderAccountMenu from '@/utils/hooks/layout/useHeaderAccountMenu';
 
 type HeaderAccountMenuProps = {
   authState: AuthViewerState;
+  variant?: 'desktop' | 'mobile';
 };
 
 function getFirstNameLabel(authState: AuthViewerState): string | null {
@@ -35,12 +36,20 @@ function getAvatarFallbackLabel(authState: AuthViewerState): string {
   return firstCharacter || headerAccountContent.avatar.fallbackSource.charAt(0).toUpperCase();
 }
 
-export default function HeaderAccountMenu({ authState }: HeaderAccountMenuProps) {
+export default function HeaderAccountMenu({
+  authState,
+  variant = 'desktop',
+}: HeaderAccountMenuProps) {
   const avatarFallbackLabel = useMemo(() => getAvatarFallbackLabel(authState), [authState]);
   const firstNameLabel = useMemo(() => getFirstNameLabel(authState), [authState]);
   const { anchorEl, isOpen, popoverId, handleClose, handleOpen } = useHeaderAccountMenu();
+  const isMobile = variant === 'mobile';
 
   if (!authState.isAuthenticated) {
+    if (isMobile) {
+      return null;
+    }
+
     return (
       <>
         <Link href='/register' className='ml-10'>
@@ -58,12 +67,14 @@ export default function HeaderAccountMenu({ authState }: HeaderAccountMenuProps)
     <>
       <button
         type='button'
-        className='d-flex items-center ml-30'
+        className={`d-flex items-center ${isMobile ? 'headerAccountMenu headerAccountMenu--mobile' : 'ml-30'}`}
         aria-label={headerAccountContent.aria.openAccountMenu}
         title={authState.fullName ?? authState.email ?? headerAccountContent.avatar.titleFallback}
         onClick={handleOpen}
       >
-        {firstNameLabel ? <span className='mr-10 text-14 fw-500'>{firstNameLabel}</span> : null}
+        {!isMobile && firstNameLabel ? (
+          <span className='mr-10 text-14 fw-500'>{firstNameLabel}</span>
+        ) : null}
         {authState.avatarUrl ? (
           <Image
             width={40}

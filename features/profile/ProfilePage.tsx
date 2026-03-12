@@ -290,7 +290,7 @@ export default function ProfilePage({ initialAuthState }: ProfilePageProps) {
     <main>
       <SiteHeaderClient initialAuthState={initialAuthState} />
       <RouteAccessGuard mode='auth-required' initialAuthState={initialAuthState}>
-        <section className='layout-pt-xl layout-pb-lg'>
+        <section className='layout-pt-xl layout-pb-lg accountPageShell'>
           <div className='container'>
             <div className='mb-60'>
               <h1 className='text-30 fw-700'>{profilePageContent.intro.title}</h1>

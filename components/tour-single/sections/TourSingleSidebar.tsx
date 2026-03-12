@@ -73,6 +73,8 @@ export default function TourSingleSidebar({
   selectedDepartureId: selectedDepartureIdProp,
   onSelectedDepartureChange,
 }: TourSingleSidebarProps) {
+  const isConfirmBookingDisabled = true;
+  const isConfirmBookingEnabled = !isConfirmBookingDisabled;
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -394,55 +396,60 @@ export default function TourSingleSidebar({
       <TourBookingPaymentModal
         open={bookingFlow.isOpen}
         onClose={bookingFlow.close}
-        onConfirm={async () => {
-          const { isValid } = bookingFlow.validate();
-          if (!isValid || isSubmittingCheckout || !tour) {
-            return;
-          }
+        onConfirm={
+          isConfirmBookingEnabled
+            ? async () => {
+                const { isValid } = bookingFlow.validate();
+                if (!isValid || isSubmittingCheckout || !tour) {
+                  return;
+                }
 
-          try {
-            setIsSubmittingCheckout(true);
+                try {
+                  setIsSubmittingCheckout(true);
 
-            const response = await fetch('/api/paymongo/checkout', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                tourId: tour.id,
-                departureId: selectedDeparture?.id,
-                travelDateRange: when,
-                adults: bookingFlow.formState.adults,
-                children: bookingFlow.formState.children,
-                paymentOption: bookingFlow.formState.paymentOption,
-                travelers: bookingFlow.formState.travelers,
-                notes: bookingFlow.formState.notes.trim(),
-              }),
-            });
+                  const response = await fetch('/api/paymongo/checkout', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                      tourId: tour.id,
+                      departureId: selectedDeparture?.id,
+                      travelDateRange: when,
+                      adults: bookingFlow.formState.adults,
+                      children: bookingFlow.formState.children,
+                      paymentOption: bookingFlow.formState.paymentOption,
+                      travelers: bookingFlow.formState.travelers,
+                      notes: bookingFlow.formState.notes.trim(),
+                    }),
+                  });
 
-            const payload = (await response.json()) as {
-              checkoutUrl?: string;
-              bookingReference?: string;
-              error?: string;
-            };
+                  const payload = (await response.json()) as {
+                    checkoutUrl?: string;
+                    bookingReference?: string;
+                    error?: string;
+                  };
 
-            if (!response.ok || !payload.checkoutUrl) {
-              throw new Error(payload.error || 'Checkout creation failed.');
-            }
+                  if (!response.ok || !payload.checkoutUrl) {
+                    throw new Error(payload.error || 'Checkout creation failed.');
+                  }
 
-            window.location.href = payload.checkoutUrl;
-          } catch (error) {
-            setToastState({
-              open: true,
-              severity: 'error',
-              message: error instanceof Error ? error.message : sidebar.paymentFlow.toasts.error,
-            });
-          } finally {
-            setIsSubmittingCheckout(false);
-          }
-        }}
+                  window.location.href = payload.checkoutUrl;
+                } catch (error) {
+                  setToastState({
+                    open: true,
+                    severity: 'error',
+                    message:
+                      error instanceof Error ? error.message : sidebar.paymentFlow.toasts.error,
+                  });
+                } finally {
+                  setIsSubmittingCheckout(false);
+                }
+              }
+            : () => {}
+        }
         isSubmitting={isSubmittingCheckout}
-        paymentsEnabled={paymentsEnabled}
+        paymentsEnabled={paymentsEnabled && isConfirmBookingEnabled}
         packageName={tour?.title ?? ''}
         location={location}
         when={when}

@@ -1,30 +1,39 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-import type { AdminDashboardDataset } from '@/types/adminDashboard';
+import type { RawBookingStatus } from '@/services/admin/bookings/mutations/bookingApi';
+import type { AdminDashboardBookingStatus, AdminDashboardDataset } from '@/types/adminDashboard';
 
 type BookingRow = {
   id: number;
-  booking_status: 'approved' | 'pending' | 'cancelled' | 'completed';
+  booking_status: RawBookingStatus;
   total_amount: number;
   amount_paid: number;
   refunded_amount: number;
   booked_at: string;
-  travel_start_date: string;
+  departure_start_date_snapshot: string;
   cancelled_at: string | null;
-  destinations:
-    | {
-        name: string | null;
-      }
-    | Array<{
-        name: string | null;
-      }>
-    | null;
   tours:
     | {
         title: string | null;
+        destinations:
+          | {
+              name: string | null;
+            }
+          | Array<{
+              name: string | null;
+            }>
+          | null;
       }
     | Array<{
         title: string | null;
+        destinations:
+          | {
+              name: string | null;
+            }
+          | Array<{
+              name: string | null;
+            }>
+          | null;
       }>
     | null;
 };
@@ -37,13 +46,29 @@ type ReviewRow = {
 };
 
 type TourActiveRow = {
-  is_active: boolean;
+  status: 'active' | 'inactive';
 };
 
 function getJoinedSingle<T>(value: T | T[] | null): T | null {
   if (!value) return null;
   if (Array.isArray(value)) return value[0] ?? null;
   return value;
+}
+
+function mapBookingStatus(status: RawBookingStatus): AdminDashboardBookingStatus {
+  if (status === 'confirmed') {
+    return 'confirmed';
+  }
+
+  if (status === 'completed') {
+    return 'completed';
+  }
+
+  if (status === 'cancelled' || status === 'expired') {
+    return 'cancelled';
+  }
+
+  return 'pending';
 }
 
 export async function fetchAdminDashboardDataset(
@@ -60,10 +85,9 @@ export async function fetchAdminDashboardDataset(
         amount_paid,
         refunded_amount,
         booked_at,
-        travel_start_date,
+        departure_start_date_snapshot,
         cancelled_at,
-        destinations(name),
-        tours(title)
+        tours(title,destinations(name))
       `,
       )
       .order('booked_at', { ascending: false }),
@@ -71,7 +95,7 @@ export async function fetchAdminDashboardDataset(
       .from('reviews')
       .select('id,rating,created_at,is_published')
       .order('created_at', { ascending: false }),
-    supabase.from('tours').select('is_active'),
+    supabase.from('tours').select('status'),
   ]);
 
   if (bookingsResult.error) {
@@ -87,17 +111,17 @@ export async function fetchAdminDashboardDataset(
   }
 
   const bookings = ((bookingsResult.data ?? []) as BookingRow[]).map((row) => {
-    const destination = getJoinedSingle(row.destinations);
     const tour = getJoinedSingle(row.tours);
+    const destination = getJoinedSingle(tour?.destinations ?? null);
 
     return {
       id: row.id,
-      bookingStatus: row.booking_status,
+      bookingStatus: mapBookingStatus(row.booking_status),
       totalAmount: row.total_amount,
       amountPaid: row.amount_paid,
       refundedAmount: row.refunded_amount,
       bookedAt: row.booked_at,
-      travelStartDate: row.travel_start_date,
+      travelStartDate: row.departure_start_date_snapshot,
       cancelledAt: row.cancelled_at,
       destinationName: destination?.name ?? null,
       tourTitle: tour?.title ?? null,
@@ -116,7 +140,7 @@ export async function fetchAdminDashboardDataset(
   return {
     bookings,
     reviews,
-    activeToursCount: tourRows.filter((row) => row.is_active).length,
+    activeToursCount: tourRows.filter((row) => row.status === 'active').length,
     totalToursCount: tourRows.length,
   };
 }

@@ -1,145 +1,140 @@
-# Travel & Tours Website
+# Travel & Tours
 
-Marketing website for **Travel & Tours** built with **Next.js (App Router)**.
+Travel booking and marketing platform built with Next.js App Router, React 19, Supabase, and PayMongo.
+
+## Current Status
+
+Audit date: 2026-03-12
+
+Verified checks:
+
+- `npm run lint`
+- `npm run typecheck`
+- `npm run build`
+
+Current result: all three checks pass.
+
+## Audit Summary
+
+The app is in a workable state for development, but there are a few important production risks:
+
+1. Admin route protection is incomplete.
+   `proxy.ts` only checks whether a user is signed in before allowing `/admin` access. It does not verify that the user has the `admin` role. Database RLS reduces the blast radius, but the route-level authorization is still too weak.
+
+2. Public FAQ content is rendered as raw HTML.
+   `components/common/accordion/AppFaqAccordion.tsx` renders `item.answer` with `dangerouslySetInnerHTML`, and `services/faqs/mutations/faqApi.ts` stores FAQ answers without sanitizing them. If unsafe markup reaches the database, it can be served back to users.
+
+3. Dynamic tour URLs are missing from the sitemap.
+   `app/sitemap.ts` filters tours with `is_active`, but the schema in `supabase/migrations/20260220230700_create_tours.sql` uses `status`. In practice this means tour detail pages can be omitted from the sitemap.
+
+4. Regression coverage is missing.
+   There is no test suite in the repository right now, so confidence depends on linting, type-checking, and manual validation.
 
 ## Stack
 
 - Next.js 16
 - React 19
-- Swiper (carousels)
-- AOS (scroll animations)
+- TypeScript
+- Supabase
+- TanStack Query
+- PayMongo
 - Bootstrap 5
-- Google Maps (`@react-google-maps/api`)
+- MUI Data Grid / Date Pickers
+- Swiper
+- Framer Motion
 
-## Main Pages
+## Product Surface
 
-- `/` -> Homepage (hero search, featured sections, testimonials, FAQ, promo CTA)
-- `/tours` -> Tour listing page (cards + filters + map)
-- `/tour/[id]` -> Dynamic tour details page
-- `/contact` -> Contact page with map, locations, and form
-
-## Key Features
-
-- Global header/footer layout
-- Floating chat/contact group (Messenger, WhatsApp, Viber)
-- First-time visitor promo modal (shows once, after 5 seconds)
-- Scroll-to-top control
-- Shared FAQ component used on homepage and tour detail pages
-- Basic accessibility improvements for icon-only buttons
-
-## First-Time Promo Logic
-
-- Hook: `components/common/hooks/useFirstVisitPromo.js`
-- Modal: `components/common/FirstVisitPromoModal.jsx`
-- Storage key: `travel-tours:first-visit-promo-seen`
-- Behavior: opens after 5 seconds for first-time visitors only
-
-To test it again in browser devtools:
-
-```js
-localStorage.removeItem('travel-tours:first-visit-promo-seen');
-```
+- Public marketing pages
+- Tour listing and dynamic tour detail pages
+- Authentication and profile management
+- Quote request flow
+- Customer bookings area
+- Admin dashboard, tours, bookings, destinations, FAQ/help center, and quotes inbox
+- PayMongo checkout, return, and webhook handlers
 
 ## Environment Variables
 
-Create `.env` from `.env.example`:
+Copy `.env.example` to `.env` and fill in the values:
 
 ```bash
 cp .env.example .env
 ```
 
-Required public variables (used by floating chat buttons):
+Public variables:
 
 - `NEXT_PUBLIC_FB_PAGE_ID`
 - `NEXT_PUBLIC_WHATSAPP_NUMBER`
 - `NEXT_PUBLIC_VIBER_NUMBER`
-- `NEXT_PUBLIC_SITE_URL` (for canonical URLs, `robots.txt`, and sitemap)
+- `NEXT_PUBLIC_SITE_URL`
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
-## Supabase Migrations
+Server-only variables:
 
-Database schema, RLS, and seed data are versioned in:
+- `NEXT_SUPABASE_SERVICE_ROLE_KEY`
+- `NEXT_PAYMONGO_SECRET_KEY`
+- `NEXT_PAYMONGO_WEBHOOK_SECRET`
+- `PAYMONGO_API_BASE_URL` (optional override, defaults to `https://api.paymongo.com/v1`)
 
-- `supabase/migrations/20260220230000_users.sql`
-- `supabase/migrations/20260220230100_profiles.sql`
-- `supabase/migrations/20260220230200_profile_photos_storage.sql`
-- `supabase/migrations/20260220230300_destinations.sql`
-- `supabase/migrations/20260220230400_bookings.sql`
+## Development
 
-Recommended workflow:
-
-1. Initialize Supabase project files (once):
-
-```bash
-npx supabase init
-```
-
-2. Link to your target Supabase project:
-
-```bash
-npx supabase link --project-ref <your-project-ref>
-```
-
-3. Apply migrations to the linked remote project:
-
-```bash
-npx supabase db push
-```
-
-Optional reset commands:
-
-- Reset local Supabase (Docker) and re-run all migrations/seeds:
-
-```bash
-npx supabase db reset
-```
-
-- Reset linked remote Supabase project and re-run all migrations/seeds:
-
-```bash
-npx supabase db reset --linked
-```
-
-Warning: `db reset --linked` is destructive for remote data.
-
-For a new project, run steps 2-3 and the same schema/policies will be created automatically.
-
-## Getting Started
-
-1. Install dependencies:
+Install dependencies:
 
 ```bash
 npm install
 ```
 
-2. Run development server:
+Start the dev server:
 
 ```bash
 npm run dev
 ```
 
-3. Open:
-
-`http://localhost:3000`
+Open [http://localhost:3000](http://localhost:3000).
 
 ## Scripts
 
-- `npm run dev` - Start local development server
-- `npm run build` - Build production bundle
-- `npm run start` - Run production server
-- `npm run lint` - Run ESLint
-- `npm run lint:fix` - Auto-fix lint issues
-- `npm run format` - Format code with Prettier
-- `npm run format:check` - Check formatting
+- `npm run dev` starts the local dev server
+- `npm run build` builds the production app
+- `npm run start` serves the production build
+- `npm run lint` runs ESLint
+- `npm run typecheck` runs TypeScript without emitting
+- `npm run check` runs lint plus type-check
+- `npm run lint:fix` auto-fixes lint issues
+- `npm run format` formats the repo with Prettier
+- `npm run format:check` checks formatting
 
-## Deployment
+## Supabase
 
-Standard Next.js deployment flow:
+Schema and seed data live under [`supabase/migrations`](/Users/remolalata/Workspace/travel-tours/supabase/migrations).
+
+Recommended workflow:
 
 ```bash
-npm run build
-npm run start
+npx supabase init
+npx supabase link --project-ref <your-project-ref>
+npx supabase db push
 ```
 
-Can be deployed to Vercel or any Node-compatible hosting platform.
+Useful reset commands:
+
+```bash
+npx supabase db reset
+npx supabase db reset --linked
+```
+
+`db reset --linked` is destructive and should only be used intentionally.
+
+## Deployment Notes
+
+- `NEXT_PUBLIC_SITE_URL` should be set correctly for canonical URLs, `robots.txt`, and `sitemap.xml`.
+- Payments are only enabled on the tour detail page when both `NEXT_PAYMONGO_SECRET_KEY` and `NEXT_PAYMONGO_WEBHOOK_SECRET` are present.
+- Supabase storage is used for profile photos and tour photos.
+
+## Recommended Next Fixes
+
+1. Enforce admin role checks in `proxy.ts` and on any server-side admin entry points.
+2. Sanitize FAQ rich text before storage or before render.
+3. Fix `app/sitemap.ts` to query the real tour status field.
+4. Add at least smoke tests for auth, booking checkout, admin access, and sitemap generation.

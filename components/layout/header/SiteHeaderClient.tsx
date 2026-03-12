@@ -75,6 +75,7 @@ export default function SiteHeaderClient({ initialAuthState }: SiteHeaderClientP
 
           <div className='headerMobile__right'>
             <button
+              type='button'
               onClick={() => setMobileSearchOpen((prev) => !prev)}
               className='d-flex'
               aria-label={headerAccountContent.aria.toggleSearch}
@@ -82,6 +83,8 @@ export default function SiteHeaderClient({ initialAuthState }: SiteHeaderClientP
             >
               <i className='text-18 icon-search'></i>
             </button>
+
+            <HeaderAccountMenu authState={authState} variant='mobile' />
           </div>
 
           <div className='header__right'>
