@@ -7,14 +7,14 @@ import type {
 } from '@/types/adminDashboard';
 
 const STATUS_LABEL_MAP: Record<AdminDashboardBookingStatus, string> = {
-  approved: 'Approved',
+  confirmed: 'Confirmed',
   pending: 'Pending',
   cancelled: 'Cancelled',
   completed: 'Completed',
 };
 
 const STATUS_COLOR_MAP: Record<AdminDashboardBookingStatus, string> = {
-  approved: '#2F80ED',
+  confirmed: '#2F80ED',
   pending: '#F2994A',
   cancelled: '#EB5757',
   completed: '#27AE60',
@@ -57,7 +57,7 @@ function getNetRevenue(booking: AdminDashboardBooking): number {
 }
 
 function getRecognizedRevenue(booking: AdminDashboardBooking): number {
-  if (booking.bookingStatus !== 'approved' && booking.bookingStatus !== 'completed') {
+  if (booking.bookingStatus !== 'confirmed' && booking.bookingStatus !== 'completed') {
     return 0;
   }
 
@@ -105,8 +105,8 @@ export function buildAdminDashboardViewModel(
   );
 
   const totalBookings = filteredBookings.length;
-  const approvedOrCompletedBookings = filteredBookings.filter(
-    (booking) => booking.bookingStatus === 'approved' || booking.bookingStatus === 'completed',
+  const confirmedOrCompletedBookings = filteredBookings.filter(
+    (booking) => booking.bookingStatus === 'confirmed' || booking.bookingStatus === 'completed',
   );
   const completedBookings = filteredBookings.filter(
     (booking) => booking.bookingStatus === 'completed',
@@ -115,12 +115,12 @@ export function buildAdminDashboardViewModel(
     (booking) => booking.bookingStatus === 'cancelled',
   );
 
-  const totalRevenue = approvedOrCompletedBookings.reduce(
+  const totalRevenue = confirmedOrCompletedBookings.reduce(
     (sum, booking) => sum + getRecognizedRevenue(booking),
     0,
   );
-  const averageOrderValue = approvedOrCompletedBookings.length
-    ? totalRevenue / approvedOrCompletedBookings.length
+  const averageOrderValue = confirmedOrCompletedBookings.length
+    ? totalRevenue / confirmedOrCompletedBookings.length
     : 0;
   const completionRate = safeDivide(completedBookings.length, totalBookings) * 100;
   const cancellationRate = safeDivide(cancelledBookings.length, totalBookings) * 100;
@@ -149,7 +149,7 @@ export function buildAdminDashboardViewModel(
   }
 
   const statusCounts = new Map<AdminDashboardBookingStatus, number>([
-    ['approved', 0],
+    ['confirmed', 0],
     ['pending', 0],
     ['cancelled', 0],
     ['completed', 0],
@@ -206,7 +206,7 @@ export function buildAdminDashboardViewModel(
         label: 'Net Revenue',
         value: totalRevenue,
         format: 'currency',
-        subtitle: `${approvedOrCompletedBookings.length} confirmed bookings`,
+        subtitle: `${confirmedOrCompletedBookings.length} confirmed bookings`,
         iconClass: 'icon-wallet',
         accentColor: KPI_ACCENTS.revenue.accent,
         backgroundColor: KPI_ACCENTS.revenue.background,
@@ -246,7 +246,7 @@ export function buildAdminDashboardViewModel(
         label: 'Average Order Value',
         value: averageOrderValue,
         format: 'currency',
-        subtitle: 'Approved + completed',
+        subtitle: 'Confirmed + completed',
         iconClass: 'icon-review',
         accentColor: KPI_ACCENTS.average.accent,
         backgroundColor: KPI_ACCENTS.average.background,

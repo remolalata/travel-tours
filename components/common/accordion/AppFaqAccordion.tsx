@@ -41,7 +41,7 @@ export default function AppFaqAccordion({ items }: AppFaqAccordionProps) {
                 setCurrentActiveFaq((previousValue) => (previousValue === index ? -1 : index))
               }
             >
-              <div className='text-16 text-dark-1 button'>{item.question}</div>
+              <div className='text-16 text-dark-1 accordion__question'>{item.question}</div>
 
               <div className='flex-center bg-light-2 rounded-full size-30 accordion__icon'>
                 <i className='icon-plus'></i>
@@ -56,7 +56,7 @@ export default function AppFaqAccordion({ items }: AppFaqAccordionProps) {
               }
             >
               <div
-                className='pt-20'
+                className='pt-20 accordion__answer'
                 ref={(node) => {
                   contentRefs.current[index] = node;
                 }}

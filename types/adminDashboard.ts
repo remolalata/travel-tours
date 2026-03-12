@@ -1,4 +1,4 @@
-export type AdminDashboardBookingStatus = 'approved' | 'pending' | 'cancelled' | 'completed';
+export type AdminDashboardBookingStatus = 'confirmed' | 'pending' | 'cancelled' | 'completed';
 
 export type AdminDashboardTimeRange = '90d' | '180d' | 'all';
 

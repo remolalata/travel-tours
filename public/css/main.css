@@ -1869,7 +1869,17 @@ h6 {
 @media (max-width: 767px) {
   .headerMobile__right {
     display: flex;
+    align-items: center;
+    gap: 16px;
   }
+}
+
+.headerAccountMenu {
+  padding: 0;
+}
+
+.headerAccountMenu--mobile {
+  margin-left: 0;
 }
 
 .header {
@@ -6361,6 +6371,16 @@ h6 {
 
 .accordion__button {
   cursor: pointer;
+}
+
+.accordion__question {
+  flex: 1 1 auto;
+  text-align: left;
+}
+
+.accordion__answer,
+.accordion__answer * {
+  text-align: left;
 }
 
 .accordion.-simple .accordion__item {
@@ -11987,6 +12007,12 @@ h6 {
   }
 }
 
+@media (max-width: 575px) {
+  .accountPageShell {
+    margin-top: 57px;
+  }
+}
+
 .map {
   height: 500px;
 }
@@ -12249,6 +12275,26 @@ table.table-4.-border-bottom tbody > tr {
 @media (max-width: 991px) {
   .tourSingleSidebar.-top-320 {
     margin-top: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .tourSinglePageActionsWrap {
+    width: 100%;
+  }
+
+  .tourSinglePageActions {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin-left: 0;
+    margin-right: 0;
+    column-gap: 30px;
+  }
+
+  .tourSinglePageActions > * {
+    padding-left: 0;
+    padding-right: 0;
   }
 }
 
