@@ -60,7 +60,7 @@ const siteUrl = getSiteUrl();
 const siteName = 'Travel & Tours';
 const defaultDescription = 'Book curated tours and travel packages with Travel & Tours.';
 const logoUrl = `${siteUrl}/img/logo.svg`;
-const defaultOgImagePath = '/img/hero/7/1.jpg';
+const defaultOgImagePath = '/img/hero.webp';
 
 const organizationJsonLd = {
   '@context': 'https://schema.org',

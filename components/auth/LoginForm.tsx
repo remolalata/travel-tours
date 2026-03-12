@@ -59,7 +59,7 @@ export default function LoginForm() {
         <button
           type='submit'
           disabled={isSubmitting}
-          className='mt-30 text-white bg-accent-1 button -md -dark-1 col-12 disabled'
+          className='mt-30 text-white bg-accent-1 button -md -dark-1 col-12'
         >
           {isSubmitting
             ? authContent.login.actions.submittingLabel
