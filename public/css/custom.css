@@ -402,12 +402,12 @@
 }
 
 .contact-group-open .toTopButton {
-  bottom: 220px;
+  bottom: 332px;
 }
 
 @media (max-width: 1024px) and (min-width: 768px) {
   .contact-group-open .toTopButton {
-    bottom: 220px;
+    bottom: 332px;
   }
 }
 
@@ -458,7 +458,7 @@
   }
 
   .contact-group-open .toTopButton {
-    bottom: calc(194px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(278px + env(safe-area-inset-bottom, 0px));
   }
 
   .contactButtonMain svg,

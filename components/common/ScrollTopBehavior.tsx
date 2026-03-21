@@ -2,7 +2,7 @@
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 
-export default function ScrollTopBehaviour() {
+export default function ScrollTopBehavior() {
   const pathname = usePathname();
 
   useEffect(() => {

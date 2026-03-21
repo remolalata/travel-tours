@@ -5,9 +5,9 @@ import localFont from 'next/font/local';
 import type { ReactNode } from 'react';
 
 import BootstrapClient from '@/components/common/BootstrapClient';
+import ChatOptionsButton from '@/components/common/ChatOptionsButton';
 import FirstVisitPromoModal from '@/components/common/FirstVisitPromoModal';
-import MessengerButton from '@/components/common/MessengerButton';
-import ScrollTopBehaviour from '@/components/common/ScrollTopBehavier';
+import ScrollTopBehavior from '@/components/common/ScrollTopBehavior';
 import ScrollToTop from '@/components/common/ScrollToTop';
 import Wrapper from '@/components/layout/Wrapper';
 import ReactQueryProvider from '@/components/providers/ReactQueryProvider';
@@ -139,9 +139,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <BootstrapClient />
           <Wrapper>{children}</Wrapper>
           <FirstVisitPromoModal />
-          <MessengerButton />
+          <ChatOptionsButton />
           <ScrollToTop />
-          <ScrollTopBehaviour />
+          <ScrollTopBehavior />
         </ReactQueryProvider>
       </body>
     </html>
